@@ -1,0 +1,16 @@
+{
+  "name": "p5-networkedxivpractice",
+  "version": "1.0.0",
+  "description": "This online project is p5-xivPractice's little sister, allowing you to practice on many mechanics without any fear of wiping and having to risk doing the mechanics before those again!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.3",
+    "socket.io": "^4.7.4"
+  }
+}
