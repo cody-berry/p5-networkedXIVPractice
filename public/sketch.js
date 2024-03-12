@@ -36,26 +36,26 @@ function preload() {
     font = loadFont('data/consola.ttf')
     fixedWidthFont = loadFont('data/consola.ttf')
     variableWidthFont = loadFont('data/meiryo.ttf')
-    astIcon = loadFont("data/Astrologian_Icon_3.png")
-    brdIcon = loadFont("data/Bard_Icon_3.png")
-    blmIcon = loadFont("data/Black_Mage_Icon_3.png")
-    bluIcon = loadFont("data/Blue_Mage_Icon_3.png")
-    dncIcon = loadFont("data/Dancer_Icon_3.png")
-    drkIcon = loadFont("data/Dark_Knight_Icon_3.png")
-    drgIcon = loadFont("data/Dragoon_Icon_3.png")
-    gnbIcon = loadFont("data/Gunbreaker_Icon_3.png")
-    mchIcon = loadFont("data/Machinist_Icon_3.png")
-    mnkIcon = loadFont("data/Monk_Icon_3.png")
-    ninIcon = loadFont("data/Ninja_Icon_3.png")
-    pldIcon = loadFont("data/Paladin_Icon_3.png")
-    rprIcon = loadFont("data/Reaper_Icon_3.png")
-    rdmIcon = loadFont("data/Red_Mage_Icon_3.png")
-    sgeIcon = loadFont("data/Sage_Icon_3.png")
-    samIcon = loadFont("data/Samurai_Icon_3.png")
-    schIcon = loadFont("data/Scholar_Icon_3.png")
-    smnIcon = loadFont("data/Summoner_Icon_3.png")
-    warIcon = loadFont("data/Warrior_Icon_3.png")
-    whmIcon = loadFont("data/White_Mage_Icon_3.png")
+    astIcon = loadImage("data/Astrologian_Icon_3.png")
+    brdIcon = loadImage("data/Bard_Icon_3.png")
+    blmIcon = loadImage("data/Black_Mage_Icon_3.png")
+    bluIcon = loadImage("data/Blue_Mage_Icon_3.png")
+    dncIcon = loadImage("data/Dancer_Icon_3.png")
+    drkIcon = loadImage("data/Dark_Knight_Icon_3.png")
+    drgIcon = loadImage("data/Dragoon_Icon_3.png")
+    gnbIcon = loadImage("data/Gunbreaker_Icon_3.png")
+    mchIcon = loadImage("data/Machinist_Icon_3.png")
+    mnkIcon = loadImage("data/Monk_Icon_3.png")
+    ninIcon = loadImage("data/Ninja_Icon_3.png")
+    pldIcon = loadImage("data/Paladin_Icon_3.png")
+    rprIcon = loadImage("data/Reaper_Icon_3.png")
+    rdmIcon = loadImage("data/Red_Mage_Icon_3.png")
+    sgeIcon = loadImage("data/Sage_Icon_3.png")
+    samIcon = loadImage("data/Samurai_Icon_3.png")
+    schIcon = loadImage("data/Scholar_Icon_3.png")
+    smnIcon = loadImage("data/Summoner_Icon_3.png")
+    warIcon = loadImage("data/Warrior_Icon_3.png")
+    whmIcon = loadImage("data/White_Mage_Icon_3.png")
 }
 
 function setup() {
@@ -73,6 +73,7 @@ function setup() {
         numpad 1 → freeze sketch</pre>`)
 
     debugCorner = new CanvasDebugCorner(5)
+    debugCorner.visible = false
 
     // Connect to the WebSocket server
     socket = io.connect(window.location.origin)
@@ -123,15 +124,35 @@ function draw() {
         if (keyIsDown(83)) socket.emit("move down", yourID)
         if (keyIsDown(65)) socket.emit("move left", yourID)
     }
+    pop()
 
 
-
+    // test: display all possible jobs
+    image(astIcon, 0, 0, 50, 50)
+    image(brdIcon, 50, 30, 50, 50)
+    image(blmIcon, 0, 60, 50, 50)
+    image(bluIcon, 50, 90, 50, 50)
+    image(dncIcon, 0, 120, 50, 50)
+    image(drkIcon, 50, 150, 50, 50)
+    image(drgIcon, 0, 180, 50, 50)
+    image(gnbIcon, 50, 210, 50, 50)
+    image(mchIcon, 0, 240, 50, 50)
+    image(mnkIcon, 50, 270, 50, 50)
+    image(ninIcon, 0, 300, 50, 50)
+    image(pldIcon, 50, 330, 50, 50)
+    image(rprIcon, 0, 360, 50, 50)
+    image(rdmIcon, 50, 390, 50, 50)
+    image(sgeIcon, 0, 420, 50, 50)
+    image(samIcon, 50, 450, 50, 50)
+    image(schIcon, 0, 480, 50, 50)
+    image(smnIcon, 50, 510, 50, 50)
+    image(warIcon, 0, 540, 50, 50)
+    image(whmIcon, 50, 570, 50, 50)
 
     /* debugCorner needs to be last so its z-index is highest */
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
     debugCorner.setText(`fps: ${frameRate().toFixed(0)}`, 1)
     debugCorner.showBottom()
-    pop()
 }
 
 /** 🧹 shows debugging info using text() 🧹 */
