@@ -16,7 +16,8 @@ io.on('connection', (socket) => {
     connectedPlayers += 1
     let player = connectedPlayers
     console.log(`Player ${player} connected`);
-    connectedPlayerPositions = [...connectedPlayerPositions, [player*20, player*20]]
+    // extend the list with [700, 300] as a position
+    connectedPlayerPositions = [...connectedPlayerPositions, [700, 300]]
     socket.emit('connection entry', [connectedPlayerPositions, player])
     io.emit('other player connection entry', [connectedPlayerPositions, player])
 
