@@ -2,7 +2,9 @@ let socket
 let circles = 0
 let playerPositions = []
 let yourID = 0
-let state // state of you
+let yourLocation = "Lobby"
+let yourClass = "rdm"
+
 
 let font
 let fixedWidthFont
@@ -31,6 +33,8 @@ let smnIcon
 let warIcon
 let whmIcon
 
+let icons
+
 
 function preload() {
     font = loadFont('data/consola.ttf')
@@ -56,6 +60,44 @@ function preload() {
     smnIcon = loadImage("data/Summoner_Icon_3.png")
     warIcon = loadImage("data/Warrior_Icon_3.png")
     whmIcon = loadImage("data/White_Mage_Icon_3.png")
+    icons = {
+        "ast": astIcon,
+        "brd": brdIcon,
+        "blm": blmIcon,
+        "blu": bluIcon,
+        "dnc": dncIcon,
+        "drk": drkIcon,
+        "drg": drgIcon,
+        "gnb": gnbIcon,
+        "mch": mchIcon,
+        "mnk": mnkIcon,
+        "nin": ninIcon,
+        "pld": pldIcon,
+        "rpr": rprIcon,
+        "rdm": rdmIcon,
+        "sge": sgeIcon,
+        "sam": samIcon,
+        "sch": schIcon,
+        "smn": smnIcon,
+        "war": warIcon,
+        "whm": whmIcon
+    }
+
+    // Connect to the WebSocket server
+    socket = io.connect(window.location.origin)
+
+    socket.on('connection entry', function (msg) {
+        // this entry will always be [playerPositions, the player that you are]
+        playerPositions = msg[0]
+        yourID = msg[1]
+    })
+    socket.on('other player connection entry', function (msg) {
+        // this entry will always be [playerPositions, the player that they are]
+        playerPositions = msg[0]
+    })
+    socket.on('update', function (msg) {
+        playerPositions = msg[0]
+    })
 }
 
 function setup() {
@@ -75,31 +117,13 @@ function setup() {
     debugCorner = new CanvasDebugCorner(5)
     debugCorner.visible = false
 
-    // Connect to the WebSocket server
-    socket = io.connect(window.location.origin)
-
-    // Listen for messages from the server
-    socket.on('message', function (msg) {
-        console.log('Received message:', msg)
-    })
-    socket.on('connection entry', function (msg) {
-        // this entry will always be [playerPositions, the player that you are]
-        playerPositions = msg[0]
-        yourID = msg[1]
-    })
-    socket.on('other player connection entry', function (msg) {
-        // this entry will always be [playerPositions, the player that they are]
-        playerPositions = msg[0]
-    })
-    socket.on('update', function (msg) {
-        playerPositions = msg[0]
-    })
-
     state = "Changing class"
+    yourClass = "ast"
 }
 
 function draw() {
     background(234, 34, 24)
+    print(playerPositions)
 
     push()
     translate(700, 300)
@@ -110,13 +134,14 @@ function draw() {
     fill(0, 100, 100)
     noStroke()
     let player = 0
-    for (let playerPosition of playerPositions) {
+    for (let playerPosition of playerPositions[yourLocation]) {
         player += 1
         if (yourID === player) {
             fill(120, 100, 100)
+            rect(playerPosition[0] - 725, playerPosition[1] - 325, 50, 50, 10)
         }
-        text(player, playerPosition[0] - 700, playerPosition[1] - 300)
-        fill(0, 100, 100)
+        print(playerPosition[2])
+        image(icons[playerPosition[2]], playerPosition[0] - 725, playerPosition[1] - 325, 50, 50)
     }
     if (keyIsPressed) {
         if (keyIsDown(87)) socket.emit("move up", yourID)
@@ -128,26 +153,29 @@ function draw() {
 
 
     // test: display all possible jobs
-    image(astIcon, 0, 0, 50, 50)
-    image(brdIcon, 50, 30, 50, 50)
-    image(blmIcon, 0, 60, 50, 50)
-    image(bluIcon, 50, 90, 50, 50)
-    image(dncIcon, 0, 120, 50, 50)
-    image(drkIcon, 50, 150, 50, 50)
-    image(drgIcon, 0, 180, 50, 50)
-    image(gnbIcon, 50, 210, 50, 50)
-    image(mchIcon, 0, 240, 50, 50)
-    image(mnkIcon, 50, 270, 50, 50)
-    image(ninIcon, 0, 300, 50, 50)
-    image(pldIcon, 50, 330, 50, 50)
-    image(rprIcon, 0, 360, 50, 50)
-    image(rdmIcon, 50, 390, 50, 50)
-    image(sgeIcon, 0, 420, 50, 50)
+    fill(0, 0, 100)
+    textSize(20)
+    text("Change classes", 5, 20)
+    image(astIcon, 0, 100, 50, 50)
+    image(brdIcon, 50, 100, 50, 50)
+    image(blmIcon, 0, 150, 50, 50)
+    image(bluIcon, 50, 150, 50, 50)
+    image(dncIcon, 0, 200, 50, 50)
+    image(drkIcon, 50, 200, 50, 50)
+    image(drgIcon, 0, 250, 50, 50)
+    image(gnbIcon, 50, 250, 50, 50)
+    image(mchIcon, 0, 300, 50, 50)
+    image(mnkIcon, 50, 300, 50, 50)
+    image(ninIcon, 0, 350, 50, 50)
+    image(pldIcon, 50, 350, 50, 50)
+    image(rprIcon, 0, 400, 50, 50)
+    image(rdmIcon, 50, 400, 50, 50)
+    image(sgeIcon, 0, 450, 50, 50)
     image(samIcon, 50, 450, 50, 50)
-    image(schIcon, 0, 480, 50, 50)
-    image(smnIcon, 50, 510, 50, 50)
-    image(warIcon, 0, 540, 50, 50)
-    image(whmIcon, 50, 570, 50, 50)
+    image(schIcon, 0, 500, 50, 50)
+    image(smnIcon, 50, 500, 50, 50)
+    image(warIcon, 0, 550, 50, 50)
+    image(whmIcon, 50, 550, 50, 50)
 
     /* debugCorner needs to be last so its z-index is highest */
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
