@@ -4,6 +4,7 @@ let playerPositions = []
 let yourID = 0
 let yourLocation = "Lobby"
 let yourClass = "rdm"
+let state = "Changing job" // there are different states. These can be like "Changing job", "Changing name", "3 players in current Light/Full Party", and "Exoflares".
 
 
 let font
@@ -117,13 +118,11 @@ function setup() {
     debugCorner = new CanvasDebugCorner(5)
     debugCorner.visible = false
 
-    state = "Changing class"
     yourClass = "ast"
 }
 
 function draw() {
     background(234, 34, 24)
-    print(playerPositions)
 
     push()
     translate(700, 300)
@@ -152,35 +151,117 @@ function draw() {
     pop()
 
 
-    // test: display all possible jobs
-    fill(0, 0, 100)
-    textSize(20)
-    text("Change classes", 5, 20)
-    image(astIcon, 0, 100, 50, 50)
-    image(brdIcon, 50, 100, 50, 50)
-    image(blmIcon, 0, 150, 50, 50)
-    image(bluIcon, 50, 150, 50, 50)
-    image(dncIcon, 0, 200, 50, 50)
-    image(drkIcon, 50, 200, 50, 50)
-    image(drgIcon, 0, 250, 50, 50)
-    image(gnbIcon, 50, 250, 50, 50)
-    image(mchIcon, 0, 300, 50, 50)
-    image(mnkIcon, 50, 300, 50, 50)
-    image(ninIcon, 0, 350, 50, 50)
-    image(pldIcon, 50, 350, 50, 50)
-    image(rprIcon, 0, 400, 50, 50)
-    image(rdmIcon, 50, 400, 50, 50)
-    image(sgeIcon, 0, 450, 50, 50)
-    image(samIcon, 50, 450, 50, 50)
-    image(schIcon, 0, 500, 50, 50)
-    image(smnIcon, 50, 500, 50, 50)
-    image(warIcon, 0, 550, 50, 50)
-    image(whmIcon, 50, 550, 50, 50)
+    // display all possible jobs
+    print(state)
+    if (state === "Changing job") {
+        fill(0, 0, 100)
+        textSize(20)
+        text("Change jobs", 5, 20)
+        image(astIcon, 0, 100, 50, 50)
+        image(brdIcon, 50, 100, 50, 50)
+        image(blmIcon, 0, 150, 50, 50)
+        image(bluIcon, 50, 150, 50, 50)
+        image(dncIcon, 0, 200, 50, 50)
+        image(drkIcon, 50, 200, 50, 50)
+        image(drgIcon, 0, 250, 50, 50)
+        image(gnbIcon, 50, 250, 50, 50)
+        image(mchIcon, 0, 300, 50, 50)
+        image(mnkIcon, 50, 300, 50, 50)
+        image(ninIcon, 0, 350, 50, 50)
+        image(pldIcon, 50, 350, 50, 50)
+        image(rprIcon, 0, 400, 50, 50)
+        image(rdmIcon, 50, 400, 50, 50)
+        image(sgeIcon, 0, 450, 50, 50)
+        image(samIcon, 50, 450, 50, 50)
+        image(schIcon, 0, 500, 50, 50)
+        image(smnIcon, 50, 500, 50, 50)
+        image(warIcon, 0, 550, 50, 50)
+        image(whmIcon, 50, 550, 50, 50)
+
+        // also add button for "finished changing jobs"
+        fill(0, 0, 25)
+        if (mouseX > 150 && mouseX < 400 &&
+            mouseY > 0 && mouseY < 25) fill(0, 0, 24)
+        noStroke()
+        rect(150, 0, 250, 25)
+
+        fill(0, 0, 100)
+        text("Finished changing jobs", 155, 20)
+    }
 
     /* debugCorner needs to be last so its z-index is highest */
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
     debugCorner.setText(`fps: ${frameRate().toFixed(0)}`, 1)
     debugCorner.showBottom()
+}
+
+function mousePressed() {
+    if (state === "Changing job") {
+        if (mouseX > 1 && mouseX < 49 &&
+            mouseY > 101 && mouseY < 149)
+            yourClass = "ast"
+        if (mouseX > 51 && mouseX < 99 &&
+            mouseY > 101 && mouseY < 149)
+            yourClass = "brd"
+        if (mouseX > 1 && mouseX < 49 &&
+            mouseY > 151 && mouseY < 199)
+            yourClass = "blm"
+        if (mouseX > 51 && mouseX < 99 &&
+            mouseY > 151 && mouseY < 199)
+            yourClass = "blu"
+        if (mouseX > 1 && mouseX < 49 &&
+            mouseY > 201 && mouseY < 249)
+            yourClass = "dnc"
+        if (mouseX > 51 && mouseX < 99 &&
+            mouseY > 201 && mouseY < 249)
+            yourClass = "drk"
+        if (mouseX > 1 && mouseX < 49 &&
+            mouseY > 251 && mouseY < 299)
+            yourClass = "drg"
+        if (mouseX > 51 && mouseX < 99 &&
+            mouseY > 251 && mouseY < 299)
+            yourClass = "gnb"
+        if (mouseX > 1 && mouseX < 49 &&
+            mouseY > 301 && mouseY < 349)
+            yourClass = "mch"
+        if (mouseX > 51 && mouseX < 99 &&
+            mouseY > 301 && mouseY < 349)
+            yourClass = "mnk"
+        if (mouseX > 1 && mouseX < 49 &&
+            mouseY > 351 && mouseY < 399)
+            yourClass = "nin"
+        if (mouseX > 51 && mouseX < 99 &&
+            mouseY > 351 && mouseY < 399)
+            yourClass = "pld"
+        if (mouseX > 1 && mouseX < 49 &&
+            mouseY > 401 && mouseY < 449)
+            yourClass = "rpr"
+        if (mouseX > 51 && mouseX < 99 &&
+            mouseY > 401 && mouseY < 449)
+            yourClass = "rdm"
+        if (mouseX > 1 && mouseX < 49 &&
+            mouseY > 451 && mouseY < 499)
+            yourClass = "sge"
+        if (mouseX > 51 && mouseX < 99 &&
+            mouseY > 451 && mouseY < 499)
+            yourClass = "sam"
+        if (mouseX > 1 && mouseX < 49 &&
+            mouseY > 501 && mouseY < 549)
+            yourClass = "sch"
+        if (mouseX > 51 && mouseX < 99 &&
+            mouseY > 501 && mouseY < 549)
+            yourClass = "smn"
+        if (mouseX > 1 && mouseX < 49 &&
+            mouseY > 551 && mouseY < 599)
+            yourClass = "war"
+        if (mouseX > 51 && mouseX < 99 &&
+            mouseY > 551 && mouseY < 599)
+            yourClass = "whm"
+        if (mouseX > 150 && mouseX < 400 &&
+            mouseY > 0 && mouseY < 25) state = "changing name"
+        socket.emit("change class", yourClass)
+        print(yourClass)
+    }
 }
 
 /** 🧹 shows debugging info using text() 🧹 */

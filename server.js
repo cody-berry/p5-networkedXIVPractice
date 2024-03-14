@@ -65,6 +65,12 @@ io.on('connection', (socket) => {
         connectedPlayerPositions[playerLocation][msg - 1][0] -= 0.9
         io.emit('update', [connectedPlayerPositions])
     })
+    socket.on('change class', (msg) => {
+        console.log(connectedPlayerPositions)
+        console.log(connectedPlayerPositions[playerLocation][playerID - 1][2])
+        connectedPlayerPositions[playerLocation][playerID - 1][2] = msg
+        io.emit('update', [connectedPlayerPositions])
+    })
 });
 
 const PORT = process.env.PORT || 3000;
