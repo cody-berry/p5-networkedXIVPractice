@@ -203,8 +203,10 @@ function draw() {
         fill(0, 0, 100)
         textSize(20)
         text("Change names", 5, 20)
-        text("First name: " + yourFirstName + "           10 max", 5, 100)
-        text("Last name:  " + yourLastName + "           10 max", 5, 130)
+        text("First name: " + yourFirstName, 5, 100)
+        text("Last name:  " + yourLastName, 5, 130)
+        text("10 max", 260, 100)
+        text("10 max", 260, 130)
 
         // now display the cursor
         stroke(0, 0, 100)
@@ -236,8 +238,8 @@ function keyPressed() {
         // if the key is in the alphabet (keycodes 65 to 90 inclusive), then
         // type it in at the current cursor
         if (keyCode > 64 && keyCode < 91) {
-            if (yourFirstName.length < 10) {
-                if (cursor[0] === 0) {
+            if (cursor[0] === 0) {
+                if (yourFirstName.length < 10) {
                     let newName = ""
                     for (let i = 0; i < yourFirstName.length; i++) {
                         if (i === cursor[1]) {
@@ -255,6 +257,39 @@ function keyPressed() {
                         }
                     }
                     yourFirstName = newName
+                    cursor[1] += 1
+                }
+            }
+        }
+
+        // if you type backspace, then the key before that will be deleted
+        if (keyCode === 8) {
+            if (cursor[0] === 0) {
+                if (yourFirstName.length > 0 && cursor[1] > 0) {
+                    cursor[1] -= 1
+                    let newName = ""
+                    for (let i = 0; i < yourFirstName.length; i++) {
+                        if (i !== cursor[1]) {
+                            newName += yourFirstName[i]
+                        }
+                    }
+                    yourFirstName = newName
+                }
+            }
+        }
+        // if you type left or right (37 and 39 respectively), move the
+        // cursor one left or right respectively
+        if (keyCode === 37) {
+            if (cursor[1] > 0) {
+                cursor[1] -= 1
+            }
+        } if (keyCode === 39) {
+            if (cursor[0] === 0) {
+                if (cursor[1] < yourFirstName.length) {
+                    cursor[1] += 1
+                }
+            } else {
+                if (cursor[1] < yourLastName.length) {
                     cursor[1] += 1
                 }
             }
