@@ -5,7 +5,9 @@ let yourID = 0
 let yourLocation = "Lobby"
 let yourClass = "rdm"
 let state = "Changing job" // there are different states. These can be like "Changing job", "Changing name", "3 players in current Light/Full Party", and "Exoflares".
-
+let yourFirstName = ""
+let yourLastName = ""
+let cursor = [0, 0]
 
 let font
 let fixedWidthFont
@@ -139,7 +141,6 @@ function draw() {
             fill(120, 100, 100)
             rect(playerPosition[0] - 725, playerPosition[1] - 325, 50, 50, 10)
         }
-        print(playerPosition[2])
         image(icons[playerPosition[2]], playerPosition[0] - 725, playerPosition[1] - 325, 50, 50)
     }
     if (keyIsPressed) {
@@ -152,7 +153,6 @@ function draw() {
 
 
     // display all possible jobs
-    print(state)
     if (state === "Changing job") {
         fill(0, 0, 100)
         textSize(20)
@@ -181,7 +181,7 @@ function draw() {
         // also add button for "finished changing jobs"
         fill(0, 0, 25)
         if (mouseX > 150 && mouseX < 400 &&
-            mouseY > 0 && mouseY < 25) fill(0, 0, 24)
+            mouseY > 0 && mouseY < 25) fill(0, 0, 22)
         noStroke()
         rect(150, 0, 250, 25)
 
@@ -189,10 +189,77 @@ function draw() {
         text("Finished changing jobs", 155, 20)
     }
 
+    // now you can change your name
+    if (state === "Changing name") {
+        // add textboxes
+        fill(0, 0, 20)
+        stroke(0, 0, 50)
+        strokeWeight((cursor[0] === 0) ? 2 : 1)
+        rect(textWidth("First name:") + textWidth(" ")/2 + 5, 80, textWidth("10  letters"), 25)
+
+        strokeWeight((cursor[0] === 0) ? 1 : 2)
+        rect(textWidth("First name:") + textWidth(" ")/2 + 5, 110, textWidth("10  letters"), 25)
+
+        fill(0, 0, 100)
+        textSize(20)
+        text("Change names", 5, 20)
+        text("First name: " + yourFirstName + "           10 max", 5, 100)
+        text("Last name:  " + yourLastName + "           10 max", 5, 130)
+
+        // now display the cursor
+        stroke(0, 0, 100)
+        strokeWeight(1)
+        if (millis() % 1000 < 500) {
+            line(textWidth("First name: ") + textWidth(" ")*cursor[1] + 5, 83 + 30*cursor[0],
+                 textWidth("Last name:  ") + textWidth(" ")*cursor[1] + 5, 102 + 30*cursor[0])
+        }
+
+        // also add button for "finished changing name"
+        fill(0, 0, 25)
+        if (mouseX > 150 && mouseX < 400 &&
+            mouseY > 0 && mouseY < 25) fill(0, 0, 22)
+        noStroke()
+        rect(150, 0, 250, 25)
+
+        fill(0, 0, 100)
+        text("Finished changing name", 155, 20)
+    }
+
     /* debugCorner needs to be last so its z-index is highest */
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
     debugCorner.setText(`fps: ${frameRate().toFixed(0)}`, 1)
     debugCorner.showBottom()
+}
+
+function keyPressed() {
+    if (state === "Changing name") {
+        // if the key is in the alphabet (keycodes 65 to 90 inclusive), then
+        // type it in at the current cursor
+        if (keyCode > 64 && keyCode < 91) {
+            if (yourFirstName.length < 10) {
+                if (cursor[0] === 0) {
+                    let newName = ""
+                    for (let i = 0; i < yourFirstName.length; i++) {
+                        if (i === cursor[1]) {
+                            newName += key.toLowerCase()
+                        }
+                        newName += yourFirstName[i]
+                    }
+                    if (yourFirstName.length === cursor[1]) {
+                        // if you're adding a new character, then the previous
+                        // code's "i === cursor[1]" section will not operate
+                        if (cursor[1] === 0) {
+                            newName += key.toUpperCase()
+                        } else {
+                            newName += key.toLowerCase()
+                        }
+                    }
+                    yourFirstName = newName
+                    cursor[1] += 1
+                }
+            }
+        }
+    }
 }
 
 function mousePressed() {
@@ -258,7 +325,7 @@ function mousePressed() {
             mouseY > 551 && mouseY < 599)
             yourClass = "whm"
         if (mouseX > 150 && mouseX < 400 &&
-            mouseY > 0 && mouseY < 25) state = "changing name"
+            mouseY > 0 && mouseY < 25) state = "Changing name"
         socket.emit("change class", yourClass)
         print(yourClass)
     }

@@ -23,7 +23,6 @@ let connectedPlayerPositions = {
     "Full Party 2": [],
     "Full Party 3": [],
 }
-console.log(connectedPlayerPositions)
 
 io.on('connection', (socket) => {
     connectedPlayers += 1
@@ -34,7 +33,6 @@ io.on('connection', (socket) => {
     console.log(`Player ${player} connected`);
     // extend the list with [700, 300] as a position
     connectedPlayerPositions["Lobby"] = [...connectedPlayerPositions["Lobby"], [700, 300, "ast"]]
-    console.log(connectedPlayerPositions)
     socket.emit('connection entry', [connectedPlayerPositions, playerID])
     io.emit('other player connection entry', [connectedPlayerPositions, playerID])
 
