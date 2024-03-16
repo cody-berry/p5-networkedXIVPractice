@@ -1,5 +1,4 @@
 let socket
-let circles = 0
 let playerPositions = []
 let yourID = 0
 let yourLocation = "Lobby"
@@ -129,8 +128,56 @@ function draw() {
     push()
     translate(700, 300)
 
-    fill(0, 0, 50) // substitute for the board
-    rect(-300, -300, 600, 600)
+    // substitute for the board: chessboard-like bricks on corners, stone in
+    // middle
+    stroke(0, 0, 0)
+    strokeWeight(1)
+    for (let i = 0; i < 15; i++) {
+        fill(0, 55, 60)
+        rect(-300, i*40 - 300, 40, 20)
+        rect(-220, i*40 - 300, 40, 20)
+        rect(-140, i*40 - 300, 40, 20)
+        rect(-60, i*40 - 300, 40, 20)
+        rect(20, i*40 - 300, 40, 20)
+        rect(100, i*40 - 300, 40, 20)
+        rect(180, i*40 - 300, 40, 20)
+        rect(260, i*40 - 300, 40, 20)
+        rect(-280, i*40 - 280, 40, 20)
+        rect(-200, i*40 - 280, 40, 20)
+        rect(-120, i*40 - 280, 40, 20)
+        rect(-40, i*40 - 280, 40, 20)
+        rect(40, i*40 - 280, 40, 20)
+        rect(120, i*40 - 280, 40, 20)
+        rect(200, i*40 - 280, 40, 20)
+        rect(280, i*40 - 280, 20, 20)
+        fill(0, 60, 60)
+        rect(-260, i*40 - 300, 40, 20)
+        rect(-180, i*40 - 300, 40, 20)
+        rect(-100, i*40 - 300, 40, 20)
+        rect(-20, i*40 - 300, 40, 20)
+        rect(60, i*40 - 300, 40, 20)
+        rect(140, i*40 - 300, 40, 20)
+        rect(220, i*40 - 300, 40, 20)
+        rect(-300, i*40 - 280, 20, 20)
+        rect(-240, i*40 - 280, 40, 20)
+        rect(-160, i*40 - 280, 40, 20)
+        rect(-80, i*40 - 280, 40, 20)
+        rect(0, i*40 - 280, 40, 20)
+        rect(80, i*40 - 280, 40, 20)
+        rect(160, i*40 - 280, 40, 20)
+        rect(240, i*40 - 280, 40, 20)
+    }
+
+    fill(0, 0, 50)
+    rect(-200, -200, 400, 400)
+    line(-120, -200, -120, 200)
+    line(-40, -200, -40, 200)
+    line(40, -200, 40, 200)
+    line(120, -200, 120, 200)
+    line(200, -120, -200, -120)
+    line(200, -40, -200, -40)
+    line(200, 40, -200, 40)
+    line(200, 120, -200, 120)
 
     fill(0, 100, 100)
     noStroke()
@@ -355,6 +402,9 @@ function keyPressed() {
                 }
             }
         }
+
+        // you should tell the server
+        socket.emit("change name", [yourFirstName, yourLastName])
     }
 }
 

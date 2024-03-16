@@ -32,13 +32,13 @@ io.on('connection', (socket) => {
 
     console.log(`Player ${player} connected`);
     // extend the list with [700, 300] as a position
-    connectedPlayerPositions["Lobby"] = [...connectedPlayerPositions["Lobby"], [700, 300, "ast"]]
+    connectedPlayerPositions["Lobby"] = [...connectedPlayerPositions["Lobby"], [700, 300, "ast", "", ""]]
     socket.emit('connection entry', [connectedPlayerPositions, playerID])
     io.emit('other player connection entry', [connectedPlayerPositions, playerID])
 
     socket.on('disconnect', () => {
         console.log(`Player ${player} disconnected`);
-        connectedPlayerPositions[playerLocation][playerID - 1] = [-20, -20, "ast"]
+        connectedPlayerPositions[playerLocation][playerID - 1] = [-20, -20, "ast", "", ""]
         io.emit('update', [connectedPlayerPositions])
     });
 
@@ -68,6 +68,12 @@ io.on('connection', (socket) => {
         console.log(connectedPlayerPositions[playerLocation][playerID - 1][2])
         connectedPlayerPositions[playerLocation][playerID - 1][2] = msg
         io.emit('update', [connectedPlayerPositions])
+    })
+
+    socket.on('change name', (msg) => {
+        console.log(`Player ${player} changed their name to ${msg[0]} ${msg[1]}`)
+        connectedPlayerPositions[playerLocation][playerID - 1][3] = msg[0]
+        connectedPlayerPositions[playerLocation][playerID - 1][4] = msg[1]
     })
 });
 
