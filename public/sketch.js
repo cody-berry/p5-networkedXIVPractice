@@ -200,6 +200,8 @@ function draw() {
         strokeWeight((cursor[0] === 0) ? 1 : 2)
         rect(textWidth("First name:") + textWidth(" ")/2 + 5, 110, textWidth("10  letters"), 25)
 
+        strokeWeight(1)
+
         fill(0, 0, 100)
         textSize(20)
         text("Change names", 5, 20)
@@ -259,6 +261,27 @@ function keyPressed() {
                     yourFirstName = newName
                     cursor[1] += 1
                 }
+            } else {
+                if (yourLastName.length < 10) {
+                    let newName = ""
+                    for (let i = 0; i < yourLastName.length; i++) {
+                        if (i === cursor[1]) {
+                            newName += key.toLowerCase()
+                        }
+                        newName += yourLastName[i]
+                    }
+                    if (yourLastName.length === cursor[1]) {
+                        // if you're adding a new character, then the previous
+                        // code's "i === cursor[1]" section will not operate
+                        if (cursor[1] === 0) {
+                            newName += key.toUpperCase()
+                        } else {
+                            newName += key.toLowerCase()
+                        }
+                    }
+                    yourLastName = newName
+                    cursor[1] += 1
+                }
             }
         }
 
@@ -275,8 +298,46 @@ function keyPressed() {
                     }
                     yourFirstName = newName
                 }
+            } else {
+                if (yourLastName.length > 0 && cursor[1] > 0) {
+                    cursor[1] -= 1
+                    let newName = ""
+                    for (let i = 0; i < yourLastName.length; i++) {
+                        if (i !== cursor[1]) {
+                            newName += yourLastName[i]
+                        }
+                    }
+                    yourLastName = newName
+                }
             }
         }
+
+        // do the same for Delete
+        if (keyCode === 46) {
+            if (cursor[0] === 0) {
+                if (yourFirstName.length > 0 && cursor[1] > 0) {
+                    let newName = ""
+                    for (let i = 0; i < yourFirstName.length; i++) {
+                        if (i !== cursor[1]) {
+                            newName += yourFirstName[i]
+                        }
+                    }
+                    yourFirstName = newName
+                }
+                else {
+                    if (yourLastName.length > 0 && cursor[1] > 0) {
+                        let newName = ""
+                        for (let i = 0; i < yourLastName.length; i++) {
+                            if (i !== cursor[1]) {
+                                newName += yourLastName[i]
+                            }
+                        }
+                        yourLastName = newName
+                    }
+                }
+            }
+        }
+
         // if you type left or right (37 and 39 respectively), move the
         // cursor one left or right respectively
         if (keyCode === 37) {
@@ -298,7 +359,34 @@ function keyPressed() {
 }
 
 function mousePressed() {
-    if (state === "Changing job") {
+    if (state === "Changing name") {
+        // the new state will be "Going Nowhere"
+        if (mouseX > 150 && mouseX < 400 &&
+            mouseY > 0 && mouseY < 25) state = "Going Nowhere 🤣"
+
+        // if the mouse is pressed, go to the nearest cursor location
+        // textWidth("First name:") + textWidth(" ")/2 + 5, 80,
+        // textWidth("10  letters"), 25
+        // x region where the textboxes are
+        if (mouseX > textWidth("First name:") + textWidth(" ")/2 + 5 &&
+            mouseX < textWidth("First name:10  letters") + textWidth(" ")/2 + 5) {
+            // first name textbox
+            if (mouseY > 80 && mouseY < 105) {
+                cursor[0] = 0
+                let firstLetterX = textWidth("First name: ") + 5
+                cursor[1] = round(map(mouseX, firstLetterX, firstLetterX + textWidth("10  letters"), 0, 10))
+                cursor[1] = max(0, min(yourFirstName.length, cursor[1]))
+            }
+            // last name textbox
+            if (mouseY > 110 && mouseY < 135) {
+                cursor[0] = 1
+                let firstLetterX = textWidth("First name: ") + 5
+                cursor[1] = round(map(mouseX, firstLetterX, firstLetterX + textWidth("10  letters"), 0, 10))
+                cursor[1] = max(0, min(yourLastName.length, cursor[1]))
+            }
+        }
+    } if (state === "Changing job") {
+        // change classes (lined up on the left)
         if (mouseX > 1 && mouseX < 49 &&
             mouseY > 101 && mouseY < 149)
             yourClass = "ast"
@@ -361,6 +449,8 @@ function mousePressed() {
             yourClass = "whm"
         if (mouseX > 150 && mouseX < 400 &&
             mouseY > 0 && mouseY < 25) state = "Changing name"
+
+        // tell everyone that you changed class!
         socket.emit("change class", yourClass)
         print(yourClass)
     }
