@@ -37,6 +37,8 @@ let whmIcon
 
 let icons
 
+let frameWhenLastMoved // makes sure that you don't move until your position change is fully accounted for
+
 
 function preload() {
     font = loadFont('data/consola.ttf')
@@ -120,6 +122,7 @@ function setup() {
     debugCorner.visible = false
 
     yourClass = "ast"
+    frameWhenLastMoved = 0
 }
 
 function draw() {
@@ -128,56 +131,125 @@ function draw() {
     push()
     translate(700, 300)
 
-    // substitute for the board: chessboard-like bricks on corners, stone in
-    // middle
-    stroke(0, 0, 0)
-    strokeWeight(1)
-    for (let i = 0; i < 15; i++) {
-        fill(0, 55, 60)
-        rect(-300, i*40 - 300, 40, 20)
-        rect(-220, i*40 - 300, 40, 20)
-        rect(-140, i*40 - 300, 40, 20)
-        rect(-60, i*40 - 300, 40, 20)
-        rect(20, i*40 - 300, 40, 20)
-        rect(100, i*40 - 300, 40, 20)
-        rect(180, i*40 - 300, 40, 20)
-        rect(260, i*40 - 300, 40, 20)
-        rect(-280, i*40 - 280, 40, 20)
-        rect(-200, i*40 - 280, 40, 20)
-        rect(-120, i*40 - 280, 40, 20)
-        rect(-40, i*40 - 280, 40, 20)
-        rect(40, i*40 - 280, 40, 20)
-        rect(120, i*40 - 280, 40, 20)
-        rect(200, i*40 - 280, 40, 20)
-        rect(280, i*40 - 280, 20, 20)
-        fill(0, 60, 60)
-        rect(-260, i*40 - 300, 40, 20)
-        rect(-180, i*40 - 300, 40, 20)
-        rect(-100, i*40 - 300, 40, 20)
-        rect(-20, i*40 - 300, 40, 20)
-        rect(60, i*40 - 300, 40, 20)
-        rect(140, i*40 - 300, 40, 20)
-        rect(220, i*40 - 300, 40, 20)
-        rect(-300, i*40 - 280, 20, 20)
-        rect(-240, i*40 - 280, 40, 20)
-        rect(-160, i*40 - 280, 40, 20)
-        rect(-80, i*40 - 280, 40, 20)
-        rect(0, i*40 - 280, 40, 20)
-        rect(80, i*40 - 280, 40, 20)
-        rect(160, i*40 - 280, 40, 20)
-        rect(240, i*40 - 280, 40, 20)
-    }
 
-    fill(0, 0, 50)
-    rect(-200, -200, 400, 400)
-    line(-120, -200, -120, 200)
-    line(-40, -200, -40, 200)
-    line(40, -200, 40, 200)
-    line(120, -200, 120, 200)
-    line(200, -120, -200, -120)
-    line(200, -40, -200, -40)
-    line(200, 40, -200, 40)
-    line(200, 120, -200, 120)
+
+    if (yourLocation === "Lobby") {
+        // substitute for the board: chessboard-like bricks on corners, stone in
+        // middle
+        stroke(0, 0, 0)
+        strokeWeight(1)
+        for (let i = 0; i < 15; i++) {
+            fill(0, 55, 60)
+            rect(-300, i * 80 - 300, 40, 20)
+            rect(-220, i * 80 - 300, 40, 20)
+            rect(-140, i * 80 - 300, 40, 20)
+            rect(-60, i * 40 - 300, 40, 20)
+            rect(20, i * 40 - 300, 40, 20)
+            rect(100, i * 80 - 300, 40, 20)
+            rect(180, i * 80 - 300, 40, 20)
+            rect(260, i * 80 - 300, 40, 20)
+            rect(-280, i * 80 - 280, 40, 20)
+            rect(-200, i * 80 - 280, 40, 20)
+            rect(-120, i * 80 - 280, 40, 20)
+            rect(-40, i * 80 - 280, 40, 20)
+            rect(40, i * 80 - 280, 40, 20)
+            rect(120, i * 80 - 280, 40, 20)
+            rect(200, i * 80 - 280, 40, 20)
+            rect(280, i * 80 - 280, 20, 20)
+            rect(-260, i * 80 - 260, 40, 20)
+            rect(-180, i * 80 - 260, 40, 20)
+            rect(-100, i * 80 - 260, 40, 20)
+            rect(-20, i * 80 - 260, 40, 20)
+            rect(60, i * 80 - 260, 40, 20)
+            rect(140, i * 80 - 260, 40, 20)
+            rect(220, i * 80 - 260, 40, 20)
+            rect(-300, i * 80 - 240, 20, 20)
+            rect(-240, i * 80 - 240, 40, 20)
+            rect(-160, i * 80 - 240, 40, 20)
+            rect(-80, i * 80 - 240, 40, 20)
+            rect(0, i * 80 - 240, 40, 20)
+            rect(80, i * 80 - 240, 40, 20)
+            rect(160, i * 80 - 240, 40, 20)
+            rect(240, i * 80 - 240, 40, 20)
+            fill(0, 60, 60)
+            rect(-260, i * 80 - 300, 40, 20)
+            rect(-180, i * 80 - 300, 40, 20)
+            rect(-100, i * 80 - 300, 40, 20)
+            rect(-20, i * 80 - 300, 40, 20)
+            rect(60, i * 80 - 300, 40, 20)
+            rect(140, i * 80 - 300, 40, 20)
+            rect(220, i * 80 - 300, 40, 20)
+            rect(-300, i * 80 - 280, 20, 20)
+            rect(-240, i * 80 - 280, 40, 20)
+            rect(-160, i * 80 - 280, 40, 20)
+            rect(-80, i * 80 - 280, 40, 20)
+            rect(0, i * 80 - 280, 40, 20)
+            rect(80, i * 80 - 280, 40, 20)
+            rect(160, i * 80 - 280, 40, 20)
+            rect(240, i * 80 - 280, 40, 20)
+            rect(-300, i * 80 - 260, 40, 20)
+            rect(-220, i * 80 - 260, 40, 20)
+            rect(-140, i * 80 - 260, 40, 20)
+            rect(-60, i * 40 - 260, 40, 20)
+            rect(20, i * 40 - 260, 40, 20)
+            rect(100, i * 80 - 260, 40, 20)
+            rect(180, i * 80 - 260, 40, 20)
+            rect(260, i * 80 - 260, 40, 20)
+            rect(-280, i * 80 - 240, 40, 20)
+            rect(-200, i * 80 - 240, 40, 20)
+            rect(-120, i * 80 - 240, 40, 20)
+            rect(-40, i * 80 - 240, 40, 20)
+            rect(40, i * 80 - 240, 40, 20)
+            rect(120, i * 80 - 240, 40, 20)
+            rect(200, i * 80 - 240, 40, 20)
+            rect(280, i * 80 - 240, 20, 20)
+        }
+
+        fill(0, 0, 50)
+        rect(-200, -200, 400, 400)
+        line(-120, -200, -120, 200)
+        line(-40, -200, -40, 200)
+        line(40, -200, 40, 200)
+        line(120, -200, 120, 200)
+        line(200, -120, -200, -120)
+        line(200, -40, -200, -40)
+        line(200, 40, -200, 40)
+        line(200, 120, -200, 120)
+
+        // the top-left and top-right squares are actually gates to each queue
+        fill(0, 0, 20)
+        rect(-200, -200, 80, 80)
+        rect(120, -200, 80, 80)
+
+        fill(0, 0, 0)
+        text("Light\nParty\nQueue", -190, -180)
+        text("Full\nParty\nQueue", 130, -180)
+        if (state === "Changing job") {
+            fill(0, 0, 40)
+            rect(-200, -200, 80, 80)
+            rect(120, -200, 80, 80)
+
+
+            line(-183, -200, -183, -120)
+            line(-166, -200, -166, -120)
+            line(-149, -200, -149, -120)
+            line(149, -200, 149, -120)
+            line(166, -200, 166, -120)
+            line(183, -200, 183, -120)
+        } if (state === "Changing name") {
+            fill(0, 0, 30)
+            rect(-230, -200, 80, 80)
+            rect(150, -200, 80, 80)
+
+
+            line(-183, -200, -183, -120)
+            line(-166, -200, -166, -120)
+            line(-149, -200, -149, -120)
+            line(149, -200, 149, -120)
+            line(166, -200, 166, -120)
+            line(183, -200, 183, -120)
+        }
+    }
 
     fill(0, 100, 100)
     noStroke()
@@ -190,7 +262,25 @@ function draw() {
         }
         image(icons[playerPosition[2]], playerPosition[0] - 725, playerPosition[1] - 325, 50, 50)
     }
-    if (keyIsPressed) {
+
+    // if you're in the lobby and you went to one of the holes while the
+    // state allows you to access it, you can move to light party queue or
+    // full party queue
+    if (state === "Going Nowhere 🤣" && yourLocation === "Lobby" &&
+        playerPositions[yourLocation][yourID - 1][1] > 100 && playerPositions[yourLocation][yourID - 1][1] < 180) {
+        if (playerPositions[yourLocation][yourID - 1][0] > 500 && playerPositions[yourLocation][yourID - 1][0] < 580) {
+            print("⚠️ Going into Light Party Queue.")
+            socket.emit("move", "Light Party Queue")
+            yourLocation = "Light Party Queue"
+            frameWhenLastMoved = frameCount
+        } else if (playerPositions[yourLocation][yourID - 1][0] > 820 && playerPositions[yourLocation][yourID - 1][0] < 900) {
+            print("⚠️ Going into Full Party Queue.")
+            socket.emit("move", "Full Party Queue")
+            yourLocation = "Full Party Queue"
+            frameWhenLastMoved = frameCount
+        }
+    }
+    if (keyIsPressed && frameCount - frameWhenLastMoved > 5) {
         if (keyIsDown(87)) socket.emit("move up", yourID)
         if (keyIsDown(68)) socket.emit("move right", yourID)
         if (keyIsDown(83)) socket.emit("move down", yourID)

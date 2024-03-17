@@ -64,10 +64,17 @@ io.on('connection', (socket) => {
         io.emit('update', [connectedPlayerPositions])
     })
     socket.on('change class', (msg) => {
-        console.log(connectedPlayerPositions)
-        console.log(connectedPlayerPositions[playerLocation][playerID - 1][2])
         connectedPlayerPositions[playerLocation][playerID - 1][2] = msg
         io.emit('update', [connectedPlayerPositions])
+    })
+    socket.on('move', (msg) => {
+        let previousLocation = connectedPlayerPositions[playerLocation][playerID - 1]
+        connectedPlayerPositions[playerLocation][playerID - 1] = [-20, -20, "ast", "", ""]
+        playerID = connectedPlayerPositions[msg].length + 1
+        playerLocation = msg
+        connectedPlayerPositions[playerLocation][playerID - 1] = [700, 525, previousLocation[2], previousLocation[3], previousLocation[4]]
+        io.emit('update', [connectedPlayerPositions])
+        socket.emit("connection entry", [connectedPlayerPositions, playerID])
     })
 
     socket.on('change name', (msg) => {
