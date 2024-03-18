@@ -133,78 +133,78 @@ function draw() {
 
 
 
-    if (yourLocation === "Lobby") {
-        // substitute for the board: chessboard-like bricks on corners, stone in
-        // middle
-        stroke(0, 0, 0)
-        strokeWeight(1)
-        for (let i = 0; i < 15; i++) {
-            fill(0, 55, 60)
-            rect(-300, i * 80 - 300, 40, 20)
-            rect(-220, i * 80 - 300, 40, 20)
-            rect(-140, i * 80 - 300, 40, 20)
-            rect(-60, i * 40 - 300, 40, 20)
-            rect(20, i * 40 - 300, 40, 20)
-            rect(100, i * 80 - 300, 40, 20)
-            rect(180, i * 80 - 300, 40, 20)
-            rect(260, i * 80 - 300, 40, 20)
-            rect(-280, i * 80 - 280, 40, 20)
-            rect(-200, i * 80 - 280, 40, 20)
-            rect(-120, i * 80 - 280, 40, 20)
-            rect(-40, i * 80 - 280, 40, 20)
-            rect(40, i * 80 - 280, 40, 20)
-            rect(120, i * 80 - 280, 40, 20)
-            rect(200, i * 80 - 280, 40, 20)
-            rect(280, i * 80 - 280, 20, 20)
-            rect(-260, i * 80 - 260, 40, 20)
-            rect(-180, i * 80 - 260, 40, 20)
-            rect(-100, i * 80 - 260, 40, 20)
-            rect(-20, i * 80 - 260, 40, 20)
-            rect(60, i * 80 - 260, 40, 20)
-            rect(140, i * 80 - 260, 40, 20)
-            rect(220, i * 80 - 260, 40, 20)
-            rect(-300, i * 80 - 240, 20, 20)
-            rect(-240, i * 80 - 240, 40, 20)
-            rect(-160, i * 80 - 240, 40, 20)
-            rect(-80, i * 80 - 240, 40, 20)
-            rect(0, i * 80 - 240, 40, 20)
-            rect(80, i * 80 - 240, 40, 20)
-            rect(160, i * 80 - 240, 40, 20)
-            rect(240, i * 80 - 240, 40, 20)
-            fill(0, 60, 60)
-            rect(-260, i * 80 - 300, 40, 20)
-            rect(-180, i * 80 - 300, 40, 20)
-            rect(-100, i * 80 - 300, 40, 20)
-            rect(-20, i * 80 - 300, 40, 20)
-            rect(60, i * 80 - 300, 40, 20)
-            rect(140, i * 80 - 300, 40, 20)
-            rect(220, i * 80 - 300, 40, 20)
-            rect(-300, i * 80 - 280, 20, 20)
-            rect(-240, i * 80 - 280, 40, 20)
-            rect(-160, i * 80 - 280, 40, 20)
-            rect(-80, i * 80 - 280, 40, 20)
-            rect(0, i * 80 - 280, 40, 20)
-            rect(80, i * 80 - 280, 40, 20)
-            rect(160, i * 80 - 280, 40, 20)
-            rect(240, i * 80 - 280, 40, 20)
-            rect(-300, i * 80 - 260, 40, 20)
-            rect(-220, i * 80 - 260, 40, 20)
-            rect(-140, i * 80 - 260, 40, 20)
-            rect(-60, i * 40 - 260, 40, 20)
-            rect(20, i * 40 - 260, 40, 20)
-            rect(100, i * 80 - 260, 40, 20)
-            rect(180, i * 80 - 260, 40, 20)
-            rect(260, i * 80 - 260, 40, 20)
-            rect(-280, i * 80 - 240, 40, 20)
-            rect(-200, i * 80 - 240, 40, 20)
-            rect(-120, i * 80 - 240, 40, 20)
-            rect(-40, i * 80 - 240, 40, 20)
-            rect(40, i * 80 - 240, 40, 20)
-            rect(120, i * 80 - 240, 40, 20)
-            rect(200, i * 80 - 240, 40, 20)
-            rect(280, i * 80 - 240, 20, 20)
-        }
+    // substitute for the board: chessboard-like bricks on corners
+    stroke(0, 0, 0)
+    strokeWeight(1)
+    for (let i = 0; i < 15; i++) {
+        fill(0, 55, 60)
+        rect(-300, i * 80 - 300, 40, 20)
+        rect(-220, i * 80 - 300, 40, 20)
+        rect(-140, i * 80 - 300, 40, 20)
+        rect(-60, i * 80 - 300, 40, 20)
+        rect(20, i * 80 - 300, 40, 20)
+        rect(100, i * 80 - 300, 40, 20)
+        rect(180, i * 80 - 300, 40, 20)
+        rect(260, i * 80 - 300, 40, 20)
+        rect(-280, i * 80 - 280, 40, 20)
+        rect(-200, i * 80 - 280, 40, 20)
+        rect(-120, i * 80 - 280, 40, 20)
+        rect(-40, i * 80 - 280, 40, 20)
+        rect(40, i * 80 - 280, 40, 20)
+        rect(120, i * 80 - 280, 40, 20)
+        rect(200, i * 80 - 280, 40, 20)
+        rect(280, i * 80 - 280, 20, 20)
+        rect(-260, i * 80 - 260, 40, 20)
+        rect(-180, i * 80 - 260, 40, 20)
+        rect(-100, i * 80 - 260, 40, 20)
+        rect(-20, i * 80 - 260, 40, 20)
+        rect(60, i * 80 - 260, 40, 20)
+        rect(140, i * 80 - 260, 40, 20)
+        rect(220, i * 80 - 260, 40, 20)
+        rect(-300, i * 80 - 240, 20, 20)
+        rect(-240, i * 80 - 240, 40, 20)
+        rect(-160, i * 80 - 240, 40, 20)
+        rect(-80, i * 80 - 240, 40, 20)
+        rect(0, i * 80 - 240, 40, 20)
+        rect(80, i * 80 - 240, 40, 20)
+        rect(160, i * 80 - 240, 40, 20)
+        rect(240, i * 80 - 240, 40, 20)
+        fill(0, 60, 60)
+        rect(-260, i * 80 - 300, 40, 20)
+        rect(-180, i * 80 - 300, 40, 20)
+        rect(-100, i * 80 - 300, 40, 20)
+        rect(-20, i * 80 - 300, 40, 20)
+        rect(60, i * 80 - 300, 40, 20)
+        rect(140, i * 80 - 300, 40, 20)
+        rect(220, i * 80 - 300, 40, 20)
+        rect(-300, i * 80 - 280, 20, 20)
+        rect(-240, i * 80 - 280, 40, 20)
+        rect(-160, i * 80 - 280, 40, 20)
+        rect(-80, i * 80 - 280, 40, 20)
+        rect(0, i * 80 - 280, 40, 20)
+        rect(80, i * 80 - 280, 40, 20)
+        rect(160, i * 80 - 280, 40, 20)
+        rect(240, i * 80 - 280, 40, 20)
+        rect(-300, i * 80 - 260, 40, 20)
+        rect(-220, i * 80 - 260, 40, 20)
+        rect(-140, i * 80 - 260, 40, 20)
+        rect(-60, i * 80 - 260, 40, 20)
+        rect(20, i * 80 - 260, 40, 20)
+        rect(100, i * 80 - 260, 40, 20)
+        rect(180, i * 80 - 260, 40, 20)
+        rect(260, i * 80 - 260, 40, 20)
+        rect(-280, i * 80 - 240, 40, 20)
+        rect(-200, i * 80 - 240, 40, 20)
+        rect(-120, i * 80 - 240, 40, 20)
+        rect(-40, i * 80 - 240, 40, 20)
+        rect(40, i * 80 - 240, 40, 20)
+        rect(120, i * 80 - 240, 40, 20)
+        rect(200, i * 80 - 240, 40, 20)
+        rect(280, i * 80 - 240, 20, 20)
+    }
 
+    if (yourLocation === "Lobby") {
+        // stone in middle
         fill(0, 0, 50)
         rect(-200, -200, 400, 400)
         line(-120, -200, -120, 200)
@@ -251,6 +251,80 @@ function draw() {
         }
     }
 
+    // light party queue and full party queue background
+    if (yourLocation === "Full Party Queue" || yourLocation === "Light Party Queue") {
+        // road on top, sidewalk on bottom
+        fill(0, 0, 40)
+        noStroke()
+        rect(-300, -300, 600, 499)
+        fill(0, 0, 80)
+        rect(-300, -252, 600, 4)
+        rect(-300, -153, 600, 6)
+        rect(-300, 47, 600, 6)
+        rect(-300, 148, 600, 4)
+        fill(0, 0, 50)
+        rect(-300, 241, 600, 60)
+
+        if (yourLocation === "Full Party Queue") {
+            // move to light party queue on the left
+            fill(0, 0, 80)
+            rect(-280, -53, 580, 6)
+            stroke(0, 0, 80)
+            strokeWeight(6)
+            line(-280, -50, -265, -35)
+            line(-280, -50, -265, -65)
+
+            textSize(30)
+            strokeWeight(2)
+            text("Light Party Queue", -290, -80)
+            text("Light Party Queue", -290, 0)
+
+            stroke(180, 100, 100)
+            line(-300, -300, -300, 300)
+
+            // move to lobby on the bottom-left
+            fill(0, 0, 20)
+            noStroke()
+            rect(-200, 200, 100, 100)
+            fill(0, 0, 0)
+            textSize(25)
+            stroke(0, 0, 0)
+            strokeWeight(2)
+            text("Lobby", -190, 230)
+        }
+
+        // for light party queue, moving to full party queue is on the right
+        // and lobby is on the bottom-right
+        if (yourLocation === "Light Party Queue") {
+            // move to light party queue on the left
+            fill(0, 0, 80)
+            rect(-300, -53, 580, 6)
+            stroke(0, 0, 80)
+            strokeWeight(6)
+            line(280, -50, 265, -35)
+            line(280, -50, 265, -65)
+
+            textSize(30)
+            strokeWeight(2)
+            text("Full Party Queue", 15, -80)
+            text("Full Party Queue", 15, 0)
+
+            stroke(180, 100, 100)
+            line(300, -300, 300, 300)
+
+            // move to lobby on the bottom-left
+            fill(0, 0, 20)
+            noStroke()
+            rect(100, 200, 100, 100)
+            fill(0, 0, 0)
+            textSize(25)
+            stroke(0, 0, 0)
+            strokeWeight(2)
+            text("Lobby", 110, 230)
+        }
+    }
+    print(yourLocation)
+
     fill(0, 100, 100)
     noStroke()
     let player = 0
@@ -266,20 +340,55 @@ function draw() {
     // if you're in the lobby and you went to one of the holes while the
     // state allows you to access it, you can move to light party queue or
     // full party queue
+    let posX = playerPositions[yourLocation][yourID - 1][0]
+    let posY = playerPositions[yourLocation][yourID - 1][1]
     if (state === "Going Nowhere 🤣" && yourLocation === "Lobby" &&
-        playerPositions[yourLocation][yourID - 1][1] > 100 && playerPositions[yourLocation][yourID - 1][1] < 180) {
-        if (playerPositions[yourLocation][yourID - 1][0] > 500 && playerPositions[yourLocation][yourID - 1][0] < 580) {
+        posY > 100 && posY < 180) {
+        if (posX > 500 && posX < 580) {
             print("⚠️ Going into Light Party Queue.")
-            socket.emit("move", "Light Party Queue")
+            socket.emit("move", ["Light Party Queue", 850, 475])
             yourLocation = "Light Party Queue"
             frameWhenLastMoved = frameCount
-        } else if (playerPositions[yourLocation][yourID - 1][0] > 820 && playerPositions[yourLocation][yourID - 1][0] < 900) {
+        } else if (posX > 820 && posX < 900) {
             print("⚠️ Going into Full Party Queue.")
-            socket.emit("move", "Full Party Queue")
+            socket.emit("move", ["Full Party Queue", 550, 475])
             yourLocation = "Full Party Queue"
             frameWhenLastMoved = frameCount
         }
     }
+
+    if (yourLocation === "Light Party Queue") {
+        if (posX > 800 && posX < 900 &&
+            posY > 500 && posY < 600) {
+            print("⚠️ Going into Lobby.")
+            socket.emit("move", ["Lobby", 540, 140])
+            yourLocation = "Lobby"
+            frameWhenLastMoved = frameCount
+            state = "Changing job"
+        } if (posX > 1000) {
+            print("⚠️ Going into Full Party Queue.")
+            socket.emit("move", ["Full Party Queue", 400, posY])
+            yourLocation = "Full Party Queue"
+            frameWhenLastMoved = frameCount
+        }
+    }
+
+    if (yourLocation === "Full Party Queue") {
+        if (posX > 500 && posX < 600 &&
+            posY > 500 && posY < 600) {
+            print("⚠️ Going into Lobby.")
+            socket.emit("move", ["Lobby", 860, 140])
+            yourLocation = "Lobby"
+            frameWhenLastMoved = frameCount
+            state = "Changing job"
+        } if (posX < 400) {
+            print("⚠️ Going into Light Party Queue.")
+            socket.emit("move", ["Light Party Queue", 1000, posY])
+            yourLocation = "Light Party Queue"
+            frameWhenLastMoved = frameCount
+        }
+    }
+
     if (keyIsPressed && frameCount - frameWhenLastMoved > 5) {
         if (keyIsDown(87)) socket.emit("move up", yourID)
         if (keyIsDown(68)) socket.emit("move right", yourID)

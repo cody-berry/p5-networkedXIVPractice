@@ -70,9 +70,9 @@ io.on('connection', (socket) => {
     socket.on('move', (msg) => {
         let previousLocation = connectedPlayerPositions[playerLocation][playerID - 1]
         connectedPlayerPositions[playerLocation][playerID - 1] = [-20, -20, "ast", "", ""]
-        playerID = connectedPlayerPositions[msg].length + 1
-        playerLocation = msg
-        connectedPlayerPositions[playerLocation][playerID - 1] = [700, 525, previousLocation[2], previousLocation[3], previousLocation[4]]
+        playerID = connectedPlayerPositions[msg[0]].length + 1
+        playerLocation = msg[0]
+        connectedPlayerPositions[playerLocation][playerID - 1] = [msg[1], msg[2], previousLocation[2], previousLocation[3], previousLocation[4]]
         io.emit('update', [connectedPlayerPositions])
         socket.emit("connection entry", [connectedPlayerPositions, playerID])
     })
