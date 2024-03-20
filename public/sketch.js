@@ -342,7 +342,7 @@
 //     // full party queue
 //     let posX = playerPositions[yourLocation][yourID - 1][0]
 //     let posY = playerPositions[yourLocation][yourID - 1][1]
-//     if (state === "Going Nowhere 🤣" && yourLocation === "Lobby" &&
+//     if (state === "Going Nowhere" && yourLocation === "Lobby" &&
 //         posY > 100 && posY < 180) {
 //         if (posX > 500 && posX < 580) {
 //             print("⚠️ Going into Light Party Queue.")
@@ -611,7 +611,7 @@
 //     if (state === "Changing name") {
 //         // the new state will be "Going Nowhere"
 //         if (mouseX > 150 && mouseX < 400 &&
-//             mouseY > 0 && mouseY < 25) state = "Going Nowhere 🤣"
+//             mouseY > 0 && mouseY < 25) state = "Going Nowhere"
 //
 //         // if the mouse is pressed, go to the nearest cursor location
 //         // textWidth("First name:") + textWidth(" ")/2 + 5, 80,
@@ -827,6 +827,16 @@ let whmIcon
 
 let icons
 
+let yPadding
+let xPadding
+let blockHeight
+let yellowSlipperySoapYPos
+let blueSlipperySoapYPos
+let greenSlipperySoapYPos
+let yellowSlipperySoapWidth
+let blueSlipperySoapWidth
+let greenSlipperySoapWidth
+
 
 function preload() {
     font = loadFont('data/consola.ttf')
@@ -890,6 +900,9 @@ function preload() {
     socket.on('update', function (msg) {
         playerPositions = msg[0]
     })
+    socket.on('change mechanic', function (msg) {
+        state = msg
+    })
 }
 
 function setup() {
@@ -899,7 +912,7 @@ function setup() {
     cnv.parent('#canvas')
 
     colorMode(HSB, 360, 100, 100, 100)
-    textFont(font, 14)
+    textFont(font, 20)
 
     /* initialize instruction div */
     instructions = select('#ins')
@@ -910,6 +923,21 @@ function setup() {
     debugCorner.visible = false
 
     yourClass = "ast"
+
+    yPadding = 3
+    xPadding = 3
+
+    blockHeight = textAscent()*1.1 + yPadding*2 + textDescent()
+
+    yellowSlipperySoapYPos = 50
+    blueSlipperySoapYPos = yellowSlipperySoapYPos + blockHeight + yPadding + 2
+    greenSlipperySoapYPos = blueSlipperySoapYPos + blockHeight + yPadding + 2
+
+    yellowSlipperySoapWidth = textWidth("Slippery Soap (Yellow)") + xPadding*2
+    blueSlipperySoapWidth = textWidth("Slippery Soap (Blue)") + xPadding*2
+    greenSlipperySoapWidth = textWidth("Slippery Soap (Green)") + xPadding*2
+
+    frameRate(60)
 }
 
 function draw() {
@@ -918,56 +946,58 @@ function draw() {
     push()
     translate(700, 300)
 
-    // substitute for the board: chessboard-like bricks on corners, stone in
-    // middle
-    stroke(0, 0, 0)
-    strokeWeight(1)
-    for (let i = 0; i < 15; i++) {
-        fill(0, 55, 60)
-        rect(-300, i*40 - 300, 40, 20)
-        rect(-220, i*40 - 300, 40, 20)
-        rect(-140, i*40 - 300, 40, 20)
-        rect(-60, i*40 - 300, 40, 20)
-        rect(20, i*40 - 300, 40, 20)
-        rect(100, i*40 - 300, 40, 20)
-        rect(180, i*40 - 300, 40, 20)
-        rect(260, i*40 - 300, 40, 20)
-        rect(-280, i*40 - 280, 40, 20)
-        rect(-200, i*40 - 280, 40, 20)
-        rect(-120, i*40 - 280, 40, 20)
-        rect(-40, i*40 - 280, 40, 20)
-        rect(40, i*40 - 280, 40, 20)
-        rect(120, i*40 - 280, 40, 20)
-        rect(200, i*40 - 280, 40, 20)
-        rect(280, i*40 - 280, 20, 20)
-        fill(0, 60, 60)
-        rect(-260, i*40 - 300, 40, 20)
-        rect(-180, i*40 - 300, 40, 20)
-        rect(-100, i*40 - 300, 40, 20)
-        rect(-20, i*40 - 300, 40, 20)
-        rect(60, i*40 - 300, 40, 20)
-        rect(140, i*40 - 300, 40, 20)
-        rect(220, i*40 - 300, 40, 20)
-        rect(-300, i*40 - 280, 20, 20)
-        rect(-240, i*40 - 280, 40, 20)
-        rect(-160, i*40 - 280, 40, 20)
-        rect(-80, i*40 - 280, 40, 20)
-        rect(0, i*40 - 280, 40, 20)
-        rect(80, i*40 - 280, 40, 20)
-        rect(160, i*40 - 280, 40, 20)
-        rect(240, i*40 - 280, 40, 20)
-    }
+    if (yourLocation === "Lobby" && (state === "Changing job" || state === "Changing name" || state === "Going Nowhere")) {
+        // substitute for the board: chessboard-like bricks on corners, stone in
+        // middle
+        stroke(0, 0, 0)
+        strokeWeight(1)
+        for (let i = 0; i < 15; i++) {
+            fill(0, 55, 60)
+            rect(-300, i * 40 - 300, 40, 20)
+            rect(-220, i * 40 - 300, 40, 20)
+            rect(-140, i * 40 - 300, 40, 20)
+            rect(-60, i * 40 - 300, 40, 20)
+            rect(20, i * 40 - 300, 40, 20)
+            rect(100, i * 40 - 300, 40, 20)
+            rect(180, i * 40 - 300, 40, 20)
+            rect(260, i * 40 - 300, 40, 20)
+            rect(-280, i * 40 - 280, 40, 20)
+            rect(-200, i * 40 - 280, 40, 20)
+            rect(-120, i * 40 - 280, 40, 20)
+            rect(-40, i * 40 - 280, 40, 20)
+            rect(40, i * 40 - 280, 40, 20)
+            rect(120, i * 40 - 280, 40, 20)
+            rect(200, i * 40 - 280, 40, 20)
+            rect(280, i * 40 - 280, 20, 20)
+            fill(0, 60, 60)
+            rect(-260, i * 40 - 300, 40, 20)
+            rect(-180, i * 40 - 300, 40, 20)
+            rect(-100, i * 40 - 300, 40, 20)
+            rect(-20, i * 40 - 300, 40, 20)
+            rect(60, i * 40 - 300, 40, 20)
+            rect(140, i * 40 - 300, 40, 20)
+            rect(220, i * 40 - 300, 40, 20)
+            rect(-300, i * 40 - 280, 20, 20)
+            rect(-240, i * 40 - 280, 40, 20)
+            rect(-160, i * 40 - 280, 40, 20)
+            rect(-80, i * 40 - 280, 40, 20)
+            rect(0, i * 40 - 280, 40, 20)
+            rect(80, i * 40 - 280, 40, 20)
+            rect(160, i * 40 - 280, 40, 20)
+            rect(240, i * 40 - 280, 40, 20)
+        }
 
-    fill(0, 0, 50)
-    rect(-200, -200, 400, 400)
-    line(-120, -200, -120, 200)
-    line(-40, -200, -40, 200)
-    line(40, -200, 40, 200)
-    line(120, -200, 120, 200)
-    line(200, -120, -200, -120)
-    line(200, -40, -200, -40)
-    line(200, 40, -200, 40)
-    line(200, 120, -200, 120)
+        fill(0, 0, 50)
+        rect(-200, -200, 400, 400)
+        line(-120, -200, -120, 200)
+        line(-40, -200, -40, 200)
+        line(40, -200, 40, 200)
+        line(120, -200, 120, 200)
+        line(200, -120, -200, -120)
+        line(200, -40, -200, -40)
+        line(200, 40, -200, 40)
+        line(200, 120, -200, 120)
+    }
 
     fill(0, 100, 100)
     noStroke()
@@ -1027,7 +1057,7 @@ function draw() {
     }
 
     // now you can change your name
-    if (state === "Changing name") {
+    else if (state === "Changing name") {
         // add textboxes
         fill(0, 0, 20)
         stroke(0, 0, 50)
@@ -1064,6 +1094,37 @@ function draw() {
 
         fill(0, 0, 100)
         text("Finished changing name", 155, 20)
+    }
+
+    else {
+        fill(0, 0, 100)
+        text("Mechanic selection", 5, 20)
+
+        stroke(0, 0, 50)
+        strokeWeight(2)
+        fill(0, 0, 20)
+        if (mouseX > xPadding && mouseX < xPadding + yellowSlipperySoapWidth &&
+            mouseY > yellowSlipperySoapYPos && mouseY < yellowSlipperySoapYPos + blockHeight)
+            fill(0, 0, 15)
+        rect(xPadding, yellowSlipperySoapYPos, yellowSlipperySoapWidth, blockHeight, 5)
+
+        fill(0, 0, 20)
+        if (mouseX > xPadding && mouseX < xPadding + blueSlipperySoapWidth &&
+            mouseY > blueSlipperySoapYPos && mouseY < blueSlipperySoapYPos + blockHeight)
+            fill(0, 0, 15)
+        rect(xPadding, blueSlipperySoapYPos, blueSlipperySoapWidth, blockHeight, 5)
+
+        fill(0, 0, 20)
+        if (mouseX > xPadding && mouseX < xPadding + greenSlipperySoapWidth &&
+            mouseY > greenSlipperySoapYPos && mouseY < greenSlipperySoapYPos + blockHeight)
+            fill(0, 0, 15)
+        rect(xPadding, greenSlipperySoapYPos, greenSlipperySoapWidth, blockHeight, 5)
+
+        fill(0, 0, 100)
+        noStroke()
+        text("Slippery Soap (Yellow)", xPadding*2, yellowSlipperySoapYPos + blockHeight - textDescent() - 2)
+        text("Slippery Soap (Blue)", xPadding*2, blueSlipperySoapYPos + blockHeight - textDescent() - 2)
+        text("Slippery Soap (Green)", xPadding*2, greenSlipperySoapYPos + blockHeight - textDescent() - 2)
     }
 
     /* debugCorner needs to be last so its z-index is highest */
@@ -1202,7 +1263,7 @@ function mousePressed() {
     if (state === "Changing name") {
         // the new state will be "Going Nowhere"
         if (mouseX > 150 && mouseX < 400 &&
-            mouseY > 0 && mouseY < 25) state = "Going Nowhere 🤣"
+            mouseY > 0 && mouseY < 25) state = "Going Nowhere"
 
         // if the mouse is pressed, go to the nearest cursor location
         // textWidth("First name:") + textWidth(" ")/2 + 5, 80,
@@ -1225,7 +1286,7 @@ function mousePressed() {
                 cursor[1] = max(0, min(yourLastName.length, cursor[1]))
             }
         }
-    } if (state === "Changing job") {
+    } else if (state === "Changing job") {
         // change classes (lined up on the left)
         if (mouseX > 1 && mouseX < 49 &&
             mouseY > 101 && mouseY < 149)
@@ -1293,6 +1354,20 @@ function mousePressed() {
         // tell everyone that you changed class!
         socket.emit("change class", yourClass)
         print(yourClass)
+    } else {
+        if (mouseX > xPadding && mouseX < xPadding + yellowSlipperySoapWidth &&
+            mouseY > yellowSlipperySoapYPos && mouseY < yellowSlipperySoapYPos + blockHeight) {
+            state = "Slippery Soap (Yellow)"
+            socket.emit("change mechanic", state)
+        } if (mouseX > xPadding && mouseX < xPadding + blueSlipperySoapWidth &&
+            mouseY > blueSlipperySoapYPos && mouseY < blueSlipperySoapYPos + blockHeight) {
+            state = "Slippery Soap (Blue)"
+            socket.emit("change mechanic", state)
+        } if (mouseX > xPadding && mouseX < xPadding + greenSlipperySoapWidth &&
+            mouseY > greenSlipperySoapYPos && mouseY < greenSlipperySoapYPos + blockHeight) {
+            state = "Slippery Soap (Green)"
+            socket.emit("change mechanic", state)
+        }
     }
 }
 
