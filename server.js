@@ -116,7 +116,6 @@ let connectedPlayerPositions = {
 }
 
 let currentlyConnectedPlayers = 0
-let mechanicStartedMillis = 0
 
 io.on('connection', (socket) => {
     connectedPlayers += 1

@@ -794,6 +794,7 @@ let yourID = 0
 let yourLocation = "Lobby"
 let yourClass = "rdm"
 let state = "Changing job" // there are different states. These can be like "Changing job", "Changing name", "3 players in current Light/Full Party", and "Exoflares".
+let boss
 let yourFirstName = ""
 let yourLastName = ""
 let cursor = [0, 0]
@@ -836,6 +837,7 @@ let greenSlipperySoapYPos
 let yellowSlipperySoapWidth
 let blueSlipperySoapWidth
 let greenSlipperySoapWidth
+
 
 
 function preload() {
@@ -902,6 +904,11 @@ function preload() {
     })
     socket.on('change mechanic', function (msg) {
         state = msg
+        switch (state) {
+            case "Slippery Soap (Blue)": boss = "Silkie"; break
+            case "Slippery Soap (Yellow)": boss = "Silkie"; break
+            case "Slippery Soap (Green)": boss = "Silkie"; break
+        }
     })
 }
 
@@ -938,6 +945,8 @@ function setup() {
     greenSlipperySoapWidth = textWidth("Slippery Soap (Green)") + xPadding*2
 
     frameRate(60)
+
+    angleMode(RADIANS)
 }
 
 function draw() {
@@ -997,6 +1006,110 @@ function draw() {
         line(200, -40, -200, -40)
         line(200, 40, -200, 40)
         line(200, 120, -200, 120)
+    }
+
+    // add different backgrounds for certain bosses
+    if (boss === "Silkie") {
+        fill(300, 30, 80)
+        rect(-300, -300, 600, 600)
+        stroke(300, 40, 80)
+        strokeWeight(3)
+        fill(45, 30, 60)
+        rect(-260, -260, 520, 520)
+        let squareSize = 65
+
+        // to make the pattern, draw circles on each intersection
+        // this includes the ones at the permiters: draw filled arcs for those
+        // start at the ones in the middle
+        fill(45, 40, 60)
+        noStroke()
+        for (let x = -260 + squareSize; x < 260; x += squareSize) {
+            for (let y = -260 + squareSize; y < 260; y += squareSize) {
+                circle(x, y, squareSize)
+            }
+        }
+
+        // left/right side
+        for (let y = -260 + squareSize; y < 260; y += squareSize) {
+            arc(-260, y, squareSize, squareSize, -PI/2, PI/2)
+            arc(260, y, squareSize, squareSize, PI/2, -PI/2)
+        }
+        // top/bottom side
+        for (let x = -260 + squareSize; x < 260; x += squareSize) {
+            arc(x, -260, squareSize, squareSize, 0, PI)
+            arc(x, 260, squareSize, squareSize, PI, 0)
+        }
+        // corners
+        arc(-260, -260, squareSize, squareSize, 0, PI/2)
+        arc(-260, 260, squareSize, squareSize, -PI/2, 0)
+        arc(260, 260, squareSize, squareSize, -PI, -PI/2)
+        arc(260, -260, squareSize, squareSize, PI/2, PI)
+
+        // now draw the lines
+        // left/right side
+        stroke(0, 0, 20, 10)
+        strokeWeight(1)
+        noFill()
+        for (let y = -260; y <= 260; y += squareSize) {
+            line(-260, y, 260, y)
+        }
+        // top/bottom side
+        for (let x = -260; x <= 260; x += squareSize) {
+            line(x, -260, x, 260)
+        }
+
+        // there are also faint circles along the perimeter
+        stroke(0, 0, 30, 20)
+        circle(-260 + squareSize/2, -260 + 3*squareSize/2, squareSize - 5)
+        circle(-260 + squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
+        circle(-260 + squareSize/2, -260 + 7*squareSize/2, squareSize - 5)
+        circle(-260 + squareSize/2, -260 + 9*squareSize/2, squareSize - 5)
+        circle(-260 + squareSize/2, -260 + 11*squareSize/2, squareSize - 5)
+        circle(-260 + squareSize/2, -260 + 13*squareSize/2, squareSize - 5)
+        circle(-260 + 3*squareSize/2, -260 + 15*squareSize/2, squareSize - 5)
+        circle(-260 + 5*squareSize/2, -260 + 15*squareSize/2, squareSize - 5)
+        circle(-260 + 7*squareSize/2, -260 + 15*squareSize/2, squareSize - 5)
+        circle(-260 + 9*squareSize/2, -260 + 15*squareSize/2, squareSize - 5)
+        circle(-260 + 11*squareSize/2, -260 + 15*squareSize/2, squareSize - 5)
+        circle(-260 + 13*squareSize/2, -260 + 15*squareSize/2, squareSize - 5)
+        circle(-260 + 15*squareSize/2, -260 + 13*squareSize/2, squareSize - 5)
+        circle(-260 + 15*squareSize/2, -260 + 11*squareSize/2, squareSize - 5)
+        circle(-260 + 15*squareSize/2, -260 + 9*squareSize/2, squareSize - 5)
+        circle(-260 + 15*squareSize/2, -260 + 7*squareSize/2, squareSize - 5)
+        circle(-260 + 15*squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
+        circle(-260 + 15*squareSize/2, -260 + 3*squareSize/2, squareSize - 5)
+        circle(-260 + 13*squareSize/2, -260 + squareSize/2, squareSize - 5)
+        circle(-260 + 11*squareSize/2, -260 + squareSize/2, squareSize - 5)
+        circle(-260 + 9*squareSize/2, -260 + squareSize/2, squareSize - 5)
+        circle(-260 + 7*squareSize/2, -260 + squareSize/2, squareSize - 5)
+        circle(-260 + 5*squareSize/2, -260 + squareSize/2, squareSize - 5)
+        circle(-260 + 3*squareSize/2, -260 + squareSize/2, squareSize - 5)
+
+        // also where there's exactly 3 squares away from the center
+        circle(-260 + 7*squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
+        circle(-260 + 9*squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
+        circle(-260 + 7*squareSize/2, -260 + 11*squareSize/2, squareSize - 5)
+        circle(-260 + 9*squareSize/2, -260 + 11*squareSize/2, squareSize - 5)
+        circle(-260 + 5*squareSize/2, -260 + 7*squareSize/2, squareSize - 5)
+        circle(-260 + 5*squareSize/2, -260 + 9*squareSize/2, squareSize - 5)
+        circle(-260 + 11*squareSize/2, -260 + 7*squareSize/2, squareSize - 5)
+        circle(-260 + 11*squareSize/2, -260 + 9*squareSize/2, squareSize - 5)
+
+        stroke(0, 0, 0, 40)
+        // also on the exact intercardinal squares that's not in the 2x2
+        // center squares
+        circle(-260 + 15*squareSize/2, -260 + 15*squareSize/2, squareSize - 5)
+        circle(-260 + squareSize/2, -260 + 15*squareSize/2, squareSize - 5)
+        circle(-260 + squareSize/2, -260 + squareSize/2, squareSize - 5)
+        circle(-260 + 15*squareSize/2, -260 + squareSize/2, squareSize - 5)
+        circle(-260 + 13*squareSize/2, -260 + 13*squareSize/2, squareSize - 5)
+        circle(-260 + 3*squareSize/2, -260 + 13*squareSize/2, squareSize - 5)
+        circle(-260 + 3*squareSize/2, -260 + 3*squareSize/2, squareSize - 5)
+        circle(-260 + 13*squareSize/2, -260 + 3*squareSize/2, squareSize - 5)
+        circle(-260 + 11*squareSize/2, -260 + 11*squareSize/2, squareSize - 5)
+        circle(-260 + 5*squareSize/2, -260 + 11*squareSize/2, squareSize - 5)
+        circle(-260 + 5*squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
+        circle(-260 + 11*squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
     }
 
     fill(0, 100, 100)
