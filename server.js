@@ -89,6 +89,8 @@
 //     console.log(`Server listening on port ${PORT}`);
 // });
 
+let PI = 3.14159265358979323846
+
 let http = require('http');
 let express = require('express');
 let socketIo = require('socket.io');
@@ -116,6 +118,9 @@ let connectedPlayerPositions = {
 }
 
 let currentlyConnectedPlayers = 0
+let mechanicStartedAt = 0
+let mechanic = "Changing job"
+let boss = "None"
 
 io.on('connection', (socket) => {
     connectedPlayers += 1
@@ -127,7 +132,7 @@ io.on('connection', (socket) => {
     console.log(`Player ${player} connected`);
     // extend the list with [700, 300] as a position
     connectedPlayerPositions["Lobby"] = [...connectedPlayerPositions["Lobby"], [700, 300, "ast", "", ""]]
-    socket.emit('connection entry', [connectedPlayerPositions, playerID])
+    socket.emit('connection entry', [connectedPlayerPositions, playerID, mechanic, boss])
     io.emit('other player connection entry', [connectedPlayerPositions, playerID])
 
     socket.on('disconnect', () => {
@@ -172,8 +177,42 @@ io.on('connection', (socket) => {
 
     socket.on('change mechanic', (msg) => {
         io.emit('change mechanic', msg)
+        mechanicStartedAt = new Date()
+        mechanicStartedAt = mechanicStartedAt.getTime()
+        mechanic = msg
+        switch (msg) {
+            case "Slippery Soap (Blue)":
+                boss = "Silkie"
+                break
+            case "Slippery Soap (Yellow)":
+                boss = "Silkie"
+                while (true) {
+                    let now = new Date()
+                    now = now.getTime()
+                    if (now - mechanicStartedAt > 1000) {
+                        // simulate an electricity attack going off
+                        io.emit('cone AOE', ["electric", // displayed as electricity attack
+                            700, 300, // goes off at center
+                            424, // around 424 distance between the center of the board and the corner
+                            500, // disappears in half a second
+                            PI/8, 3*PI/8 // covers PI/4 intercardinal region
+                        ])
+
+                        // now do the same for the 3PI/4 5PI/4, and 7PI/4 regions.
+                        io.emit('cone AOE', ["electric", 700, 300, 424, 500, 5*PI/8, 7*PI/8])
+                        io.emit('cone AOE', ["electric", 700, 300, 424, 500, 9*PI/8, 11*PI/8])
+                        io.emit('cone AOE', ["electric", 700, 300, 424, 500, 13*PI/8, 15*PI/8])
+                        break
+                    }
+                }
+                break
+            case "Slippery Soap (Green)":
+                boss = "Silkie"
+                break
+        }
     })
 });
+
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {

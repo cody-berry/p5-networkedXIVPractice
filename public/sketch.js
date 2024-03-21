@@ -798,6 +798,7 @@ let boss
 let yourFirstName = ""
 let yourLastName = ""
 let cursor = [0, 0]
+let AoEs = []
 
 let font
 let fixedWidthFont
@@ -839,6 +840,32 @@ let blueSlipperySoapWidth
 let greenSlipperySoapWidth
 
 
+class ConeAOE {
+    constructor(type, x, y, r, lingersForMillis, sAngle, eAngle) {
+        this.type = type
+        this.x = x - 700 // account for translate(700, 300)
+        this.y = y - 300
+        this.radius = r
+        this.disappearsAt = millis() + lingersForMillis
+        this.start = sAngle
+        this.end = eAngle
+
+        print("Cone created")
+    }
+
+    draw() {
+        if (millis() < this.disappearsAt) {
+            if (this.type === "electric") {
+                // dark brown with yellow edges
+                fill(45, 50, 20)
+                arc(this.x, this.y, this.radius * 2, this.radius * 2, this.start, this.end)
+                stroke(45, 50, 50)
+                line(this.x, this.y, this.x + cos(this.start)*this.radius, this.y + sin(this.start)*this.radius)
+                line(this.x, this.y, this.x + cos(this.end)*this.radius, this.y + sin(this.end)*this.radius)
+            }
+        }
+    }
+}
 
 function preload() {
     font = loadFont('data/consola.ttf')
@@ -891,9 +918,11 @@ function preload() {
     socket = io.connect(window.location.origin)
 
     socket.on('connection entry', function (msg) {
-        // this entry will always be [playerPositions, the player that you are]
+        // this entry will always be [playerPositions, the player that you are, state that is for right now, boss]
         playerPositions = msg[0]
         yourID = msg[1]
+        state = msg[2]
+        boss = msg[3]
     })
     socket.on('other player connection entry', function (msg) {
         // this entry will always be [playerPositions, the player that they are]
@@ -909,6 +938,12 @@ function preload() {
             case "Slippery Soap (Yellow)": boss = "Silkie"; break
             case "Slippery Soap (Green)": boss = "Silkie"; break
         }
+    })
+    socket.on('cone AOE', function (msg) {
+        print("pushing to AoEs!")
+        AoEs.push(
+            new ConeAOE(...msg)
+        )
     })
 }
 
@@ -1110,6 +1145,11 @@ function draw() {
         circle(-260 + 5*squareSize/2, -260 + 11*squareSize/2, squareSize - 5)
         circle(-260 + 5*squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
         circle(-260 + 11*squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
+    }
+
+    // display all AoEs
+    for (let AoE of AoEs) {
+        AoE.draw()
     }
 
     fill(0, 100, 100)
