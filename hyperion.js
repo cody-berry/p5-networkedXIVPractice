@@ -139,6 +139,7 @@ io.on('connection', (socket) => {
         console.log(`Player ${player} disconnected`);
         connectedPlayerPositions[playerLocation][playerID - 1] = [-20, -20, "ast", "", ""]
         io.emit('update', [connectedPlayerPositions])
+        currentlyConnectedPlayers -= 1
     });
 
     socket.on('message', (msg) => {
@@ -191,7 +192,6 @@ io.on('connection', (socket) => {
                     1500 // disappears in 1.5 seconds
                 ])
                 io.emit('rect AOE', ["vertical ice", 635, 0, 130, 600, 1500])
-
                 break
             case "Slippery Soap (Yellow)":
                 boss = "Silkie"
@@ -211,6 +211,13 @@ io.on('connection', (socket) => {
                 break
             case "Slippery Soap (Green)":
                 boss = "Silkie"
+                await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
+                // make a donut AOE at the center
+                io.emit('donut AOE', ["full wind", // displayed as wind attack covering full board
+                    700, 300, // center of board
+                    65, // 65 radius in center of safety
+                    1500 // disappears in 1.5 seconds
+                ])
                 break
         }
     })

@@ -839,7 +839,51 @@ let yellowSlipperySoapWidth
 let blueSlipperySoapWidth
 let greenSlipperySoapWidth
 
+// this is a donut AOE, as you might've guessed
+class DonutAOE {
+    constructor(type, x, y, r, lingersForMillis) {
+        this.type = type
+        this.x = x - 700 // account for translate(700, 300)
+        this.y = y - 300
+        this.r = r
+        this.disappearsAt = millis() + lingersForMillis
+        this.initiatedAt = millis()
+    }
 
+    draw() {
+        if (millis() < this.disappearsAt) {
+            if (this.type === "full wind") {
+                let radius
+                if (millis() - this.initiatedAt < 200) {
+                    let millisSinceAppeared = millis() - this.initiatedAt
+                    radius = map(millisSinceAppeared, 0, 200, 828, this.r)
+                } else if (this.disappearsAt - millis() < 200) {
+                    let millisUntilDisappear = this.disappearsAt - millis()
+                    radius = map(millisUntilDisappear, 0, 200, 828, this.r)
+                } else {
+                    radius = this.r
+                }
+                noStroke()
+                fill(150, 20, 80, 60)
+                beginShape()
+                vertex(-300, -300)
+                vertex(-300, 300)
+                vertex(300, 300)
+                vertex(300, -300)
+                beginContour()
+                for (let angle = 0; angle <= TWO_PI; angle += TWO_PI/100) {
+                    let x = max(-300, min(this.x + cos(angle)*radius, 300))
+                    let y = max(-300, min(this.y + sin(angle)*radius, 300))
+                    vertex(x, y)
+                }
+                endContour()
+                endShape(CLOSE)
+            }
+        }
+    }
+}
+
+// this is a rectangle AOE, as you might've guessed
 class RectAOE {
     constructor(type, x, y, w, h, lingersForMillis) {
         this.type = type
@@ -856,28 +900,28 @@ class RectAOE {
             noStroke()
             if (this.type === "horizontal ice") {
                 // light blue, appears/disappears from left to right
-                if (millis() - this.initiatedAt < 50) {
+                if (millis() - this.initiatedAt < 100) {
                     let millisSinceAppeared = millis() - this.initiatedAt
                     fill(180, 30, 100, 50)
-                    rect(this.x, this.y, map(millisSinceAppeared, 0, 50, 0, this.w), this.h)
-                } else if (this.disappearsAt - millis() < 50) {
+                    rect(this.x, this.y, map(millisSinceAppeared, 0, 100, 0, this.w), this.h)
+                } else if (this.disappearsAt - millis() < 100) {
                     let millisUntilDisappear = this.disappearsAt - millis()
                     fill(180, 30, 100, 50)
-                    rect(map(millisUntilDisappear, 0, 50, this.x + this.w, this.x), this.y, map(millisUntilDisappear, 0, 50, 0, this.w), this.h)
+                    rect(map(millisUntilDisappear, 0, 100, this.x + this.w, this.x), this.y, map(millisUntilDisappear, 0, 100, 0, this.w), this.h)
                 } else {
                     fill(180, 30, 100, 50)
                     rect(this.x, this.y, this.w, this.h)
                 }
             } if (this.type === "vertical ice") {
                 // light blue, appears/disappears from top to bottom
-                if (millis() - this.initiatedAt < 50) {
+                if (millis() - this.initiatedAt < 100) {
                     let millisSinceAppeared = millis() - this.initiatedAt
                     fill(180, 30, 100, 50)
-                    rect(this.x, this.y, this.w, map(millisSinceAppeared, 0, 50, 0, this.h))
-                } else if (this.disappearsAt - millis() < 50) {
+                    rect(this.x, this.y, this.w, map(millisSinceAppeared, 0, 100, 0, this.h))
+                } else if (this.disappearsAt - millis() < 100) {
                     let millisUntilDisappear = this.disappearsAt - millis()
                     fill(180, 30, 100, 50)
-                    rect(this.x, map(millisUntilDisappear, 0, 50, this.y + this.h, this.y), this.w, map(millisUntilDisappear, 0, 50, 0, this.h))
+                    rect(this.x, map(millisUntilDisappear, 0, 100, this.y + this.h, this.y), this.w, map(millisUntilDisappear, 0, 100, 0, this.h))
                 } else {
                     fill(180, 30, 100, 50)
                     rect(this.x, this.y, this.w, this.h)
@@ -894,9 +938,10 @@ class ConeAOE {
         this.x = x - 700 // account for translate(700, 300)
         this.y = y - 300
         this.radius = r
-        this.disappearsAt = millis() + lingersForMillis
         this.start = sAngle
         this.end = eAngle
+        this.disappearsAt = millis() + lingersForMillis
+        this.initiatedAt = millis()
 
         if (this.type === "electric") {
             // to add an electric effect, select random angles as points
@@ -917,10 +962,10 @@ class ConeAOE {
         if (millis() < this.disappearsAt) {
             if (this.type === "electric") {
                 // dark brown with yellow edges
-                fill(45, 50, 20)
+                fill(45, 50, 20, 95)
                 noStroke()
                 arc(this.x, this.y, this.radius * 2, this.radius * 2, this.start, this.end)
-                stroke(45, 50, 60)
+                stroke(45, 50, 60, 95)
                 line(this.x, this.y, this.x + cos(this.start)*this.radius, this.y + sin(this.start)*this.radius)
                 line(this.x, this.y, this.x + cos(this.end)*this.radius, this.y + sin(this.end)*this.radius)
 
@@ -1035,6 +1080,11 @@ function preload() {
     socket.on('rect AOE', function (msg) {
         AoEs.push(
             new RectAOE(...msg)
+        )
+    })
+    socket.on('donut AOE', function (msg) {
+        AoEs.push(
+            new DonutAOE(...msg)
         )
     })
 }
