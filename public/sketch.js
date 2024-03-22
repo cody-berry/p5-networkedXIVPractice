@@ -839,6 +839,8 @@ let yellowSlipperySoapWidth
 let blueSlipperySoapWidth
 let greenSlipperySoapWidth
 
+let silkie
+
 // this is a donut AOE, as you might've guessed
 class DonutAOE {
     constructor(type, x, y, r, lingersForMillis) {
@@ -1046,6 +1048,8 @@ function preload() {
         "war": warIcon,
         "whm": whmIcon
     }
+
+    silkie = loadImage("data/Silkie.png")
 
     // Connect to the WebSocket server
     socket = io.connect(window.location.origin)
@@ -1287,7 +1291,12 @@ function draw() {
         circle(-260 + 5*squareSize/2, -260 + 11*squareSize/2, squareSize - 5)
         circle(-260 + 5*squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
         circle(-260 + 11*squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
+
+
+        // test
+        image(silkie, -100, -100, 200, 200)
     }
+
 
     // display all AoEs
     for (let AoE of AoEs) {
