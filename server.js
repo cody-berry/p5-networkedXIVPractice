@@ -175,7 +175,7 @@ io.on('connection', (socket) => {
         connectedPlayerPositions[playerLocation][playerID - 1][4] = msg[1]
     })
 
-    socket.on('change mechanic', (msg) => {
+    socket.on('change mechanic', async (msg) => {
         io.emit('change mechanic', msg)
         mechanicStartedAt = new Date()
         mechanicStartedAt = mechanicStartedAt.getTime()
@@ -183,28 +183,31 @@ io.on('connection', (socket) => {
         switch (msg) {
             case "Slippery Soap (Blue)":
                 boss = "Silkie"
+                await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
+                // make two rectangle AoEs at the center
+                io.emit('rect AOE', ["horizontal ice", // displayed as ice attack
+                    400, 235, // starts at left of board and 65 higher than N&S center of board
+                    600, 130, // 600 width, 130 height
+                    1500 // disappears in 1.5 seconds
+                ])
+                io.emit('rect AOE', ["vertical ice", 635, 0, 130, 600, 1500])
+
                 break
             case "Slippery Soap (Yellow)":
                 boss = "Silkie"
-                while (true) {
-                    let now = new Date()
-                    now = now.getTime()
-                    if (now - mechanicStartedAt > 1000) {
-                        // simulate an electricity attack going off
-                        io.emit('cone AOE', ["electric", // displayed as electricity attack
-                            700, 300, // goes off at center
-                            424, // around 424 distance between the center of the board and the corner
-                            500, // disappears in half a second
-                            PI/8, 3*PI/8 // covers PI/4 intercardinal region
-                        ])
+                await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
+                // simulate an electricity attack going off
+                io.emit('cone AOE', ["electric", // displayed as electricity attack
+                    700, 300, // goes off at center
+                    800, // virtually infinite size
+                    PI/8, 3*PI/8, // covers PI/4 intercardinal region
+                    1500 // disappears in 1.5 seconds
+                ])
 
-                        // now do the same for the 3PI/4 5PI/4, and 7PI/4 regions.
-                        io.emit('cone AOE', ["electric", 700, 300, 424, 500, 5*PI/8, 7*PI/8])
-                        io.emit('cone AOE', ["electric", 700, 300, 424, 500, 9*PI/8, 11*PI/8])
-                        io.emit('cone AOE', ["electric", 700, 300, 424, 500, 13*PI/8, 15*PI/8])
-                        break
-                    }
-                }
+                // now do the same for the 3PI/4 5PI/4, and 7PI/4 regions.
+                io.emit('cone AOE', ["electric", 700, 300, 800, 5*PI/8, 7*PI/8, 1500])
+                io.emit('cone AOE', ["electric", 700, 300, 800, 9*PI/8, 11*PI/8, 1500])
+                io.emit('cone AOE', ["electric", 700, 300, 800, 13*PI/8, 15*PI/8, 1500])
                 break
             case "Slippery Soap (Green)":
                 boss = "Silkie"

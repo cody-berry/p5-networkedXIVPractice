@@ -840,8 +840,56 @@ let blueSlipperySoapWidth
 let greenSlipperySoapWidth
 
 
+class RectAOE {
+    constructor(type, x, y, w, h, lingersForMillis) {
+        this.type = type
+        this.x = x - 700 // account for translate(700, 300)
+        this.y = y - 300
+        this.w = w
+        this.h = h
+        this.disappearsAt = millis() + lingersForMillis
+        this.initiatedAt = millis()
+    }
+
+    draw() {
+        if (millis() < this.disappearsAt) {
+            noStroke()
+            if (this.type === "horizontal ice") {
+                // light blue, appears/disappears from left to right
+                if (millis() - this.initiatedAt < 50) {
+                    let millisSinceAppeared = millis() - this.initiatedAt
+                    fill(180, 30, 100, 50)
+                    rect(this.x, this.y, map(millisSinceAppeared, 0, 50, 0, this.w), this.h)
+                } else if (this.disappearsAt - millis() < 50) {
+                    let millisUntilDisappear = this.disappearsAt - millis()
+                    fill(180, 30, 100, 50)
+                    rect(map(millisUntilDisappear, 0, 50, this.x + this.w, this.x), this.y, map(millisUntilDisappear, 0, 50, 0, this.w), this.h)
+                } else {
+                    fill(180, 30, 100, 50)
+                    rect(this.x, this.y, this.w, this.h)
+                }
+            } if (this.type === "vertical ice") {
+                // light blue, appears/disappears from top to bottom
+                if (millis() - this.initiatedAt < 50) {
+                    let millisSinceAppeared = millis() - this.initiatedAt
+                    fill(180, 30, 100, 50)
+                    rect(this.x, this.y, this.w, map(millisSinceAppeared, 0, 50, 0, this.h))
+                } else if (this.disappearsAt - millis() < 50) {
+                    let millisUntilDisappear = this.disappearsAt - millis()
+                    fill(180, 30, 100, 50)
+                    rect(this.x, map(millisUntilDisappear, 0, 50, this.y + this.h, this.y), this.w, map(millisUntilDisappear, 0, 50, 0, this.h))
+                } else {
+                    fill(180, 30, 100, 50)
+                    rect(this.x, this.y, this.w, this.h)
+                }
+            }
+        }
+    }
+}
+
+// this is a conal AOE, as you might've guessed
 class ConeAOE {
-    constructor(type, x, y, r, lingersForMillis, sAngle, eAngle) {
+    constructor(type, x, y, r, sAngle, eAngle, lingersForMillis) {
         this.type = type
         this.x = x - 700 // account for translate(700, 300)
         this.y = y - 300
@@ -850,7 +898,19 @@ class ConeAOE {
         this.start = sAngle
         this.end = eAngle
 
-        print("Cone created")
+        if (this.type === "electric") {
+            // to add an electric effect, select random angles as points
+            // to draw lines on
+            this.angleOne = random(this.start, this.end)
+            this.angleTwo = random(this.start, this.end)
+            this.angleThree = random(this.start, this.end)
+            this.angleFour = random(this.start, this.end)
+            this.angleFive = random(this.start, this.end)
+            this.angleSix = random(this.start, this.end)
+            this.angleSeven = random(this.start, this.end)
+            this.angleEight = random(this.start, this.end)
+            this.angleNine = random(this.start, this.end)
+        }
     }
 
     draw() {
@@ -858,10 +918,38 @@ class ConeAOE {
             if (this.type === "electric") {
                 // dark brown with yellow edges
                 fill(45, 50, 20)
+                noStroke()
                 arc(this.x, this.y, this.radius * 2, this.radius * 2, this.start, this.end)
-                stroke(45, 50, 50)
+                stroke(45, 50, 60)
                 line(this.x, this.y, this.x + cos(this.start)*this.radius, this.y + sin(this.start)*this.radius)
                 line(this.x, this.y, this.x + cos(this.end)*this.radius, this.y + sin(this.end)*this.radius)
+
+                if (frameCount % 2 === 0) {
+                    this.angleOne = random(this.start, this.end)
+                    this.angleTwo = random(this.start, this.end)
+                    this.angleThree = random(this.start, this.end)
+                    this.angleFour = random(this.start, this.end)
+                    this.angleFive = random(this.start, this.end)
+                    this.angleSix = random(this.start, this.end)
+                    this.angleSeven = random(this.start, this.end)
+                    this.angleEight = random(this.start, this.end)
+                    this.angleNine = random(this.start, this.end)
+                }
+                line(this.x, this.y, this.x + cos(this.angleOne)*this.radius/3, this.y + sin(this.angleOne)*this.radius/3)
+                line(this.x + cos(this.angleOne)*this.radius/3, this.y + sin(this.angleOne)*this.radius/3,
+                    this.x + cos(this.angleTwo)*2*this.radius/3, this.y + sin(this.angleTwo)*2*this.radius/3)
+                line(this.x + cos(this.angleTwo)*2*this.radius/3, this.y + sin(this.angleTwo)*2*this.radius/3,
+                    this.x + cos(this.angleThree)*this.radius, this.y + sin(this.angleThree)*this.radius)
+                line(this.x, this.y, this.x + cos(this.angleFour)*this.radius/3, this.y + sin(this.angleFour)*this.radius/3)
+                line(this.x + cos(this.angleFour)*this.radius/3, this.y + sin(this.angleFour)*this.radius/3,
+                    this.x + cos(this.angleFive)*2*this.radius/3, this.y + sin(this.angleFive)*2*this.radius/3)
+                line(this.x + cos(this.angleFive)*2*this.radius/3, this.y + sin(this.angleFive)*2*this.radius/3,
+                    this.x + cos(this.angleSix)*this.radius, this.y + sin(this.angleSix)*this.radius)
+                line(this.x, this.y, this.x + cos(this.angleSeven)*this.radius/3, this.y + sin(this.angleSeven)*this.radius/3)
+                line(this.x + cos(this.angleSeven)*this.radius/3, this.y + sin(this.angleSeven)*this.radius/3,
+                    this.x + cos(this.angleEight)*2*this.radius/3, this.y + sin(this.angleEight)*2*this.radius/3)
+                line(this.x + cos(this.angleEight)*2*this.radius/3, this.y + sin(this.angleEight)*2*this.radius/3,
+                    this.x + cos(this.angleNine)*this.radius, this.y + sin(this.angleNine)*this.radius)
             }
         }
     }
@@ -940,9 +1028,13 @@ function preload() {
         }
     })
     socket.on('cone AOE', function (msg) {
-        print("pushing to AoEs!")
         AoEs.push(
             new ConeAOE(...msg)
+        )
+    })
+    socket.on('rect AOE', function (msg) {
+        AoEs.push(
+            new RectAOE(...msg)
         )
     })
 }
