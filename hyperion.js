@@ -117,6 +117,20 @@ let connectedPlayerPositions = {
     "Full Party 3": [],
 }
 
+let bossPositions = {
+    "Lobby": null,
+    "Light Party Queue": null,
+    "Full Party Queue": null,
+    "Light Party 1": null,
+    "Light Party 2": null,
+    "Light Party 3": null,
+    "Light Party 4": null,
+    "Light Party 5": null,
+    "Full Party 1": null,
+    "Full Party 2": null,
+    "Full Party 3": null
+}
+
 let currentlyConnectedPlayers = 0
 let mechanicStartedAt = 0
 let mechanic = "Changing job"
@@ -128,6 +142,7 @@ io.on('connection', (socket) => {
     let player = connectedPlayers
     let playerLocation = "Lobby"
     let playerID = connectedPlayerPositions["Lobby"].length + 1
+    socket.emit('update boss positions', bossPositions)
 
     console.log(`Player ${player} connected`);
     // extend the list with [700, 300] as a position
@@ -140,6 +155,10 @@ io.on('connection', (socket) => {
         connectedPlayerPositions[playerLocation][playerID - 1] = [-20, -20, "ast", "", ""]
         io.emit('update', [connectedPlayerPositions])
         currentlyConnectedPlayers -= 1
+        if (currentlyConnectedPlayers === 0) {
+            mechanic = "Changing job" // reset
+            boss = "None"
+        }
     });
 
     socket.on('message', (msg) => {
@@ -184,6 +203,8 @@ io.on('connection', (socket) => {
         switch (msg) {
             case "Slippery Soap (Blue)":
                 boss = "Silkie"
+                bossPositions["Lobby"] = [700, 300]
+                io.emit('update boss positions', bossPositions)
                 await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
                 // make two rectangle AoEs at the center
                 io.emit('rect AOE', ["horizontal ice", // displayed as ice attack
@@ -195,6 +216,8 @@ io.on('connection', (socket) => {
                 break
             case "Slippery Soap (Yellow)":
                 boss = "Silkie"
+                bossPositions["Lobby"] = [700, 300]
+                io.emit('update boss positions', bossPositions)
                 await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
                 // simulate an electricity attack going off
                 io.emit('cone AOE', ["electric", // displayed as electricity attack
@@ -211,6 +234,8 @@ io.on('connection', (socket) => {
                 break
             case "Slippery Soap (Green)":
                 boss = "Silkie"
+                bossPositions["Lobby"] = [700, 300]
+                io.emit('update boss positions', bossPositions)
                 await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
                 // make a donut AOE at the center
                 io.emit('donut AOE', ["full wind", // displayed as wind attack covering full board

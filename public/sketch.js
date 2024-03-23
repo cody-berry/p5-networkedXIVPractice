@@ -789,7 +789,8 @@
 // }
 
 let socket
-let playerPositions = []
+let playerPositions = {}
+let bossPositions = {}
 let yourID = 0
 let yourLocation = "Lobby"
 let yourClass = "rdm"
@@ -1091,6 +1092,9 @@ function preload() {
             new DonutAOE(...msg)
         )
     })
+    socket.on('update boss positions', function (msg) {
+        bossPositions = msg
+    })
 }
 
 function setup() {
@@ -1291,16 +1295,20 @@ function draw() {
         circle(-260 + 5*squareSize/2, -260 + 11*squareSize/2, squareSize - 5)
         circle(-260 + 5*squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
         circle(-260 + 11*squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
-
-
-        // test
-        image(silkie, -100, -100, 200, 200)
     }
 
 
     // display all AoEs
     for (let AoE of AoEs) {
         AoE.draw()
+    }
+
+    if (bossPositions[yourLocation]) {
+        let bossX = bossPositions[yourLocation][0]
+        let bossY = bossPositions[yourLocation][1]
+        if (boss === "Silkie") {
+            image(silkie, bossX - 800, bossY - 400, 200, 200)
+        }
     }
 
     fill(0, 100, 100)
