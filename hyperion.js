@@ -203,7 +203,7 @@ io.on('connection', (socket) => {
         switch (msg) {
             case "Slippery Soap (Blue)":
                 boss = "Silkie"
-                bossPositions["Lobby"] = [700, 300]
+                bossPositions["Lobby"] = [700, 300, "blue"]
                 io.emit('update boss positions', bossPositions)
                 await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
                 // make two rectangle AoEs at the center
@@ -213,10 +213,12 @@ io.on('connection', (socket) => {
                     1500 // disappears in 1.5 seconds
                 ])
                 io.emit('rect AOE', ["vertical ice", 635, 0, 130, 600, 1500])
+                bossPositions["Lobby"] = [700, 300]
+                io.emit('update boss positions', bossPositions)
                 break
             case "Slippery Soap (Yellow)":
                 boss = "Silkie"
-                bossPositions["Lobby"] = [700, 300]
+                bossPositions["Lobby"] = [700, 300, "yellow"]
                 io.emit('update boss positions', bossPositions)
                 await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
                 // simulate an electricity attack going off
@@ -231,10 +233,12 @@ io.on('connection', (socket) => {
                 io.emit('cone AOE', ["electric", 700, 300, 800, 5*PI/8, 7*PI/8, 1500])
                 io.emit('cone AOE', ["electric", 700, 300, 800, 9*PI/8, 11*PI/8, 1500])
                 io.emit('cone AOE', ["electric", 700, 300, 800, 13*PI/8, 15*PI/8, 1500])
+                bossPositions["Lobby"] = [700, 300]
+                io.emit('update boss positions', bossPositions)
                 break
             case "Slippery Soap (Green)":
                 boss = "Silkie"
-                bossPositions["Lobby"] = [700, 300]
+                bossPositions["Lobby"] = [700, 300, "green"]
                 io.emit('update boss positions', bossPositions)
                 await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
                 // make a donut AOE at the center
@@ -243,6 +247,8 @@ io.on('connection', (socket) => {
                     65, // 65 radius in center of safety
                     1500 // disappears in 1.5 seconds
                 ])
+                bossPositions["Lobby"] = [700, 300]
+                io.emit('update boss positions', bossPositions)
                 break
         }
     })

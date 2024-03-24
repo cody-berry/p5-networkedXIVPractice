@@ -1308,6 +1308,17 @@ function draw() {
         let bossY = bossPositions[yourLocation][1]
         if (boss === "Silkie") {
             image(silkie, bossX - 800, bossY - 400, 200, 200)
+
+            // add a tail color
+            if (bossPositions[yourLocation][2]) {
+                switch (bossPositions[yourLocation][2]) {
+                    case "yellow": fill(50, 60, 80); stroke(50, 50, 90);break
+                    case "green": fill(120, 30, 100); stroke(120, 20, 100);break
+                    case "blue": fill(200, 20, 100); stroke(200, 10, 100);break
+                }
+                noStroke()
+                circle(bossX - 758, bossY - 329, 55)
+            }
         }
     }
 
