@@ -1307,6 +1307,22 @@ function draw() {
         let bossX = bossPositions[yourLocation][0]
         let bossY = bossPositions[yourLocation][1]
         if (boss === "Silkie") {
+            // display the targetting ring and then the Silkie image
+            stroke(0, 100, 100)
+            strokeWeight(3)
+            noFill()
+            circle(bossX - 700, bossY - 300, 135)
+            stroke(0, 70, 100)
+            strokeWeight(10)
+            circle(bossX - 700, bossY - 300, 155)
+
+            // then display the boss's facingw ith a triangle
+            push()
+            translate(bossX - 700, bossY - 300)
+            rotate(radians(bossPositions[yourLocation][3]))
+            triangle(90, -7, 90, 7, 102, 0)
+            pop()
+
             image(silkie, bossX - 800, bossY - 400, 200, 200)
 
             // add a tail color
