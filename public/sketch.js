@@ -842,6 +842,31 @@ let greenSlipperySoapWidth
 
 let silkie
 
+class LineStackAOE {
+    constructor(type, resolvesIn, target, disappearsIn, x, y, thickness) {
+        this.type = type
+        this.resolvesAt = millis() + resolvesIn
+        this.disappearsAt = this.resolvesAt + disappearsIn
+        this.target = target
+        this.x = x
+        this.y = y
+        this.thickness = thickness
+    }
+
+    draw() {
+        if (millis() < this.resolvesAt) {
+            if (this.type === "telegraphed water") {
+                fill(0, 0, 0)
+                noStroke()
+                print(playerPositions[yourLocation][this.target])
+                circle(playerPositions[yourLocation][this.target][0] - 700,
+                       playerPositions[yourLocation][this.target][1] - 300,
+                       100)
+            }
+        }
+    }
+}
+
 // this is a donut AOE, as you might've guessed
 class DonutAOE {
     constructor(type, x, y, r, lingersForMillis) {
@@ -1092,6 +1117,11 @@ function preload() {
             new DonutAOE(...msg)
         )
     })
+    socket.on('line stack', function (msg) {
+        AoEs.push(
+            new LineStackAOE(...msg)
+        )
+    })
     socket.on('update boss positions', function (msg) {
         bossPositions = msg
     })
@@ -1316,7 +1346,7 @@ function draw() {
             strokeWeight(10)
             circle(bossX - 700, bossY - 300, 155)
 
-            // then display the boss's facingw ith a triangle
+            // then display the boss's facing with a triangle
             push()
             translate(bossX - 700, bossY - 300)
             rotate(radians(bossPositions[yourLocation][3]))

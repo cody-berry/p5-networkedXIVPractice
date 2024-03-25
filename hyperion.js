@@ -103,7 +103,7 @@ let io = socketIo(server);
 app.use(express.static('public'));
 
 let connectedPlayers = 0
-let connectedPlayerPositions = {
+let playerPositions = {
     "Lobby": [],
     "Light Party Queue": [],
     "Full Party Queue": [],
@@ -141,19 +141,19 @@ io.on('connection', (socket) => {
     currentlyConnectedPlayers += 1
     let player = connectedPlayers
     let playerLocation = "Lobby"
-    let playerID = connectedPlayerPositions["Lobby"].length + 1
+    let playerID = playerPositions["Lobby"].length + 1
     socket.emit('update boss positions', bossPositions)
 
     console.log(`Player ${player} connected`);
     // extend the list with [700, 300] as a position
-    connectedPlayerPositions["Lobby"] = [...connectedPlayerPositions["Lobby"], [700, 300, "ast", "", ""]]
-    socket.emit('connection entry', [connectedPlayerPositions, playerID, mechanic, boss])
-    io.emit('other player connection entry', [connectedPlayerPositions, playerID])
+    playerPositions["Lobby"] = [...playerPositions["Lobby"], [700, 300, "ast", "", ""]]
+    socket.emit('connection entry', [playerPositions, playerID, mechanic, boss])
+    io.emit('other player connection entry', [playerPositions, playerID])
 
     socket.on('disconnect', () => {
         console.log(`Player ${player} disconnected`);
-        connectedPlayerPositions[playerLocation][playerID - 1] = [-20, -20, "ast", "", ""]
-        io.emit('update', [connectedPlayerPositions])
+        playerPositions[playerLocation][playerID - 1] = [-20, -20, "ast", "", ""]
+        io.emit('update', [playerPositions])
         currentlyConnectedPlayers -= 1
         if (currentlyConnectedPlayers === 0) {
             mechanic = "Changing job" // reset
@@ -167,32 +167,32 @@ io.on('connection', (socket) => {
     });
 
     socket.on('move up', (msg) => {
-        connectedPlayerPositions[playerLocation][msg - 1][1] -= 0.9
-        io.emit('update', [connectedPlayerPositions])
+        playerPositions[playerLocation][msg - 1][1] -= 0.9
+        io.emit('update', [playerPositions])
     })
     socket.on('move right', (msg) => {
-        connectedPlayerPositions[playerLocation][msg - 1][0] += 0.9
-        io.emit('update', [connectedPlayerPositions])
+        playerPositions[playerLocation][msg - 1][0] += 0.9
+        io.emit('update', [playerPositions])
     })
     socket.on('move down', (msg) => {
-        connectedPlayerPositions[playerLocation][msg - 1][1] += 0.9
-        io.emit('update', [connectedPlayerPositions])
+        playerPositions[playerLocation][msg - 1][1] += 0.9
+        io.emit('update', [playerPositions])
     })
     socket.on('move left', (msg) => {
-        connectedPlayerPositions[playerLocation][msg - 1][0] -= 0.9
-        io.emit('update', [connectedPlayerPositions])
+        playerPositions[playerLocation][msg - 1][0] -= 0.9
+        io.emit('update', [playerPositions])
     })
     socket.on('change class', (msg) => {
-        console.log(connectedPlayerPositions)
-        console.log(connectedPlayerPositions[playerLocation][playerID - 1][2])
-        connectedPlayerPositions[playerLocation][playerID - 1][2] = msg
-        io.emit('update', [connectedPlayerPositions])
+        console.log(playerPositions)
+        console.log(playerPositions[playerLocation][playerID - 1][2])
+        playerPositions[playerLocation][playerID - 1][2] = msg
+        io.emit('update', [playerPositions])
     })
 
     socket.on('change name', (msg) => {
         console.log(`Player ${player} changed their name to ${msg[0]} ${msg[1]}`)
-        connectedPlayerPositions[playerLocation][playerID - 1][3] = msg[0]
-        connectedPlayerPositions[playerLocation][playerID - 1][4] = msg[1]
+        playerPositions[playerLocation][playerID - 1][3] = msg[0]
+        playerPositions[playerLocation][playerID - 1][4] = msg[1]
     })
 
     socket.on('change mechanic', async (msg) => {
@@ -206,6 +206,20 @@ io.on('connection', (socket) => {
                 bossPositions["Lobby"] = [700, 300, "blue", 270]
                 io.emit('update boss positions', bossPositions)
                 await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
+                targets = []
+                let index = 0
+                for (let player of playerPositions["Lobby"]) {
+                    if (!(player[0] === -20 && player[1] === -20)) {
+                        targets.push(index)
+                    }
+                    index += 1
+                }
+                io.emit("line stack", ["telegraphed water", // displayed as water, telegraphed
+                    3000, // resolves in 3s
+                    targets[Math.floor(Math.random() * targets.length)], // targets a random player
+                    1000, // animation disappears 1s after it goes off
+                ])
+                await new Promise(resolve => setTimeout(resolve, 5000)) // wait for 5 seconds
                 // make two rectangle AoEs at the center
                 io.emit('rect AOE', ["horizontal ice", // displayed as ice attack
                     400, 235, // starts at left of board and 65 higher than N&S center of board
