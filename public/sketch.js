@@ -856,12 +856,17 @@ class LineStackAOE {
     draw() {
         if (millis() < this.resolvesAt) {
             if (this.type === "telegraphed water") {
-                fill(0, 0, 0)
-                noStroke()
-                print(playerPositions[yourLocation][this.target])
-                circle(playerPositions[yourLocation][this.target][0] - 700,
-                       playerPositions[yourLocation][this.target][1] - 300,
-                       100)
+                stroke(0, 0, 100)
+                push()
+                translate(playerPositions[yourLocation][this.target][0] - 700,
+                          playerPositions[yourLocation][this.target][1] - 300)
+                let angleFromCenter = atan2(
+                    playerPositions[yourLocation][this.target][1] - this.y,
+                    playerPositions[yourLocation][this.target][0] - this.x)
+                print(this.y)
+                rotate(angleFromCenter)
+                line(0, 100, 0, -100)
+                pop()
             }
         }
     }

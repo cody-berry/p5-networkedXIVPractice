@@ -206,7 +206,7 @@ io.on('connection', (socket) => {
                 bossPositions["Lobby"] = [700, 300, "blue", 270]
                 io.emit('update boss positions', bossPositions)
                 await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
-                targets = []
+                let targets = []
                 let index = 0
                 for (let player of playerPositions["Lobby"]) {
                     if (!(player[0] === -20 && player[1] === -20)) {
@@ -218,6 +218,8 @@ io.on('connection', (socket) => {
                     3000, // resolves in 3s
                     targets[Math.floor(Math.random() * targets.length)], // targets a random player
                     1000, // animation disappears 1s after it goes off
+                    700, 300, // starts at 700, 300
+                    100 // thickness 100
                 ])
                 await new Promise(resolve => setTimeout(resolve, 5000)) // wait for 5 seconds
                 // make two rectangle AoEs at the center
