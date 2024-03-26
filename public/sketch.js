@@ -850,7 +850,10 @@ class LineStackAOE {
         this.target = target
         this.x = x
         this.y = y
+        this.x2 = 0
+        this.y2 = 0
         this.thickness = thickness
+        this.wentOff = false // set the position when this becomes true
     }
 
     draw() {
@@ -863,10 +866,70 @@ class LineStackAOE {
                 let angleFromCenter = atan2(
                     playerPositions[yourLocation][this.target][1] - this.y,
                     playerPositions[yourLocation][this.target][0] - this.x)
-                print(this.y)
                 rotate(angleFromCenter)
-                line(0, 100, 0, -100)
+
+                // add arrow lines
+                line(0, 65, 0, 35)
+                line(-30, 50, -30, 20)
+                line(-60, 50, -60, 20)
+                line(-90, 50, -90, 20)
+                line(0, -65, 0, -35)
+                line(-30, -50, -30, -20)
+                line(-60, -50, -60, -20)
+                line(-90, -50, -90, -20)
+
+                line(30, 0, 60, 0)
+
+                // now add arrow heads
+                line(-3, 38, 0, 35)
+                line(3, 38, 0, 35)
+                line(-27, 23, -30, 20)
+                line(-33, 23, -30, 20)
+                line(-57, 23, -60, 20)
+                line(-63, 23, -60, 20)
+                line(-87, 23, -90, 20)
+                line(-93, 23, -90, 20)
+                line(3, -38, 0, -35)
+                line(-3, -38, 0, -35)
+                line(-27, -23, -30, -20)
+                line(-33, -23, -30, -20)
+                line(-57, -23, -60, -20)
+                line(-63, -23, -60, -20)
+                line(-87, -23, -90, -20)
+                line(-93, -23, -90, -20)
+
+                line(33, -3, 30, 0)
+                line(33, 3, 30, 0)
+
                 pop()
+            }
+        } else if (millis() < this.disappearsAt) {
+            if (this.type === "telegraphed water") {
+                if (!this.wentOff) {
+                    this.wentOff = true
+                    this.x2 = playerPositions[yourLocation][this.target][0]
+                    this.y2 = playerPositions[yourLocation][this.target][1]
+                }
+                if (millis() - this.resolvesAt < 100) {
+                    let millisSinceResolved = millis() - this.resolvesAt
+                    stroke(180, 30, 100, 10)
+                    strokeWeight(this.thickness)
+                    line(this.x - 700, this.y - 300,
+                         map(millisSinceResolved, 0, 100, this.x, this.x2) - 700,
+                         map(millisSinceResolved, 0, 100, this.y, this.y2) - 300)
+                } else if (this.disappearsAt - millis() < 100) {
+                    let millisUntilDisappears = this.disappearsAt - millis()
+                    stroke(180, 50, 100, 10)
+                    strokeWeight(this.thickness)
+                    line(map(millisUntilDisappears, 100, 0, this.x, this.x2) - 700,
+                         map(millisUntilDisappears, 100, 0, this.y, this.y2) - 300,
+                         this.x2 - 700,
+                         this.y2 - 300)
+                } else {
+                    stroke(180, 50, 100, 10)
+                    strokeWeight(this.thickness)
+                    line(this.x - 700, this.y - 300, this.x2 - 700, this.y2 - 300)
+                }
             }
         }
     }
