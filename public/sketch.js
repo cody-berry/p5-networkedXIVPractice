@@ -842,6 +842,42 @@ let greenSlipperySoapWidth
 
 let silkie
 
+class LineAOE {
+    constructor(type, x1, y1, x2, y2, thickness, disappearsIn) {
+        this.type = type
+        this.x1 = x1 - 700
+        this.y1 = y1 - 300
+        this.x2 = x2 - 700
+        this.y2 = y2 - 300
+        this.thickness = thickness
+        this.initiatedAt = millis()
+        this.disappearsAt = millis() + disappearsIn
+    }
+
+    draw() {
+        if (millis() < this.disappearsAt) {
+            if (this.type === "ice") {
+                // light blue, appears/disappears from left to right
+                if (millis() - this.initiatedAt < 100) {
+                    let millisSinceAppeared = millis() - this.initiatedAt
+                    stroke(180, 30, 100, 50)
+                    strokeWeight(this.thickness)
+                    line(this.x1, this.y1, map(millisSinceAppeared, 0, 100, this.x1, this.x2), this.y2)
+                } else if (this.disappearsAt - millis() < 100) {
+                    let millisUntilDisappear = this.disappearsAt - millis()
+                    stroke(180, 30, 100, 50)
+                    strokeWeight(this.thickness)
+                    line(map(millisUntilDisappear, 0, 100, this.x2, this.x1), this.y1, this.x2, this.y2)
+                } else {
+                    stroke(180, 30, 100, 50)
+                    strokeWeight(this.thickness)
+                    line(this.x1, this.y1, this.x2, this.y2)
+                }
+            }
+        }
+    }
+}
+
 class LineStackAOE {
     constructor(type, resolvesIn, target, disappearsIn, x, y, thickness) {
         this.type = type
@@ -1192,6 +1228,11 @@ function preload() {
     })
     socket.on('update boss positions', function (msg) {
         bossPositions = msg
+    })
+    socket.on('line AOE', function (msg) {
+        AoEs.push(
+            new LineAOE(...msg)
+        )
     })
 }
 

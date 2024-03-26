@@ -214,22 +214,34 @@ io.on('connection', (socket) => {
                     }
                     index += 1
                 }
+                let target = targets[Math.floor(Math.random() * targets.length)]
                 io.emit("line stack", ["telegraphed water", // displayed as water, telegraphed
                     3000, // resolves in 3s
-                    targets[Math.floor(Math.random() * targets.length)], // targets a random player
+                    target, // targets a random player
                     1000, // animation disappears 1s after it goes off
                     700, 300, // starts at 700, 300
                     100 // thickness 100
                 ])
-                await new Promise(resolve => setTimeout(resolve, 5000)) // wait for 5 seconds
+                await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
+                // make the boss leap to the player
+                let playerPosX = playerPositions[playerLocation][target][0]
+                let playerPosY = playerPositions[playerLocation][target][1]
+
+                // convert to degrees: 180º per π radians
+                let angle = Math.atan2(playerPosY - bossPositions["Lobby"][1], playerPosX - bossPositions["Lobby"][0])*(180/PI)
+
+                bossPositions["Lobby"] = [playerPosX, playerPosY, "blue", angle]
+                io.emit('update boss positions', bossPositions)
+                await new Promise(resolve => setTimeout(resolve, 2000)) // wait for 2 seconds
                 // make two rectangle AoEs at the center
-                io.emit('rect AOE', ["horizontal ice", // displayed as ice attack
-                    400, 235, // starts at left of board and 65 higher than N&S center of board
-                    600, 130, // 600 width, 130 height
-                    1500 // disappears in 1.5 seconds
+                io.emit('line AOE', ["ice", // displayed as ice attack
+                    0, 300, // starts at left of board, ends at right
+                    1000, 300,
+                    130, // thickness 130
+                    1500 // 1.5s 'till disappears
                 ])
-                io.emit('rect AOE', ["vertical ice", 635, 0, 130, 600, 1500])
-                bossPositions["Lobby"] = [700, 300, "none", 270]
+                io.emit('line AOE', ["ice", 700, 0, 700, 600, 130, 1500])
+                bossPositions["Lobby"][2] = "none"
                 io.emit('update boss positions', bossPositions)
                 break
             case "Slippery Soap (Yellow)":
