@@ -862,12 +862,12 @@ class LineAOE {
                     let millisSinceAppeared = millis() - this.initiatedAt
                     stroke(180, 30, 100, 50)
                     strokeWeight(this.thickness)
-                    line(this.x1, this.y1, map(millisSinceAppeared, 0, 100, this.x1, this.x2), this.y2)
+                    line(this.x1, this.y1, map(millisSinceAppeared, 0, 100, this.x1, this.x2), map(millisSinceAppeared, 0, 100, this.y1, this.y2))
                 } else if (this.disappearsAt - millis() < 100) {
                     let millisUntilDisappear = this.disappearsAt - millis()
                     stroke(180, 30, 100, 50)
                     strokeWeight(this.thickness)
-                    line(map(millisUntilDisappear, 0, 100, this.x2, this.x1), this.y1, this.x2, this.y2)
+                    line(map(millisUntilDisappear, 0, 100, this.x2, this.x1), map(millisUntilDisappear, 0, 100, this.y2, this.y1), this.x2, this.y2)
                 } else {
                     stroke(180, 30, 100, 50)
                     strokeWeight(this.thickness)
@@ -875,6 +875,11 @@ class LineAOE {
                 }
             }
         }
+
+        // cut the line off at the left of the board where plaers can see
+        noStroke()
+        fill(234, 34, 24)
+        rect(-400, -300, 100, height)
     }
 }
 

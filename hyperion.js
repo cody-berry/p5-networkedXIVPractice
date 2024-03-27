@@ -232,15 +232,27 @@ io.on('connection', (socket) => {
 
                 bossPositions["Lobby"] = [playerPosX, playerPosY, "blue", angle]
                 io.emit('update boss positions', bossPositions)
-                await new Promise(resolve => setTimeout(resolve, 2000)) // wait for 2 seconds
+                await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
+
+                // trace out the path the boss is facing to the edge: add
+                // line AOE for that
+                let cardinalFrontX = bossPositions["Lobby"][0]
+                let cardinalFrontY = bossPositions["Lobby"][1]
+                let bossAngleRadians = bossPositions["Lobby"][3]*(PI/180)
+                while (cardinalFrontX > 400 && cardinalFrontX < 1000 &&
+                       cardinalFrontY > 0 && cardinalFrontY < 600) {
+                    cardinalFrontX += Math.cos(bossAngleRadians)
+                    cardinalFrontY += Math.sin(bossAngleRadians)
+                }
+
+
                 // make two rectangle AoEs at the center
                 io.emit('line AOE', ["ice", // displayed as ice attack
-                    0, 300, // starts at left of board, ends at right
-                    1000, 300,
-                    130, // thickness 130
-                    1500 // 1.5s 'till disappears
+                    bossPositions["Lobby"][0], bossPositions["Lobby"][1], // starts at the boss's position
+                    cardinalFrontX, cardinalFrontY, // ends at the position the boss is facing
+                    130, // thickness of 130
+                    1500 // sticks around for 1.5s
                 ])
-                io.emit('line AOE', ["ice", 700, 0, 700, 600, 130, 1500])
                 bossPositions["Lobby"][2] = "none"
                 io.emit('update boss positions', bossPositions)
                 break
