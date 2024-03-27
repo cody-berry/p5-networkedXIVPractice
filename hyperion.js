@@ -283,19 +283,52 @@ io.on('connection', (socket) => {
                 bossPositions["Lobby"] = [700, 300, "yellow", 270]
                 io.emit('update boss positions', bossPositions)
                 await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
+                let targets2 = []
+                let index2 = 0
+                for (let player of playerPositions["Lobby"]) {
+                    if (!(player[0] === -20 && player[1] === -20)) {
+                        targets2.push(index2)
+                    }
+                    index2 += 1
+                }
+                let target2 = targets2[Math.floor(Math.random() * targets2.length)]
+                io.emit("line stack", ["telegraphed water", // displayed as water, telegraphed
+                    3000, // resolves in 3s
+                    target2, // targets a random player
+                    1000, // animation disappears 1s after it goes off
+                    700, 300, // starts at 700, 300
+                    100 // thickness 100
+                ])
+                await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
+                // make the boss leap to the player
+                let playerPosX2 = playerPositions[playerLocation][target2][0]
+                let playerPosY2 = playerPositions[playerLocation][target2][1]
+
+                // convert to degrees: 180º per π radians
+                let angle2 = Math.atan2(playerPosY2 - bossPositions["Lobby"][1], playerPosX2 - bossPositions["Lobby"][0])*(180/PI)
+
+                bossPositions["Lobby"] = [playerPosX2, playerPosY2, "yellow", angle2]
+                io.emit('update boss positions', bossPositions)
+                await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
+
+                // figure out where the boss is facinng
+                let bossAngleRadians2 = bossPositions["Lobby"][3]*(PI/180)
                 // simulate an electricity attack going off
                 io.emit('cone AOE', ["electric", // displayed as electricity attack
-                    700, 300, // goes off at center
-                    800, // virtually infinite size
-                    PI/8, 3*PI/8, // covers PI/4 intercardinal region
+                    bossPositions["Lobby"][0], bossPositions["Lobby"][1], // goes off at boss position
+                    1200, // virtually infinite size
+                    PI/8 + bossAngleRadians2, 3*PI/8 + bossAngleRadians2, // covers PI/4 intercardinal region according to boss's facing
                     1500 // disappears in 1.5 seconds
                 ])
 
                 // now do the same for the 3PI/4 5PI/4, and 7PI/4 regions.
-                io.emit('cone AOE', ["electric", 700, 300, 800, 5*PI/8, 7*PI/8, 1500])
-                io.emit('cone AOE', ["electric", 700, 300, 800, 9*PI/8, 11*PI/8, 1500])
-                io.emit('cone AOE', ["electric", 700, 300, 800, 13*PI/8, 15*PI/8, 1500])
-                bossPositions["Lobby"] = [700, 300, "none", 270]
+                io.emit('cone AOE', ["electric", bossPositions["Lobby"][0], bossPositions["Lobby"][1],
+                        1200, 5*PI/8 + bossAngleRadians2, 7*PI/8 + bossAngleRadians2, 1500])
+                io.emit('cone AOE', ["electric", bossPositions["Lobby"][0], bossPositions["Lobby"][1],
+                        1200, 9*PI/8 + bossAngleRadians2, 11*PI/8 + bossAngleRadians2, 1500])
+                io.emit('cone AOE', ["electric", bossPositions["Lobby"][0], bossPositions["Lobby"][1],
+                        1200, 13*PI/8 + bossAngleRadians2, 15*PI/8 + bossAngleRadians2, 1500])
+                bossPositions["Lobby"][2] = "none"
                 io.emit('update boss positions', bossPositions)
                 break
             case "Slippery Soap (Green)":
