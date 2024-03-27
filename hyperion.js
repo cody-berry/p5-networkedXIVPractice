@@ -152,7 +152,7 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log(`Player ${player} disconnected`);
-        playerPositions[playerLocation][playerID - 1] = [-20, -20, "ast", "", ""]
+        playerPositions[playerLocation][playerID - 1] = [-20, -20, "ast", "Disconnect", "edPlayer"]
         io.emit('update', [playerPositions])
         currentlyConnectedPlayers -= 1
         if (currentlyConnectedPlayers === 0) {
@@ -311,7 +311,7 @@ io.on('connection', (socket) => {
                 io.emit('update boss positions', bossPositions)
                 await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
 
-                // figure out where the boss is facinng
+                // figure out where the boss is facing
                 let bossAngleRadians2 = bossPositions["Lobby"][3]*(PI/180)
                 // simulate an electricity attack going off
                 io.emit('cone AOE', ["electric", // displayed as electricity attack
@@ -328,6 +328,17 @@ io.on('connection', (socket) => {
                         1200, 9*PI/8 + bossAngleRadians2, 11*PI/8 + bossAngleRadians2, 1500])
                 io.emit('cone AOE', ["electric", bossPositions["Lobby"][0], bossPositions["Lobby"][1],
                         1200, 13*PI/8 + bossAngleRadians2, 15*PI/8 + bossAngleRadians2, 1500])
+
+                for (let target of targets2) {
+                    io.emit('circle spread AOE', [
+                        "untelegraphed electric", // displayed as an untelegraphed electric attack
+                        target, // the target
+                        100, // radius of 100
+                        1500 // disappears in 1.5 seconds
+                    ])
+                }
+
+                // also emit spread AOEs
                 bossPositions["Lobby"][2] = "none"
                 io.emit('update boss positions', bossPositions)
                 break

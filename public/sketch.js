@@ -842,6 +842,34 @@ let greenSlipperySoapWidth
 
 let silkie
 
+class CircleSpreadAOE {
+    constructor(type, target, radius, disappearsIn) {
+        this.type = type
+        this.x = playerPositions[yourLocation][target][0] - 700
+        this.y = playerPositions[yourLocation][target][1] - 300
+        this.r = radius
+        this.disappearsAt = millis() + disappearsIn
+    }
+
+    draw() {
+        if (millis() < this.disappearsAt) {
+            if (this.type === "untelegraphed electric") {
+                print(this.x, this.y)
+                fill(45, 100, 100, 10)
+                stroke(90, 100, 100)
+                strokeWeight(2)
+                circle(this.x, this.y, this.r*2)
+
+                // then stroke a very low-opacity white going across
+                stroke(0, 0, 100, 15)
+                for (let angle = 0; angle < TWO_PI; angle += TWO_PI/50) {
+                    line(this.x, this.y, this.x - cos(angle)*this.r, this.y - sin(angle)*this.r)
+                }
+            }
+        }
+    }
+}
+
 class LineAOE {
     constructor(type, x1, y1, x2, y2, thickness, disappearsIn) {
         this.type = type
@@ -1099,10 +1127,10 @@ class ConeAOE {
         if (millis() < this.disappearsAt) {
             if (this.type === "electric") {
                 // dark brown with yellow edges
-                fill(45, 50, 20, 95)
+                fill(45, 50, 20, 90)
                 noStroke()
                 arc(this.x, this.y, this.radius * 2, this.radius * 2, this.start, this.end)
-                stroke(45, 50, 60, 95)
+                stroke(45, 50, 60, 90)
                 line(this.x, this.y, this.x + cos(this.start)*this.radius, this.y + sin(this.start)*this.radius)
                 line(this.x, this.y, this.x + cos(this.end)*this.radius, this.y + sin(this.end)*this.radius)
 
@@ -1237,6 +1265,11 @@ function preload() {
     socket.on('line AOE', function (msg) {
         AoEs.push(
             new LineAOE(...msg)
+        )
+    })
+    socket.on('circle spread AOE', function (msg) {
+        AoEs.push(
+            new CircleSpreadAOE(...msg)
         )
     })
 }
