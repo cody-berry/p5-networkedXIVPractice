@@ -244,15 +244,37 @@ io.on('connection', (socket) => {
                     cardinalFrontX += Math.cos(bossAngleRadians)
                     cardinalFrontY += Math.sin(bossAngleRadians)
                 }
+                let cardinalRightX = bossPositions["Lobby"][0]
+                let cardinalRightY = bossPositions["Lobby"][1]
+                while (cardinalRightX > 400 && cardinalRightX < 1000 &&
+                       cardinalRightY > 0 && cardinalRightY < 600) {
+                    cardinalRightX += Math.cos(bossAngleRadians - PI/2)
+                    cardinalRightY += Math.sin(bossAngleRadians - PI/2)
+                }
+                let cardinalBackX = bossPositions["Lobby"][0]
+                let cardinalBackY = bossPositions["Lobby"][1]
+                while (cardinalBackX > 400 && cardinalBackX < 1000 &&
+                       cardinalBackY > 0 && cardinalBackY < 600) {
+                    cardinalBackX += Math.cos(bossAngleRadians - PI)
+                    cardinalBackY += Math.sin(bossAngleRadians - PI)
+                }
+                let cardinalLeftX = bossPositions["Lobby"][0]
+                let cardinalLeftY = bossPositions["Lobby"][1]
+                while (cardinalLeftX > 400 && cardinalLeftX < 1000 &&
+                       cardinalLeftY > 0 && cardinalLeftY < 600) {
+                    cardinalLeftX += Math.cos(bossAngleRadians + PI/2)
+                    cardinalLeftY += Math.sin(bossAngleRadians + PI/2)
+                }
 
 
                 // make two rectangle AoEs at the center
                 io.emit('line AOE', ["ice", // displayed as ice attack
-                    bossPositions["Lobby"][0], bossPositions["Lobby"][1], // starts at the boss's position
-                    cardinalFrontX, cardinalFrontY, // ends at the position the boss is facing
+                    cardinalFrontX, cardinalFrontY, // starts at the position the boss is facing
+                    cardinalBackX, cardinalBackY, // ends at the position opposite to the boss
                     130, // thickness of 130
                     1500 // sticks around for 1.5s
                 ])
+                io.emit('line AOE', ["ice", cardinalLeftX, cardinalLeftY, cardinalRightX, cardinalRightY, 130, 1500])
                 bossPositions["Lobby"][2] = "none"
                 io.emit('update boss positions', bossPositions)
                 break
