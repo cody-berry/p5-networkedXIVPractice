@@ -854,17 +854,23 @@ class CircleSpreadAOE {
     draw() {
         if (millis() < this.disappearsAt) {
             if (this.type === "untelegraphed electric") {
+                let millisUntilDisappears = this.disappearsAt - millis()
                 print(this.x, this.y)
-                fill(45, 100, 100, 10)
-                stroke(90, 100, 100)
+                fill(45, 100, 100, min(map(millisUntilDisappears, 0, 200, 0, 10), 10))
+                stroke(90, 100, 100, min(map(millisUntilDisappears, 0, 200, 0, 100), 100))
                 strokeWeight(2)
                 circle(this.x, this.y, this.r*2)
 
                 // then stroke a very low-opacity white going across
-                stroke(0, 0, 100, 15)
+                // since the middle will overlap, we just replace the middle
+                // part with a circle
+                stroke(0, 0, 100, min(map(millisUntilDisappears, 0, 200, 0, 15), 15))
                 for (let angle = 0; angle < TWO_PI; angle += TWO_PI/50) {
-                    line(this.x, this.y, this.x - cos(angle)*this.r, this.y - sin(angle)*this.r)
+                    line(this.x - cos(angle)*15, this.y - sin(angle)*15, this.x - cos(angle)*this.r, this.y - sin(angle)*this.r)
                 }
+                noStroke()
+                fill(0, 0, 100, min(map(millisUntilDisappears, 0, 200, 0, 15), 15))
+                circle(this.x, this.y, 28)
             }
         }
     }
