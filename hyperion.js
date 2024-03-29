@@ -196,202 +196,204 @@ io.on('connection', (socket) => {
     })
 
     socket.on('change mechanic', async (msg) => {
-        io.emit('change mechanic', msg)
-        mechanicStartedAt = new Date()
-        mechanicStartedAt = mechanicStartedAt.getTime()
-        mechanic = msg
-        switch (msg) {
-            case "Slippery Soap (Blue)":
-                boss = "Silkie"
-                bossPositions["Lobby"] = [700, 300, "blue", 270]
-                io.emit('update boss positions', bossPositions)
-                await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
-                let targets = []
-                let index = 0
-                for (let player of playerPositions["Lobby"]) {
-                    if (!(player[0] === -20 && player[1] === -20)) {
-                        targets.push(index)
+        if (currentlyConnectedPlayers === 4) {
+            io.emit('change mechanic', msg)
+            mechanicStartedAt = new Date()
+            mechanicStartedAt = mechanicStartedAt.getTime()
+            mechanic = msg
+            switch (msg) {
+                case "Slippery Soap (Blue)":
+                    boss = "Silkie"
+                    bossPositions["Lobby"] = [700, 300, "blue", 270]
+                    io.emit('update boss positions', bossPositions)
+                    await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
+                    let targets = []
+                    let index = 0
+                    for (let player of playerPositions["Lobby"]) {
+                        if (!(player[0] === -20 && player[1] === -20)) {
+                            targets.push(index)
+                        }
+                        index += 1
                     }
-                    index += 1
-                }
-                let target = targets[Math.floor(Math.random() * targets.length)]
-                io.emit("line stack", ["telegraphed water", // displayed as water, telegraphed
-                    3000, // resolves in 3s
-                    target, // targets a random player
-                    1000, // animation disappears 1s after it goes off
-                    700, 300, // starts at 700, 300
-                    100 // thickness 100
-                ])
-                await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
-                // make the boss leap to the player
-                let playerPosX = playerPositions[playerLocation][target][0]
-                let playerPosY = playerPositions[playerLocation][target][1]
+                    let target = targets[Math.floor(Math.random() * targets.length)]
+                    io.emit("line stack", ["telegraphed water", // displayed as water, telegraphed
+                        3000, // resolves in 3s
+                        target, // targets a random player
+                        1000, // animation disappears 1s after it goes off
+                        700, 300, // starts at 700, 300
+                        100 // thickness 100
+                    ])
+                    await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
+                    // make the boss leap to the player
+                    let playerPosX = playerPositions[playerLocation][target][0]
+                    let playerPosY = playerPositions[playerLocation][target][1]
 
-                // convert to degrees: 180º per π radians
-                let angle = Math.atan2(playerPosY - bossPositions["Lobby"][1], playerPosX - bossPositions["Lobby"][0])*(180/PI)
+                    // convert to degrees: 180º per π radians
+                    let angle = Math.atan2(playerPosY - bossPositions["Lobby"][1], playerPosX - bossPositions["Lobby"][0]) * (180 / PI)
 
-                bossPositions["Lobby"] = [playerPosX, playerPosY, "blue", angle]
-                io.emit('update boss positions', bossPositions)
-                await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
+                    bossPositions["Lobby"] = [playerPosX, playerPosY, "blue", angle]
+                    io.emit('update boss positions', bossPositions)
+                    await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
 
-                // trace out the path the boss is facing to the edge: add
-                // line AOE for that
-                let cardinalFrontX = bossPositions["Lobby"][0]
-                let cardinalFrontY = bossPositions["Lobby"][1]
-                let bossAngleRadians = bossPositions["Lobby"][3]*(PI/180)
-                while (cardinalFrontX > 400 && cardinalFrontX < 1000 &&
-                       cardinalFrontY > 0 && cardinalFrontY < 600) {
-                    cardinalFrontX += Math.cos(bossAngleRadians)
-                    cardinalFrontY += Math.sin(bossAngleRadians)
-                }
-                let cardinalRightX = bossPositions["Lobby"][0]
-                let cardinalRightY = bossPositions["Lobby"][1]
-                while (cardinalRightX > 400 && cardinalRightX < 1000 &&
-                       cardinalRightY > 0 && cardinalRightY < 600) {
-                    cardinalRightX += Math.cos(bossAngleRadians - PI/2)
-                    cardinalRightY += Math.sin(bossAngleRadians - PI/2)
-                }
-                let cardinalBackX = bossPositions["Lobby"][0]
-                let cardinalBackY = bossPositions["Lobby"][1]
-                while (cardinalBackX > 400 && cardinalBackX < 1000 &&
-                       cardinalBackY > 0 && cardinalBackY < 600) {
-                    cardinalBackX += Math.cos(bossAngleRadians - PI)
-                    cardinalBackY += Math.sin(bossAngleRadians - PI)
-                }
-                let cardinalLeftX = bossPositions["Lobby"][0]
-                let cardinalLeftY = bossPositions["Lobby"][1]
-                while (cardinalLeftX > 400 && cardinalLeftX < 1000 &&
-                       cardinalLeftY > 0 && cardinalLeftY < 600) {
-                    cardinalLeftX += Math.cos(bossAngleRadians + PI/2)
-                    cardinalLeftY += Math.sin(bossAngleRadians + PI/2)
-                }
-
-
-                // make two rectangle AoEs at the center
-                io.emit('line AOE', ["ice", // displayed as ice attack
-                    cardinalFrontX, cardinalFrontY, // starts at the position the boss is facing
-                    cardinalBackX, cardinalBackY, // ends at the position opposite to the boss
-                    130, // thickness of 130
-                    1500 // sticks around for 1.5s
-                ])
-                io.emit('line AOE', ["ice", cardinalLeftX, cardinalLeftY, cardinalRightX, cardinalRightY, 130, 1500])
-                bossPositions["Lobby"][2] = "none"
-                io.emit('update boss positions', bossPositions)
-                break
-            case "Slippery Soap (Yellow)":
-                boss = "Silkie"
-                bossPositions["Lobby"] = [700, 300, "yellow", 270]
-                io.emit('update boss positions', bossPositions)
-                await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
-                let targets2 = []
-                let index2 = 0
-                for (let player of playerPositions["Lobby"]) {
-                    if (!(player[0] === -20 && player[1] === -20)) {
-                        targets2.push(index2)
+                    // trace out the path the boss is facing to the edge: add
+                    // line AOE for that
+                    let cardinalFrontX = bossPositions["Lobby"][0]
+                    let cardinalFrontY = bossPositions["Lobby"][1]
+                    let bossAngleRadians = bossPositions["Lobby"][3] * (PI / 180)
+                    while (cardinalFrontX > 400 && cardinalFrontX < 1000 &&
+                    cardinalFrontY > 0 && cardinalFrontY < 600) {
+                        cardinalFrontX += Math.cos(bossAngleRadians)
+                        cardinalFrontY += Math.sin(bossAngleRadians)
                     }
-                    index2 += 1
-                }
-                let target2 = targets2[Math.floor(Math.random() * targets2.length)]
-                io.emit("line stack", ["telegraphed water", // displayed as water, telegraphed
-                    3000, // resolves in 3s
-                    target2, // targets a random player
-                    1000, // animation disappears 1s after it goes off
-                    700, 300, // starts at 700, 300
-                    100 // thickness 100
-                ])
-                await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
-                // make the boss leap to the player
-                let playerPosX2 = playerPositions[playerLocation][target2][0]
-                let playerPosY2 = playerPositions[playerLocation][target2][1]
+                    let cardinalRightX = bossPositions["Lobby"][0]
+                    let cardinalRightY = bossPositions["Lobby"][1]
+                    while (cardinalRightX > 400 && cardinalRightX < 1000 &&
+                    cardinalRightY > 0 && cardinalRightY < 600) {
+                        cardinalRightX += Math.cos(bossAngleRadians - PI / 2)
+                        cardinalRightY += Math.sin(bossAngleRadians - PI / 2)
+                    }
+                    let cardinalBackX = bossPositions["Lobby"][0]
+                    let cardinalBackY = bossPositions["Lobby"][1]
+                    while (cardinalBackX > 400 && cardinalBackX < 1000 &&
+                    cardinalBackY > 0 && cardinalBackY < 600) {
+                        cardinalBackX += Math.cos(bossAngleRadians - PI)
+                        cardinalBackY += Math.sin(bossAngleRadians - PI)
+                    }
+                    let cardinalLeftX = bossPositions["Lobby"][0]
+                    let cardinalLeftY = bossPositions["Lobby"][1]
+                    while (cardinalLeftX > 400 && cardinalLeftX < 1000 &&
+                    cardinalLeftY > 0 && cardinalLeftY < 600) {
+                        cardinalLeftX += Math.cos(bossAngleRadians + PI / 2)
+                        cardinalLeftY += Math.sin(bossAngleRadians + PI / 2)
+                    }
 
-                // convert to degrees: 180º per π radians
-                let angle2 = Math.atan2(playerPosY2 - bossPositions["Lobby"][1], playerPosX2 - bossPositions["Lobby"][0])*(180/PI)
 
-                bossPositions["Lobby"] = [playerPosX2, playerPosY2, "yellow", angle2]
-                io.emit('update boss positions', bossPositions)
-                await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
+                    // make two rectangle AoEs at the center
+                    io.emit('line AOE', ["ice", // displayed as ice attack
+                        cardinalFrontX, cardinalFrontY, // starts at the position the boss is facing
+                        cardinalBackX, cardinalBackY, // ends at the position opposite to the boss
+                        130, // thickness of 130
+                        1500 // sticks around for 1.5s
+                    ])
+                    io.emit('line AOE', ["ice", cardinalLeftX, cardinalLeftY, cardinalRightX, cardinalRightY, 130, 1500])
+                    bossPositions["Lobby"][2] = "none"
+                    io.emit('update boss positions', bossPositions)
+                    break
+                case "Slippery Soap (Yellow)":
+                    boss = "Silkie"
+                    bossPositions["Lobby"] = [700, 300, "yellow", 270]
+                    io.emit('update boss positions', bossPositions)
+                    await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
+                    let targets2 = []
+                    let index2 = 0
+                    for (let player of playerPositions["Lobby"]) {
+                        if (!(player[0] === -20 && player[1] === -20)) {
+                            targets2.push(index2)
+                        }
+                        index2 += 1
+                    }
+                    let target2 = targets2[Math.floor(Math.random() * targets2.length)]
+                    io.emit("line stack", ["telegraphed water", // displayed as water, telegraphed
+                        3000, // resolves in 3s
+                        target2, // targets a random player
+                        1000, // animation disappears 1s after it goes off
+                        700, 300, // starts at 700, 300
+                        100 // thickness 100
+                    ])
+                    await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
+                    // make the boss leap to the player
+                    let playerPosX2 = playerPositions[playerLocation][target2][0]
+                    let playerPosY2 = playerPositions[playerLocation][target2][1]
 
-                // figure out where the boss is facing
-                let bossAngleRadians2 = bossPositions["Lobby"][3]*(PI/180)
-                // simulate an electricity attack going off
-                io.emit('cone AOE', ["electric", // displayed as electricity attack
-                    bossPositions["Lobby"][0], bossPositions["Lobby"][1], // goes off at boss position
-                    1200, // virtually infinite size
-                    PI/8 + bossAngleRadians2, 3*PI/8 + bossAngleRadians2, // covers PI/4 intercardinal region according to boss's facing
-                    1500 // disappears in 1.5 seconds
-                ])
+                    // convert to degrees: 180º per π radians
+                    let angle2 = Math.atan2(playerPosY2 - bossPositions["Lobby"][1], playerPosX2 - bossPositions["Lobby"][0]) * (180 / PI)
 
-                // now do the same for the 3PI/4 5PI/4, and 7PI/4 regions.
-                io.emit('cone AOE', ["electric", bossPositions["Lobby"][0], bossPositions["Lobby"][1],
-                        1200, 5*PI/8 + bossAngleRadians2, 7*PI/8 + bossAngleRadians2, 1500])
-                io.emit('cone AOE', ["electric", bossPositions["Lobby"][0], bossPositions["Lobby"][1],
-                        1200, 9*PI/8 + bossAngleRadians2, 11*PI/8 + bossAngleRadians2, 1500])
-                io.emit('cone AOE', ["electric", bossPositions["Lobby"][0], bossPositions["Lobby"][1],
-                        1200, 13*PI/8 + bossAngleRadians2, 15*PI/8 + bossAngleRadians2, 1500])
+                    bossPositions["Lobby"] = [playerPosX2, playerPosY2, "yellow", angle2]
+                    io.emit('update boss positions', bossPositions)
+                    await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
 
-                for (let target of targets2) {
-                    io.emit('circle spread AOE', [
-                        "untelegraphed electric", // displayed as an untelegraphed electric attack
-                        target, // the target
-                        100, // radius of 100
+                    // figure out where the boss is facing
+                    let bossAngleRadians2 = bossPositions["Lobby"][3] * (PI / 180)
+                    // simulate an electricity attack going off
+                    io.emit('cone AOE', ["electric", // displayed as electricity attack
+                        bossPositions["Lobby"][0], bossPositions["Lobby"][1], // goes off at boss position
+                        1200, // virtually infinite size
+                        PI / 8 + bossAngleRadians2, 3 * PI / 8 + bossAngleRadians2, // covers PI/4 intercardinal region according to boss's facing
                         1500 // disappears in 1.5 seconds
                     ])
-                }
 
-                // also emit spread AOEs
-                bossPositions["Lobby"][2] = "none"
-                io.emit('update boss positions', bossPositions)
-                break
-            case "Slippery Soap (Green)":
-                boss = "Silkie"
-                bossPositions["Lobby"] = [700, 300, "green", 270]
-                io.emit('update boss positions', bossPositions)
-                await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
-                let targets3 = []
-                let index3 = 0
-                for (let player of playerPositions["Lobby"]) {
-                    if (!(player[0] === -20 && player[1] === -20)) {
-                        targets3.push(index3)
+                    // now do the same for the 3PI/4 5PI/4, and 7PI/4 regions.
+                    io.emit('cone AOE', ["electric", bossPositions["Lobby"][0], bossPositions["Lobby"][1],
+                        1200, 5 * PI / 8 + bossAngleRadians2, 7 * PI / 8 + bossAngleRadians2, 1500])
+                    io.emit('cone AOE', ["electric", bossPositions["Lobby"][0], bossPositions["Lobby"][1],
+                        1200, 9 * PI / 8 + bossAngleRadians2, 11 * PI / 8 + bossAngleRadians2, 1500])
+                    io.emit('cone AOE', ["electric", bossPositions["Lobby"][0], bossPositions["Lobby"][1],
+                        1200, 13 * PI / 8 + bossAngleRadians2, 15 * PI / 8 + bossAngleRadians2, 1500])
+
+                    for (let target of targets2) {
+                        io.emit('circle spread AOE', [
+                            "untelegraphed electric", // displayed as an untelegraphed electric attack
+                            target, // the target
+                            100, // radius of 100
+                            1500 // disappears in 1.5 seconds
+                        ])
                     }
-                    index3 += 1
-                }
 
-                let target3 = targets3[Math.floor(Math.random() * targets3.length)]
-                io.emit("line stack", ["telegraphed water", // displayed as water, telegraphed
-                    3000, // resolves in 3s
-                    target3, // targets a random player
-                    1000, // animation disappears 1s after it goes off
-                    700, 300, // starts at 700, 300
-                    100 // thickness 100
-                ])
-                await new Promise(resolve => setTimeout(resolve, 2900)) // wait for 2.9 seconds
-                // add a knockback!
-                for (let target4 of targets3) {
-                    let xDiff = playerPositions["Lobby"][target4][0] - 700
-                    let yDiff = playerPositions["Lobby"][target4][1] - 300
-                    let angleFromCenter = Math.atan2(yDiff, xDiff)
-                    playerPositions["Lobby"][target4][0] += Math.cos(angleFromCenter)*200
-                    playerPositions["Lobby"][target4][1] += Math.sin(angleFromCenter)*200
-                }
-                io.emit('update', [playerPositions])
-                // make the boss leap to the player
-                let playerPosX3 = playerPositions[playerLocation][target3][0]
-                let playerPosY3 = playerPositions[playerLocation][target3][1]
+                    // also emit spread AOEs
+                    bossPositions["Lobby"][2] = "none"
+                    io.emit('update boss positions', bossPositions)
+                    break
+                case "Slippery Soap (Green)":
+                    boss = "Silkie"
+                    bossPositions["Lobby"] = [700, 300, "green", 270]
+                    io.emit('update boss positions', bossPositions)
+                    await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
+                    let targets3 = []
+                    let index3 = 0
+                    for (let player of playerPositions["Lobby"]) {
+                        if (!(player[0] === -20 && player[1] === -20)) {
+                            targets3.push(index3)
+                        }
+                        index3 += 1
+                    }
 
-                // convert to degrees: 180º per π radians
-                let angle3 = Math.atan2(playerPosY3 - bossPositions["Lobby"][1], playerPosX3 - bossPositions["Lobby"][0])*(180/PI)
+                    let target3 = targets3[Math.floor(Math.random() * targets3.length)]
+                    io.emit("line stack", ["telegraphed water", // displayed as water, telegraphed
+                        3000, // resolves in 3s
+                        target3, // targets a random player
+                        1000, // animation disappears 1s after it goes off
+                        700, 300, // starts at 700, 300
+                        100 // thickness 100
+                    ])
+                    await new Promise(resolve => setTimeout(resolve, 2900)) // wait for 2.9 seconds
+                    // add a knockback!
+                    for (let target4 of targets3) {
+                        let xDiff = playerPositions["Lobby"][target4][0] - 700
+                        let yDiff = playerPositions["Lobby"][target4][1] - 300
+                        let angleFromCenter = Math.atan2(yDiff, xDiff)
+                        playerPositions["Lobby"][target4][0] += Math.cos(angleFromCenter) * 200
+                        playerPositions["Lobby"][target4][1] += Math.sin(angleFromCenter) * 200
+                    }
+                    io.emit('update', [playerPositions])
+                    // make the boss leap to the player
+                    let playerPosX3 = playerPositions[playerLocation][target3][0]
+                    let playerPosY3 = playerPositions[playerLocation][target3][1]
 
-                bossPositions["Lobby"] = [playerPosX3, playerPosY3, "green", angle3]
-                io.emit('update boss positions', bossPositions)
-                await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
-                // make a donut AOE at the center
-                io.emit('donut AOE', ["full wind", // displayed as wind attack covering full board
-                    bossPositions["Lobby"][0], bossPositions["Lobby"][1], // boss's position
-                    65, // 65 radius in center of safety
-                    1500 // disappears in 1.5 seconds
-                ])
-                io.emit('update boss positions', bossPositions)
-                break
+                    // convert to degrees: 180º per π radians
+                    let angle3 = Math.atan2(playerPosY3 - bossPositions["Lobby"][1], playerPosX3 - bossPositions["Lobby"][0]) * (180 / PI)
+
+                    bossPositions["Lobby"] = [playerPosX3, playerPosY3, "green", angle3]
+                    io.emit('update boss positions', bossPositions)
+                    await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
+                    // make a donut AOE at the center
+                    io.emit('donut AOE', ["full wind", // displayed as wind attack covering full board
+                        bossPositions["Lobby"][0], bossPositions["Lobby"][1], // boss's position
+                        65, // 65 radius in center of safety
+                        1500 // disappears in 1.5 seconds
+                    ])
+                    io.emit('update boss positions', bossPositions)
+                    break
+            }
         }
     })
 });

@@ -1879,16 +1879,13 @@ function mousePressed() {
     } else {
         if (mouseX > xPadding && mouseX < xPadding + yellowSlipperySoapWidth &&
             mouseY > yellowSlipperySoapYPos && mouseY < yellowSlipperySoapYPos + blockHeight) {
-            state = "Slippery Soap (Yellow)"
-            socket.emit("change mechanic", state)
+            socket.emit("change mechanic", "Slippery Soap (Yellow)")
         } if (mouseX > xPadding && mouseX < xPadding + blueSlipperySoapWidth &&
             mouseY > blueSlipperySoapYPos && mouseY < blueSlipperySoapYPos + blockHeight) {
-            state = "Slippery Soap (Blue)"
-            socket.emit("change mechanic", state)
+            socket.emit("change mechanic", "Slippery Soap (Blue)")
         } if (mouseX > xPadding && mouseX < xPadding + greenSlipperySoapWidth &&
             mouseY > greenSlipperySoapYPos && mouseY < greenSlipperySoapYPos + blockHeight) {
-            state = "Slippery Soap (Green)"
-            socket.emit("change mechanic", state)
+            socket.emit("change mechanic", "Slippery Soap (Green)")
         }
     }
 }
