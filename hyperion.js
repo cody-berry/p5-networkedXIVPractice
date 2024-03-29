@@ -347,13 +347,39 @@ io.on('connection', (socket) => {
                 bossPositions["Lobby"] = [700, 300, "green", 270]
                 io.emit('update boss positions', bossPositions)
                 await new Promise(resolve => setTimeout(resolve, 1000)) // wait for a second
+                let targets3 = []
+                let index3 = 0
+                for (let player of playerPositions["Lobby"]) {
+                    if (!(player[0] === -20 && player[1] === -20)) {
+                        targets3.push(index3)
+                    }
+                    index3 += 1
+                }
+                let target3 = targets3[Math.floor(Math.random() * targets3.length)]
+                io.emit("line stack", ["telegraphed water", // displayed as water, telegraphed
+                    3000, // resolves in 3s
+                    target3, // targets a random player
+                    1000, // animation disappears 1s after it goes off
+                    700, 300, // starts at 700, 300
+                    100 // thickness 100
+                ])
+                await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
+                // make the boss leap to the player
+                let playerPosX3 = playerPositions[playerLocation][target3][0]
+                let playerPosY3 = playerPositions[playerLocation][target3][1]
+
+                // convert to degrees: 180º per π radians
+                let angle3 = Math.atan2(playerPosY3 - bossPositions["Lobby"][1], playerPosX3 - bossPositions["Lobby"][0])*(180/PI)
+
+                bossPositions["Lobby"] = [playerPosX3, playerPosY3, "green", angle3]
+                io.emit('update boss positions', bossPositions)
+                await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
                 // make a donut AOE at the center
                 io.emit('donut AOE', ["full wind", // displayed as wind attack covering full board
-                    700, 300, // center of board
+                    bossPositions["Lobby"][0], bossPositions["Lobby"][1], // boss's position
                     65, // 65 radius in center of safety
                     1500 // disappears in 1.5 seconds
                 ])
-                bossPositions["Lobby"] = [700, 300, "none", 270]
                 io.emit('update boss positions', bossPositions)
                 break
         }
