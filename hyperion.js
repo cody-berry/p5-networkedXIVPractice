@@ -355,6 +355,7 @@ io.on('connection', (socket) => {
                     }
                     index3 += 1
                 }
+
                 let target3 = targets3[Math.floor(Math.random() * targets3.length)]
                 io.emit("line stack", ["telegraphed water", // displayed as water, telegraphed
                     3000, // resolves in 3s
@@ -363,7 +364,16 @@ io.on('connection', (socket) => {
                     700, 300, // starts at 700, 300
                     100 // thickness 100
                 ])
-                await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
+                await new Promise(resolve => setTimeout(resolve, 2900)) // wait for 2.9 seconds
+                // add a knockback!
+                for (let target4 of targets3) {
+                    let xDiff = playerPositions["Lobby"][target4][0] - 700
+                    let yDiff = playerPositions["Lobby"][target4][1] - 300
+                    let angleFromCenter = Math.atan2(yDiff, xDiff)
+                    playerPositions["Lobby"][target4][0] += Math.cos(angleFromCenter)*250
+                    playerPositions["Lobby"][target4][1] += Math.sin(angleFromCenter)*250
+                }
+                io.emit('update', [playerPositions])
                 // make the boss leap to the player
                 let playerPosX3 = playerPositions[playerLocation][target3][0]
                 let playerPosY3 = playerPositions[playerLocation][target3][1]
