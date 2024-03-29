@@ -370,8 +370,8 @@ io.on('connection', (socket) => {
                     let xDiff = playerPositions["Lobby"][target4][0] - 700
                     let yDiff = playerPositions["Lobby"][target4][1] - 300
                     let angleFromCenter = Math.atan2(yDiff, xDiff)
-                    playerPositions["Lobby"][target4][0] += Math.cos(angleFromCenter)*250
-                    playerPositions["Lobby"][target4][1] += Math.sin(angleFromCenter)*250
+                    playerPositions["Lobby"][target4][0] += Math.cos(angleFromCenter)*200
+                    playerPositions["Lobby"][target4][1] += Math.sin(angleFromCenter)*200
                 }
                 io.emit('update', [playerPositions])
                 // make the boss leap to the player
