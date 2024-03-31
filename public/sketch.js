@@ -1533,10 +1533,10 @@ function draw() {
         image(icons[playerPosition[2]], playerPosition[0] - 725, playerPosition[1] - 325, 50, 50)
     }
     if (keyIsPressed) {
-        if (keyIsDown(87)) socket.emit("move up", yourID)
-        if (keyIsDown(68)) socket.emit("move right", yourID)
-        if (keyIsDown(83)) socket.emit("move down", yourID)
-        if (keyIsDown(65)) socket.emit("move left", yourID)
+        if (keyIsDown(87) && playerPositions[yourLocation][yourID - 1][1] > 0) socket.emit("move up", yourID)
+        if (keyIsDown(68) && playerPositions[yourLocation][yourID - 1][0] < 1000) socket.emit("move right", yourID)
+        if (keyIsDown(83) && playerPositions[yourLocation][yourID - 1][1] < 600) socket.emit("move down", yourID)
+        if (keyIsDown(65) && playerPositions[yourLocation][yourID - 1][0] > 400) socket.emit("move left", yourID)
     }
     pop()
 
