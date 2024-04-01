@@ -401,8 +401,11 @@ io.on('connection', (socket) => {
                                 let xDiff = playerPositions["Lobby"][target4][0] - 700
                                 let yDiff = playerPositions["Lobby"][target4][1] - 300
                                 let angleFromCenter = Math.atan2(yDiff, xDiff)
-                                playerPositions["Lobby"][target4][0] += Math.cos(angleFromCenter) * 200
-                                playerPositions["Lobby"][target4][1] += Math.sin(angleFromCenter) * 200
+                                for (let i = 0; i < 200; i++) {
+                                    // make sure this doesn't send the player out of the board!
+                                    playerPositions["Lobby"][target4][0] = Math.min(Math.max(playerPositions["Lobby"][target4][0] + Math.cos(angleFromCenter), 400), 1000)
+                                    playerPositions["Lobby"][target4][1] = Math.min(Math.max(playerPositions["Lobby"][target4][1] + Math.sin(angleFromCenter), 0), 600)
+                                }
                             }
                             io.emit('update', [playerPositions])
                             // make the boss leap to the player
