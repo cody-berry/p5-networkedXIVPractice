@@ -1525,14 +1525,6 @@ function draw() {
     noStroke()
     let player = 0
     for (let playerPosition of playerPositions[yourLocation]) {
-        // make sure that the position isn't outside the board
-        if (playerPosition[3] !== "Disconnect" && playerPositions[4] !== "edPlayer") { // this hilarious name always means that the player is disconnected
-            playerPositions[yourLocation][player] = [
-                min(max(playerPosition[0], 400), 1000),
-                min(max(playerPosition[1], 0), 600),
-                playerPosition[2], playerPosition[3], playerPosition[4]
-            ]
-        }
         player += 1
         if (yourID === player) {
             fill(120, 100, 100)

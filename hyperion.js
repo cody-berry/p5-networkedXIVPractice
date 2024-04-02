@@ -238,8 +238,41 @@ io.on('connection', (socket) => {
                             // convert to degrees: 180º per π radians
                             let angle = Math.atan2(playerPosY - bossPositions["Lobby"][1], playerPosX - bossPositions["Lobby"][0]) * (180 / PI)
 
-                            bossPositions["Lobby"] = [playerPosX, playerPosY, "blue", angle]
-                            io.emit('update boss positions', bossPositions)
+                            bossPositions["Lobby"] = [700, 300, "blue", angle]
+                            // get ready to do it gradually!
+                            let distance = Math.sqrt((playerPosX - 700)**2 + (playerPosY - 300)**2)
+                            for (let i = 0; i < distance; i++) {
+                                bossPositions["Lobby"][0] += Math.cos(angle)
+                                bossPositions["Lobby"][1] += Math.sin(angle)
+
+                                // keep doing nothing for a while
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                            }
                             await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
                             let now = new Date()
                             now = now.getTime()
@@ -327,8 +360,42 @@ io.on('connection', (socket) => {
                             // convert to degrees: 180º per π radians
                             let angle2 = Math.atan2(playerPosY2 - bossPositions["Lobby"][1], playerPosX2 - bossPositions["Lobby"][0]) * (180 / PI)
 
-                            bossPositions["Lobby"] = [playerPosX2, playerPosY2, "yellow", angle2]
-                            io.emit('update boss positions', bossPositions)
+                            // get ready to do it gradually!
+                            let distance = Math.sqrt((playerPosX2 - 700)**2 + (playerPosY2 - 300)**2)
+
+                            bossPositions["Lobby"] = [700, 300, "yellow", angle2]
+                            for (let i = 0; i < distance; i++) {
+                                bossPositions["Lobby"][0] += Math.cos(angle2)
+                                bossPositions["Lobby"][1] += Math.sin(angle2)
+
+                                // keep doing nothing for a while
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                            }
                             await new Promise(resolve => setTimeout(resolve, 3000)) // wait for 3 seconds
                             now2 = new Date()
                             now2 = now2.getTime()
@@ -392,22 +459,26 @@ io.on('connection', (socket) => {
                             700, 300, // starts at 700, 300
                             100 // thickness 100
                         ])
-                        await new Promise(resolve => setTimeout(resolve, 2900)) // wait for 2.9 seconds
+                        await new Promise(resolve => setTimeout(resolve, 2800)) // wait for 2.8 seconds
                         let now3 = new Date()
                         now3 = now3.getTime()
-                        if (3500 < now3 - mechanicStartedAt && now3 - mechanicStartedAt < 4300) {
+                        if (3400 < now3 - mechanicStartedAt && now3 - mechanicStartedAt < 4200) {
                             // add a knockback!
-                            for (let target4 of targets3) {
-                                let xDiff = playerPositions["Lobby"][target4][0] - 700
-                                let yDiff = playerPositions["Lobby"][target4][1] - 300
-                                let angleFromCenter = Math.atan2(yDiff, xDiff)
-                                for (let i = 0; i < 200; i++) {
+                            for (let i = 0; i < 200; i++) {
+                                for (let target4 of targets3) {
+                                    let xDiff = playerPositions["Lobby"][target4][0] - 700
+                                    let yDiff = playerPositions["Lobby"][target4][1] - 300
+                                    let angleFromCenter = Math.atan2(yDiff, xDiff)
                                     // make sure this doesn't send the player out of the board!
                                     playerPositions["Lobby"][target4][0] = Math.min(Math.max(playerPositions["Lobby"][target4][0] + Math.cos(angleFromCenter), 400), 1000)
                                     playerPositions["Lobby"][target4][1] = Math.min(Math.max(playerPositions["Lobby"][target4][1] + Math.sin(angleFromCenter), 0), 600)
                                 }
+                                // do a bit of junk to make a bit of offset
+                                // before the next one
+                                for (let j = 0; j < 15; j++) {
+                                    io.emit('update', [playerPositions])
+                                }
                             }
-                            io.emit('update', [playerPositions])
                             // make the boss leap to the player
                             let playerPosX3 = playerPositions[playerLocation][target3][0]
                             let playerPosY3 = playerPositions[playerLocation][target3][1]
@@ -415,7 +486,42 @@ io.on('connection', (socket) => {
                             // convert to degrees: 180º per π radians
                             let angle3 = Math.atan2(playerPosY3 - bossPositions["Lobby"][1], playerPosX3 - bossPositions["Lobby"][0]) * (180 / PI)
 
-                            bossPositions["Lobby"] = [playerPosX3, playerPosY3, "green", angle3]
+                            // get ready to do it gradually!
+                            let distance = Math.sqrt((playerPosX3 - 700)**2 + (playerPosY3 - 300)**2)
+                            bossPositions["Lobby"] = [700, 300, "green", angle3]
+                            for (let i = 0; i < distance; i++) {
+                                bossPositions["Lobby"][0] += Math.cos(angle3)
+                                bossPositions["Lobby"][1] += Math.sin(angle3)
+
+                                // keep doing nothing for a while
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                                io.emit('update boss positions', bossPositions)
+                            }
+
                             io.emit('update boss positions', bossPositions)
                             await new Promise(resolve => setTimeout(resolve, 3100)) // wait for 3.1 seconds
                             let now3 = new Date()
