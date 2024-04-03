@@ -132,6 +132,9 @@ let bossPositions = {
 }
 
 let currentlyConnectedPlayers = 0
+let currentlyConnectedHealers = 0
+let currentlyConnectedDPS = 0
+let currentlyConnectedTanks = 0
 let mechanicStartedAt = 0
 let mechanic = "Changing job"
 let boss = "None"
@@ -139,9 +142,11 @@ let boss = "None"
 io.on('connection', (socket) => {
     connectedPlayers += 1
     currentlyConnectedPlayers += 1
+    currentlyConnectedHealers += 1
     let player = connectedPlayers
     let playerLocation = "Lobby"
     let playerID = playerPositions["Lobby"].length + 1
+    let role = "healer"
     socket.emit('update boss positions', bossPositions)
 
     console.log(`Player ${player} connected`);
@@ -187,6 +192,24 @@ io.on('connection', (socket) => {
         console.log(playerPositions[playerLocation][playerID - 1][2])
         playerPositions[playerLocation][playerID - 1][2] = msg
         io.emit('update', [playerPositions])
+
+        // also change the role
+        // first decrease the amount of healers/tanks/DPS, whatever the current
+        // class corresponds to
+        switch (role) {
+            case "healer": currentlyConnectedHealers -= 1; break
+            case "tank": currentlyConnectedTanks -= 1; break
+            case "DPS": currentlyConnectedDPS -= 1; break
+        }
+
+        // healers: ast, sge, sch, whm
+        if (["ast", "sge", "sch", "whm"].includes(msg)) {role = "healer"; currentlyConnectedHealers += 1}
+        // tanks: drk, gnb, pld, war
+        else if (["drk", "gnb", "pld", "war"].includes(msg)) {role = "tank"; currentlyConnectedTanks += 1}
+        // dps: everything else
+        else {role = "DPS"; currentlyConnectedDPS += 1}
+
+        console.log(`Player ${player} switches to ${role}`)
     })
 
     socket.on('change name', (msg) => {
@@ -196,7 +219,8 @@ io.on('connection', (socket) => {
     })
 
     socket.on('change mechanic', async (msg) => {
-        if (currentlyConnectedPlayers === 4) {
+        if (currentlyConnectedPlayers === 4 && currentlyConnectedDPS === 2 &&
+            currentlyConnectedHealers === 1 && currentlyConnectedTanks === 1) {
             io.emit('change mechanic', msg)
             mechanicStartedAt = new Date()
             mechanicStartedAt = mechanicStartedAt.getTime()
