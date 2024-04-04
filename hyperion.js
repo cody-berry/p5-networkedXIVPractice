@@ -164,11 +164,11 @@ io.on('connection', (socket) => {
             mechanic = "Changing job" // reset
             boss = "None"
         }
-    });
-
-    socket.on('message', (msg) => {
-        console.log('Message received:', msg);
-        io.emit('message', msg); // Broadcast the message to all clients
+        switch (role) {
+            case "healer": currentlyConnectedHealers -= 1; break
+            case "tank": currentlyConnectedTanks -= 1; break
+            case "DPS": currentlyConnectedDPS -= 1; break
+        }
     });
 
     socket.on('move up', (msg) => {
@@ -188,8 +188,6 @@ io.on('connection', (socket) => {
         io.emit('update', [playerPositions])
     })
     socket.on('change class', (msg) => {
-        console.log(playerPositions)
-        console.log(playerPositions[playerLocation][playerID - 1][2])
         playerPositions[playerLocation][playerID - 1][2] = msg
         io.emit('update', [playerPositions])
 
@@ -209,13 +207,17 @@ io.on('connection', (socket) => {
         // dps: everything else
         else {role = "DPS"; currentlyConnectedDPS += 1}
 
-        console.log(`Player ${player} switches to ${role}`)
+        console.log(currentlyConnectedPlayers)
+        console.log(currentlyConnectedHealers)
+        console.log(currentlyConnectedTanks)
+        console.log(currentlyConnectedDPS)
     })
 
     socket.on('change name', (msg) => {
         console.log(`Player ${player} changed their name to ${msg[0]} ${msg[1]}`)
         playerPositions[playerLocation][playerID - 1][3] = msg[0]
         playerPositions[playerLocation][playerID - 1][4] = msg[1]
+        io.emit('update', [playerPositions])
     })
 
     socket.on('change mechanic', async (msg) => {

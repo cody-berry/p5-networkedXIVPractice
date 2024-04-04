@@ -1532,6 +1532,14 @@ function draw() {
         }
         image(icons[playerPosition[2]], playerPosition[0] - 725, playerPosition[1] - 325, 50, 50)
     }
+
+    // now iterate again and display names on top of players
+    for (let playerPosition of playerPositions[yourLocation]) {
+        fill(0, 0, 100)
+        text(playerPosition[3] + " " + playerPosition[4],
+             playerPosition[0] - 700 - textWidth(playerPosition[3] + " " + playerPosition[4])/2, playerPosition[1] - 330)
+    }
+
     if (keyIsPressed) {
         if (keyIsDown(87) && playerPositions[yourLocation][yourID - 1][1] > 0) socket.emit("move up", yourID)
         if (keyIsDown(68) && playerPositions[yourLocation][yourID - 1][0] < 1000) socket.emit("move right", yourID)
