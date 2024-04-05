@@ -842,6 +842,9 @@ let greenSlipperySoapWidth
 
 let silkie
 
+let firstNameAbbreviated
+let lastNameAbbreviated
+
 class CircleSpreadAOE {
     constructor(type, target, radius, disappearsIn) {
         this.type = type
@@ -1536,8 +1539,11 @@ function draw() {
     // now iterate again and display names on top of players
     for (let playerPosition of playerPositions[yourLocation]) {
         fill(0, 0, 100)
-        text(playerPosition[3] + " " + playerPosition[4],
-             playerPosition[0] - 700 - textWidth(playerPosition[3] + " " + playerPosition[4])/2, playerPosition[1] - 330)
+        text(((firstNameAbbreviated) ? (playerPosition[3][0] + ".") : (playerPosition[3])) + " " +
+            ((lastNameAbbreviated) ? (playerPosition[4][0] + ".") : (playerPosition[4])),
+             playerPosition[0] - 700 - textWidth(
+                 ((firstNameAbbreviated) ? (playerPosition[3][0] + ".") : (playerPosition[3])) + " " +
+                     ((lastNameAbbreviated) ? (playerPosition[4][0] + ".") : (playerPosition[4])))/2, playerPosition[1] - 330)
     }
 
     if (keyIsPressed) {
@@ -1655,6 +1661,23 @@ function draw() {
         text("Slippery Soap (Yellow)", xPadding*2, yellowSlipperySoapYPos + blockHeight - textDescent() - 2)
         text("Slippery Soap (Blue)", xPadding*2, blueSlipperySoapYPos + blockHeight - textDescent() - 2)
         text("Slippery Soap (Green)", xPadding*2, greenSlipperySoapYPos + blockHeight - textDescent() - 2)
+
+        // then display some buttons for abbreviations
+        // first name and last name for now
+        fill(0, 0, 25)
+        if (mouseX > 0 && mouseX < textWidth("Abbreviate First Name ") &&
+            mouseY > height - textAscent()*2 - textDescent()*3 && mouseY < height - textAscent() - textDescent())
+            fill(0, 0, 20)
+        rect(0, height - textAscent()*2 - textDescent()*3, textWidth("Abbreviate First Name "), textAscent() + textDescent())
+        fill(0, 0, 25)
+        if (mouseX > 0 && mouseX < textWidth("Abbreviate Last Name ") &&
+            mouseY > height - textAscent() - textDescent() && mouseY < height)
+            fill(0, 0, 20)
+        rect(0, height - textAscent() - textDescent(), textWidth("Abbreviate Last Name "), textAscent() + textDescent())
+
+        fill(0, 0, 100)
+        text("Abbreviate First Name", textWidth(" ")/2, height - textAscent() - textDescent()*2.5)
+        text("Abbreviate Last Name", textWidth(" ")/2, height - textDescent()/2)
     }
 
     /* debugCorner needs to be last so its z-index is highest */
@@ -1895,6 +1918,13 @@ function mousePressed() {
             mouseY > greenSlipperySoapYPos && mouseY < greenSlipperySoapYPos + blockHeight) {
             socket.emit("change mechanic", "Slippery Soap (Green)")
         }
+
+        if (mouseX > 0 && mouseX < textWidth("Abbreviate First Name ") &&
+            mouseY > height - textAscent()*2 - textDescent()*3 && mouseY < height - textAscent() - textDescent())
+            firstNameAbbreviated = !firstNameAbbreviated
+        if (mouseX > 0 && mouseX < textWidth("Abbreviate Last Name ") &&
+            mouseY > height - textAscent() - textDescent() && mouseY < height)
+            lastNameAbbreviated = !lastNameAbbreviated
     }
 }
 
