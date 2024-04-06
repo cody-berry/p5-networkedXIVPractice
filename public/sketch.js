@@ -1284,7 +1284,7 @@ function preload() {
 }
 
 function setup() {
-    let cnv = createCanvas(1000, 600)
+    let cnv = createCanvas(1000, 1020)
     colorMode(HSB, 360, 100, 100, 100)
     background(234, 34, 24)
     cnv.parent('#canvas')
@@ -1666,19 +1666,48 @@ function draw() {
         // first name and last name for now
         fill(0, 0, 25)
         if (mouseX > 0 && mouseX < textWidth("Abbreviate First Name ") &&
-            mouseY > height - textAscent()*2 - textDescent()*3 && mouseY < height - textAscent() - textDescent())
+            mouseY > 600 - textAscent()*2 - textDescent()*3 && mouseY < 600 - textAscent() - textDescent())
             fill(0, 0, 20)
-        rect(0, height - textAscent()*2 - textDescent()*3, textWidth("Abbreviate First Name "), textAscent() + textDescent())
+        rect(0, 600 - textAscent()*2 - textDescent()*3, textWidth("Abbreviate First Name "), textAscent() + textDescent())
         fill(0, 0, 25)
         if (mouseX > 0 && mouseX < textWidth("Abbreviate Last Name ") &&
-            mouseY > height - textAscent() - textDescent() && mouseY < height)
+            mouseY > 600 - textAscent() - textDescent() && mouseY < 600)
             fill(0, 0, 20)
-        rect(0, height - textAscent() - textDescent(), textWidth("Abbreviate Last Name "), textAscent() + textDescent())
+        rect(0, 600 - textAscent() - textDescent(), textWidth("Abbreviate Last Name "), textAscent() + textDescent())
 
         fill(0, 0, 100)
-        text("Abbreviate First Name", textWidth(" ")/2, height - textAscent() - textDescent()*2.5)
-        text("Abbreviate Last Name", textWidth(" ")/2, height - textDescent()/2)
+        text("Abbreviate First Name", textWidth(" ")/2, 600 - textAscent() - textDescent()*2.5)
+        text("Abbreviate Last Name", textWidth(" ")/2, 600 - textDescent()/2)
     }
+
+    // after we're done with all this, we add a log window
+    // to make it look good, we add multiple layers
+    fill(0, 0, 0, 10)
+    rect(0, 600, width, 420)
+
+    // normally we'd add 10 for every layer, but we want to be more precise
+    // here.
+    fill(0, 0, 0, 10*100/90) // 1000/90 = 11.1111111
+    rect(2, 602, width - 4, 416)
+    fill(0, 0, 0, 10*100/80) // 1000/80 = 12.5
+    rect(4, 604, width - 8, 412)
+    fill(0, 0, 0, 10*100/70) // 1000/70 = 14.2857142
+    rect(6, 606, width - 12, 408)
+    fill(0, 0, 0, 10*100/60) // 1000/60 = 16.6666666
+    rect(8, 608, width - 16, 404)
+    fill(0, 0, 0, 10*100/50) // 1000/50 = 20
+    rect(10, 610, width - 20, 400)
+    fill(0, 0, 0, 10*100/40) // 1000/40 = 25
+    rect(12, 612, width - 24, 396)
+    fill(0, 0, 0, 10*100/30) // 1000/30 = 33.3333333
+    rect(14, 614, width - 28, 392)
+    fill(0, 0, 0, 10*100/20) // 1000/50 = 50
+    rect(16, 616, width - 32, 388)
+    fill(0, 0, 0, 10*100/10)
+    rect(18, 618, width - 36, 384)
+
+    textSize(18)
+    console.log(380/(textAscent() + textDescent()))
 
     /* debugCorner needs to be last so its z-index is highest */
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
@@ -1920,10 +1949,10 @@ function mousePressed() {
         }
 
         if (mouseX > 0 && mouseX < textWidth("Abbreviate First Name ") &&
-            mouseY > height - textAscent()*2 - textDescent()*3 && mouseY < height - textAscent() - textDescent())
+            mouseY > 600 - textAscent()*2 - textDescent()*3 && mouseY < 600 - textAscent() - textDescent())
             firstNameAbbreviated = !firstNameAbbreviated
         if (mouseX > 0 && mouseX < textWidth("Abbreviate Last Name ") &&
-            mouseY > height - textAscent() - textDescent() && mouseY < height)
+            mouseY > 600 - textAscent() - textDescent() && mouseY < 600)
             lastNameAbbreviated = !lastNameAbbreviated
     }
 }
