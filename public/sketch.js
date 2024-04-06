@@ -845,6 +845,8 @@ let silkie
 let firstNameAbbreviated
 let lastNameAbbreviated
 
+let logWindowMessages
+
 class CircleSpreadAOE {
     constructor(type, target, radius, disappearsIn) {
         this.type = type
