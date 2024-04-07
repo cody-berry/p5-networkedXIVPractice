@@ -1225,6 +1225,9 @@ function preload() {
 
     silkie = loadImage("data/Silkie.png")
 
+    // each log window message follows this: ["message", [hue, saturation, brightness]]
+    logWindowMessages = []
+
     // Connect to the WebSocket server
     socket = io.connect(window.location.origin)
 
@@ -1283,6 +1286,9 @@ function preload() {
             new CircleSpreadAOE(...msg)
         )
     })
+    socket.on('log window message', function (msg) {
+        logWindowMessages.push(msg)
+    })
 }
 
 function setup() {
@@ -1320,10 +1326,6 @@ function setup() {
     frameRate(60)
 
     angleMode(RADIANS)
-
-    // this is a test
-    // each log window message follows this: ["message", [hue, saturation, brightness]]
-    logWindowMessages = [["test test", [0, 100, 100]], ["another test", [180, 100, 100]], ["welcome!", [270, 100, 70]]]
 }
 
 function draw() {
@@ -1725,7 +1727,7 @@ function draw() {
     // this case 19
     let yPos = 620
     for (let logWindowMessage of logWindowMessages) {
-        if (yPos > 1020) { // make sure the messages don't overflow
+        if (yPos > 1000) { // make sure the messages don't overflow
             break
         } else {
             yPos += 20
