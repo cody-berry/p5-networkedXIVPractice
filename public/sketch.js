@@ -1286,7 +1286,7 @@ function preload() {
 }
 
 function setup() {
-    let cnv = createCanvas(1000, 1020)
+    let cnv = createCanvas(1000, 1040)
     colorMode(HSB, 360, 100, 100, 100)
     background(234, 34, 24)
     cnv.parent('#canvas')
@@ -1320,6 +1320,10 @@ function setup() {
     frameRate(60)
 
     angleMode(RADIANS)
+
+    // this is a test
+    // each log window message follows this: ["message", [hue, saturation, brightness]]
+    logWindowMessages = [["test test", [0, 100, 100]], ["another test", [180, 100, 100]], ["welcome!", [270, 100, 70]]]
 }
 
 function draw() {
@@ -1404,8 +1408,8 @@ function draw() {
 
         // left/right side
         for (let y = -260 + squareSize; y < 260; y += squareSize) {
-            arc(-260, y, squareSize, squareSize, -PI/2, PI/2)
-            arc(260, y, squareSize, squareSize, PI/2, -PI/2)
+            arc(-260, y, squareSize, squareSize, -PI / 2, PI / 2)
+            arc(260, y, squareSize, squareSize, PI / 2, -PI / 2)
         }
         // top/bottom side
         for (let x = -260 + squareSize; x < 260; x += squareSize) {
@@ -1413,10 +1417,10 @@ function draw() {
             arc(x, 260, squareSize, squareSize, PI, 0)
         }
         // corners
-        arc(-260, -260, squareSize, squareSize, 0, PI/2)
-        arc(-260, 260, squareSize, squareSize, -PI/2, 0)
-        arc(260, 260, squareSize, squareSize, -PI, -PI/2)
-        arc(260, -260, squareSize, squareSize, PI/2, PI)
+        arc(-260, -260, squareSize, squareSize, 0, PI / 2)
+        arc(-260, 260, squareSize, squareSize, -PI / 2, 0)
+        arc(260, 260, squareSize, squareSize, -PI, -PI / 2)
+        arc(260, -260, squareSize, squareSize, PI / 2, PI)
 
         // now draw the lines
         // left/right side
@@ -1433,56 +1437,56 @@ function draw() {
 
         // there are also faint circles along the perimeter
         stroke(0, 0, 30, 20)
-        circle(-260 + squareSize/2, -260 + 3*squareSize/2, squareSize - 5)
-        circle(-260 + squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
-        circle(-260 + squareSize/2, -260 + 7*squareSize/2, squareSize - 5)
-        circle(-260 + squareSize/2, -260 + 9*squareSize/2, squareSize - 5)
-        circle(-260 + squareSize/2, -260 + 11*squareSize/2, squareSize - 5)
-        circle(-260 + squareSize/2, -260 + 13*squareSize/2, squareSize - 5)
-        circle(-260 + 3*squareSize/2, -260 + 15*squareSize/2, squareSize - 5)
-        circle(-260 + 5*squareSize/2, -260 + 15*squareSize/2, squareSize - 5)
-        circle(-260 + 7*squareSize/2, -260 + 15*squareSize/2, squareSize - 5)
-        circle(-260 + 9*squareSize/2, -260 + 15*squareSize/2, squareSize - 5)
-        circle(-260 + 11*squareSize/2, -260 + 15*squareSize/2, squareSize - 5)
-        circle(-260 + 13*squareSize/2, -260 + 15*squareSize/2, squareSize - 5)
-        circle(-260 + 15*squareSize/2, -260 + 13*squareSize/2, squareSize - 5)
-        circle(-260 + 15*squareSize/2, -260 + 11*squareSize/2, squareSize - 5)
-        circle(-260 + 15*squareSize/2, -260 + 9*squareSize/2, squareSize - 5)
-        circle(-260 + 15*squareSize/2, -260 + 7*squareSize/2, squareSize - 5)
-        circle(-260 + 15*squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
-        circle(-260 + 15*squareSize/2, -260 + 3*squareSize/2, squareSize - 5)
-        circle(-260 + 13*squareSize/2, -260 + squareSize/2, squareSize - 5)
-        circle(-260 + 11*squareSize/2, -260 + squareSize/2, squareSize - 5)
-        circle(-260 + 9*squareSize/2, -260 + squareSize/2, squareSize - 5)
-        circle(-260 + 7*squareSize/2, -260 + squareSize/2, squareSize - 5)
-        circle(-260 + 5*squareSize/2, -260 + squareSize/2, squareSize - 5)
-        circle(-260 + 3*squareSize/2, -260 + squareSize/2, squareSize - 5)
+        circle(-260 + squareSize / 2, -260 + 3 * squareSize / 2, squareSize - 5)
+        circle(-260 + squareSize / 2, -260 + 5 * squareSize / 2, squareSize - 5)
+        circle(-260 + squareSize / 2, -260 + 7 * squareSize / 2, squareSize - 5)
+        circle(-260 + squareSize / 2, -260 + 9 * squareSize / 2, squareSize - 5)
+        circle(-260 + squareSize / 2, -260 + 11 * squareSize / 2, squareSize - 5)
+        circle(-260 + squareSize / 2, -260 + 13 * squareSize / 2, squareSize - 5)
+        circle(-260 + 3 * squareSize / 2, -260 + 15 * squareSize / 2, squareSize - 5)
+        circle(-260 + 5 * squareSize / 2, -260 + 15 * squareSize / 2, squareSize - 5)
+        circle(-260 + 7 * squareSize / 2, -260 + 15 * squareSize / 2, squareSize - 5)
+        circle(-260 + 9 * squareSize / 2, -260 + 15 * squareSize / 2, squareSize - 5)
+        circle(-260 + 11 * squareSize / 2, -260 + 15 * squareSize / 2, squareSize - 5)
+        circle(-260 + 13 * squareSize / 2, -260 + 15 * squareSize / 2, squareSize - 5)
+        circle(-260 + 15 * squareSize / 2, -260 + 13 * squareSize / 2, squareSize - 5)
+        circle(-260 + 15 * squareSize / 2, -260 + 11 * squareSize / 2, squareSize - 5)
+        circle(-260 + 15 * squareSize / 2, -260 + 9 * squareSize / 2, squareSize - 5)
+        circle(-260 + 15 * squareSize / 2, -260 + 7 * squareSize / 2, squareSize - 5)
+        circle(-260 + 15 * squareSize / 2, -260 + 5 * squareSize / 2, squareSize - 5)
+        circle(-260 + 15 * squareSize / 2, -260 + 3 * squareSize / 2, squareSize - 5)
+        circle(-260 + 13 * squareSize / 2, -260 + squareSize / 2, squareSize - 5)
+        circle(-260 + 11 * squareSize / 2, -260 + squareSize / 2, squareSize - 5)
+        circle(-260 + 9 * squareSize / 2, -260 + squareSize / 2, squareSize - 5)
+        circle(-260 + 7 * squareSize / 2, -260 + squareSize / 2, squareSize - 5)
+        circle(-260 + 5 * squareSize / 2, -260 + squareSize / 2, squareSize - 5)
+        circle(-260 + 3 * squareSize / 2, -260 + squareSize / 2, squareSize - 5)
 
         // also where there's exactly 3 squares away from the center
-        circle(-260 + 7*squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
-        circle(-260 + 9*squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
-        circle(-260 + 7*squareSize/2, -260 + 11*squareSize/2, squareSize - 5)
-        circle(-260 + 9*squareSize/2, -260 + 11*squareSize/2, squareSize - 5)
-        circle(-260 + 5*squareSize/2, -260 + 7*squareSize/2, squareSize - 5)
-        circle(-260 + 5*squareSize/2, -260 + 9*squareSize/2, squareSize - 5)
-        circle(-260 + 11*squareSize/2, -260 + 7*squareSize/2, squareSize - 5)
-        circle(-260 + 11*squareSize/2, -260 + 9*squareSize/2, squareSize - 5)
+        circle(-260 + 7 * squareSize / 2, -260 + 5 * squareSize / 2, squareSize - 5)
+        circle(-260 + 9 * squareSize / 2, -260 + 5 * squareSize / 2, squareSize - 5)
+        circle(-260 + 7 * squareSize / 2, -260 + 11 * squareSize / 2, squareSize - 5)
+        circle(-260 + 9 * squareSize / 2, -260 + 11 * squareSize / 2, squareSize - 5)
+        circle(-260 + 5 * squareSize / 2, -260 + 7 * squareSize / 2, squareSize - 5)
+        circle(-260 + 5 * squareSize / 2, -260 + 9 * squareSize / 2, squareSize - 5)
+        circle(-260 + 11 * squareSize / 2, -260 + 7 * squareSize / 2, squareSize - 5)
+        circle(-260 + 11 * squareSize / 2, -260 + 9 * squareSize / 2, squareSize - 5)
 
         stroke(0, 0, 0, 40)
         // also on the exact intercardinal squares that's not in the 2x2
         // center squares
-        circle(-260 + 15*squareSize/2, -260 + 15*squareSize/2, squareSize - 5)
-        circle(-260 + squareSize/2, -260 + 15*squareSize/2, squareSize - 5)
-        circle(-260 + squareSize/2, -260 + squareSize/2, squareSize - 5)
-        circle(-260 + 15*squareSize/2, -260 + squareSize/2, squareSize - 5)
-        circle(-260 + 13*squareSize/2, -260 + 13*squareSize/2, squareSize - 5)
-        circle(-260 + 3*squareSize/2, -260 + 13*squareSize/2, squareSize - 5)
-        circle(-260 + 3*squareSize/2, -260 + 3*squareSize/2, squareSize - 5)
-        circle(-260 + 13*squareSize/2, -260 + 3*squareSize/2, squareSize - 5)
-        circle(-260 + 11*squareSize/2, -260 + 11*squareSize/2, squareSize - 5)
-        circle(-260 + 5*squareSize/2, -260 + 11*squareSize/2, squareSize - 5)
-        circle(-260 + 5*squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
-        circle(-260 + 11*squareSize/2, -260 + 5*squareSize/2, squareSize - 5)
+        circle(-260 + 15 * squareSize / 2, -260 + 15 * squareSize / 2, squareSize - 5)
+        circle(-260 + squareSize / 2, -260 + 15 * squareSize / 2, squareSize - 5)
+        circle(-260 + squareSize / 2, -260 + squareSize / 2, squareSize - 5)
+        circle(-260 + 15 * squareSize / 2, -260 + squareSize / 2, squareSize - 5)
+        circle(-260 + 13 * squareSize / 2, -260 + 13 * squareSize / 2, squareSize - 5)
+        circle(-260 + 3 * squareSize / 2, -260 + 13 * squareSize / 2, squareSize - 5)
+        circle(-260 + 3 * squareSize / 2, -260 + 3 * squareSize / 2, squareSize - 5)
+        circle(-260 + 13 * squareSize / 2, -260 + 3 * squareSize / 2, squareSize - 5)
+        circle(-260 + 11 * squareSize / 2, -260 + 11 * squareSize / 2, squareSize - 5)
+        circle(-260 + 5 * squareSize / 2, -260 + 11 * squareSize / 2, squareSize - 5)
+        circle(-260 + 5 * squareSize / 2, -260 + 5 * squareSize / 2, squareSize - 5)
+        circle(-260 + 11 * squareSize / 2, -260 + 5 * squareSize / 2, squareSize - 5)
     }
 
 
@@ -1516,9 +1520,18 @@ function draw() {
             // add a tail color
             if (bossPositions[yourLocation][2]) {
                 switch (bossPositions[yourLocation][2]) {
-                    case "yellow": fill(50, 60, 80); stroke(50, 50, 90);break
-                    case "green": fill(120, 30, 100); stroke(120, 20, 100);break
-                    case "blue": fill(200, 20, 100); stroke(200, 10, 100);break
+                    case "yellow":
+                        fill(50, 60, 80);
+                        stroke(50, 50, 90);
+                        break
+                    case "green":
+                        fill(120, 30, 100);
+                        stroke(120, 20, 100);
+                        break
+                    case "blue":
+                        fill(200, 20, 100);
+                        stroke(200, 10, 100);
+                        break
                 }
                 noStroke()
                 circle(bossX - 758, bossY - 329, 55)
@@ -1543,9 +1556,9 @@ function draw() {
         fill(0, 0, 100)
         text(((firstNameAbbreviated) ? (playerPosition[3][0] + ".") : (playerPosition[3])) + " " +
             ((lastNameAbbreviated) ? (playerPosition[4][0] + ".") : (playerPosition[4])),
-             playerPosition[0] - 700 - textWidth(
-                 ((firstNameAbbreviated) ? (playerPosition[3][0] + ".") : (playerPosition[3])) + " " +
-                     ((lastNameAbbreviated) ? (playerPosition[4][0] + ".") : (playerPosition[4])))/2, playerPosition[1] - 330)
+            playerPosition[0] - 700 - textWidth(
+                ((firstNameAbbreviated) ? (playerPosition[3][0] + ".") : (playerPosition[3])) + " " +
+                ((lastNameAbbreviated) ? (playerPosition[4][0] + ".") : (playerPosition[4]))) / 2, playerPosition[1] - 330)
     }
 
     if (keyIsPressed) {
@@ -1600,10 +1613,10 @@ function draw() {
         fill(0, 0, 20)
         stroke(0, 0, 50)
         strokeWeight((cursor[0] === 0) ? 2 : 1)
-        rect(textWidth("First name:") + textWidth(" ")/2 + 5, 80, textWidth("10  letters"), 25)
+        rect(textWidth("First name:") + textWidth(" ") / 2 + 5, 80, textWidth("10  letters"), 25)
 
         strokeWeight((cursor[0] === 0) ? 1 : 2)
-        rect(textWidth("First name:") + textWidth(" ")/2 + 5, 110, textWidth("10  letters"), 25)
+        rect(textWidth("First name:") + textWidth(" ") / 2 + 5, 110, textWidth("10  letters"), 25)
 
         strokeWeight(1)
 
@@ -1619,8 +1632,8 @@ function draw() {
         stroke(0, 0, 100)
         strokeWeight(1)
         if (millis() % 1000 < 500) {
-            line(textWidth("First name: ") + textWidth(" ")*cursor[1] + 5, 83 + 30*cursor[0],
-                textWidth("Last name:  ") + textWidth(" ")*cursor[1] + 5, 102 + 30*cursor[0])
+            line(textWidth("First name: ") + textWidth(" ") * cursor[1] + 5, 83 + 30 * cursor[0],
+                textWidth("Last name:  ") + textWidth(" ") * cursor[1] + 5, 102 + 30 * cursor[0])
         }
 
         // also add button for "finished changing name"
@@ -1632,9 +1645,7 @@ function draw() {
 
         fill(0, 0, 100)
         text("Finished changing name", 155, 20)
-    }
-
-    else {
+    } else {
         fill(0, 0, 100)
         text("Mechanic selection", 5, 20)
 
@@ -1660,17 +1671,17 @@ function draw() {
 
         fill(0, 0, 100)
         noStroke()
-        text("Slippery Soap (Yellow)", xPadding*2, yellowSlipperySoapYPos + blockHeight - textDescent() - 2)
-        text("Slippery Soap (Blue)", xPadding*2, blueSlipperySoapYPos + blockHeight - textDescent() - 2)
-        text("Slippery Soap (Green)", xPadding*2, greenSlipperySoapYPos + blockHeight - textDescent() - 2)
+        text("Slippery Soap (Yellow)", xPadding * 2, yellowSlipperySoapYPos + blockHeight - textDescent() - 2)
+        text("Slippery Soap (Blue)", xPadding * 2, blueSlipperySoapYPos + blockHeight - textDescent() - 2)
+        text("Slippery Soap (Green)", xPadding * 2, greenSlipperySoapYPos + blockHeight - textDescent() - 2)
 
         // then display some buttons for abbreviations
         // first name and last name for now
         fill(0, 0, 25)
         if (mouseX > 0 && mouseX < textWidth("Abbreviate First Name ") &&
-            mouseY > 600 - textAscent()*2 - textDescent()*3 && mouseY < 600 - textAscent() - textDescent())
+            mouseY > 600 - textAscent() * 2 - textDescent() * 3 && mouseY < 600 - textAscent() - textDescent())
             fill(0, 0, 20)
-        rect(0, 600 - textAscent()*2 - textDescent()*3, textWidth("Abbreviate First Name "), textAscent() + textDescent())
+        rect(0, 600 - textAscent() * 2 - textDescent() * 3, textWidth("Abbreviate First Name "), textAscent() + textDescent())
         fill(0, 0, 25)
         if (mouseX > 0 && mouseX < textWidth("Abbreviate Last Name ") &&
             mouseY > 600 - textAscent() - textDescent() && mouseY < 600)
@@ -1678,38 +1689,50 @@ function draw() {
         rect(0, 600 - textAscent() - textDescent(), textWidth("Abbreviate Last Name "), textAscent() + textDescent())
 
         fill(0, 0, 100)
-        text("Abbreviate First Name", textWidth(" ")/2, 600 - textAscent() - textDescent()*2.5)
-        text("Abbreviate Last Name", textWidth(" ")/2, 600 - textDescent()/2)
+        text("Abbreviate First Name", textWidth(" ") / 2, 600 - textAscent() - textDescent() * 2.5)
+        text("Abbreviate Last Name", textWidth(" ") / 2, 600 - textDescent() / 2)
     }
 
     // after we're done with all this, we add a log window
     // to make it look good, we add multiple layers
     fill(0, 0, 0, 10)
-    rect(0, 600, width, 420)
+    rect(0, 600, width, 440)
 
     // normally we'd add 10 for every layer, but we want to be more precise
     // here.
-    fill(0, 0, 0, 10*100/90) // 1000/90 = 11.1111111
-    rect(2, 602, width - 4, 416)
-    fill(0, 0, 0, 10*100/80) // 1000/80 = 12.5
-    rect(4, 604, width - 8, 412)
-    fill(0, 0, 0, 10*100/70) // 1000/70 = 14.2857142
-    rect(6, 606, width - 12, 408)
-    fill(0, 0, 0, 10*100/60) // 1000/60 = 16.6666666
-    rect(8, 608, width - 16, 404)
-    fill(0, 0, 0, 10*100/50) // 1000/50 = 20
-    rect(10, 610, width - 20, 400)
-    fill(0, 0, 0, 10*100/40) // 1000/40 = 25
-    rect(12, 612, width - 24, 396)
-    fill(0, 0, 0, 10*100/30) // 1000/30 = 33.3333333
-    rect(14, 614, width - 28, 392)
-    fill(0, 0, 0, 10*100/20) // 1000/50 = 50
-    rect(16, 616, width - 32, 388)
-    fill(0, 0, 0, 10*100/10)
-    rect(18, 618, width - 36, 384)
+    fill(0, 0, 0, 10 * 100 / 90)
+    rect(2, 602, width - 4, 436)
+    fill(0, 0, 0, 10 * 100 / 80)
+    rect(4, 604, width - 8, 432)
+    fill(0, 0, 0, 10 * 100 / 70)
+    rect(6, 606, width - 12, 428)
+    fill(0, 0, 0, 10 * 100 / 60)
+    rect(8, 608, width - 16, 424)
+    fill(0, 0, 0, 10 * 100 / 50)
+    rect(10, 610, width - 20, 420)
+    fill(0, 0, 0, 10 * 100 / 40)
+    rect(12, 612, width - 24, 416)
+    fill(0, 0, 0, 10 * 100 / 30)
+    rect(14, 614, width - 28, 412)
+    fill(0, 0, 0, 10 * 100 / 20)
+    rect(16, 616, width - 32, 408)
+    fill(0, 0, 0, 10 * 100 / 10)
+    rect(18, 618, width - 36, 404)
 
-    textSize(18)
-    console.log(380/(textAscent() + textDescent()))
+    textSize(19)
+    // display each message inside
+    // since textAscent() + textDescent() is always exactly the text size, in
+    // this case 19
+    let yPos = 620
+    for (let logWindowMessage of logWindowMessages) {
+        if (yPos > 1020) { // make sure the messages don't overflow
+            break
+        } else {
+            yPos += 20
+            fill(logWindowMessage[1][0], logWindowMessage[1][1], logWindowMessage[1][2])
+            text(logWindowMessage[0], 20, yPos - textDescent())
+        }
+    }
 
     /* debugCorner needs to be last so its z-index is highest */
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
