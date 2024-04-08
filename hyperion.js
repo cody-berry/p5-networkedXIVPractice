@@ -158,6 +158,7 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log(`Player ${player} disconnected`);
+        io.emit('log window message', [`Player ${player} (${playerPositions[playerLocation][playerID - 1][3]} ${playerPositions[playerLocation][playerID - 1][4]}) disconnected`, [180, 30, 80]])
         playerPositions[playerLocation][playerID - 1] = [-20, -20, "ast", "Disconnect", "edPlayer"]
         io.emit('update', [playerPositions])
         currentlyConnectedPlayers -= 1
@@ -170,7 +171,6 @@ io.on('connection', (socket) => {
             case "tank": currentlyConnectedTanks -= 1; break
             case "DPS": currentlyConnectedDPS -= 1; break
         }
-        io.emit('log window message', [`Player ${player} disconnected`, [180, 30, 80]])
     });
 
     socket.on('move up', (msg) => {

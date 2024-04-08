@@ -1725,16 +1725,17 @@ function draw() {
     // display each message inside
     // since textAscent() + textDescent() is always exactly the text size, in
     // this case 19
-    let yPos = 620
+    let yPos = 640 + logWindowMessages.length*20
     for (let logWindowMessage of logWindowMessages) {
-        if (yPos > 1000) { // make sure the messages don't overflow
-            break
+        if (yPos <= 420) { // make sure the messages don't overflow
+
         } else {
-            yPos += 20
+            yPos -= 20
             fill(logWindowMessage[1][0], logWindowMessage[1][1], logWindowMessage[1][2])
             text(logWindowMessage[0], 20, yPos - textDescent())
         }
     }
+    textSize(20)
 
     /* debugCorner needs to be last so its z-index is highest */
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
