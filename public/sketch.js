@@ -908,7 +908,7 @@ class LineAOE {
             y += sin(angle)
             if (sqrt((x - posX)**2 + (y - posY)**2) < this.thickness/2) {
                 nubcaked = true
-                print("You nubcake!")
+                socket.emit("nubcake", ["got hit by a line AOE."])
             }
         }
     }
@@ -1048,7 +1048,11 @@ class DonutAOE {
         let posX = playerPositions[yourLocation][yourID - 1][0]
         let posY = playerPositions[yourLocation][yourID - 1][1]
 
-        if (sqrt(posX**2 + posY**2) > this.r) print("You nubcake!")
+        let bossPosX = bossPositions[yourLocation][0]
+        let bossPosY = bossPositions[yourLocation][1]
+
+        if (sqrt((posX - bossPosX)**2 + (posY - bossPosY)**2) > this.r)
+            socket.emit("nubcake", ["got hit by a donut AOE."])
     }
 
     draw() {
@@ -1098,7 +1102,8 @@ class RectAOE {
         let posX = playerPositions[yourLocation][yourID - 1][0]
         let posY = playerPositions[yourLocation][yourID - 1][1]
         if (this.x < posX && posX < this.x + this.w &&
-            this.y < posY && posY < this.x + this.h) print("You nubcake!")
+            this.y < posY && posY < this.x + this.h)
+            socket.emit("nubcake", ["got hit by a rect AOE."])
     }
 
     draw() {
@@ -1153,7 +1158,8 @@ class ConeAOE {
         let posY = playerPositions[yourLocation][yourID - 1][1]
 
         if (sqrt(posX**2 + posY**2) < this.radius &&
-            this.start < atan2(posY, posX) && atan2(posY, posX) < this.end) print("You nubcake!")
+            this.start < atan2(posY, posX) && atan2(posY, posX) < this.end)
+            socket.emit("nubcake", ["got hit by a cone AOE."])
 
         if (this.type === "electric") {
             // to add an electric effect, select random angles as points

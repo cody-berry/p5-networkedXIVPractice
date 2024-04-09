@@ -173,6 +173,10 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('nubcake', (msg) => {
+        io.emit('log window message', [`Player ${player} (${playerPositions[playerLocation][playerID - 1][3]} ${playerPositions[playerLocation][playerID - 1][4]}) ${msg}`, [0, 90, 80]])
+    })
+
     socket.on('move up', (msg) => {
         playerPositions[playerLocation][msg - 1][1] -= 0.9
         io.emit('update', [playerPositions])
