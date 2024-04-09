@@ -891,6 +891,26 @@ class LineAOE {
         this.thickness = thickness
         this.initiatedAt = millis()
         this.disappearsAt = millis() + disappearsIn
+
+        // find the distance and angle from x1, y1 to x2, y2
+        let distance = sqrt((x2 - x1)**2 + (y2 - y1)**2)
+        let angle = atan2(y2 - y1, x2 - x1)
+
+        // now for each point, we check whether you nubcake
+        // only continue checking if you haven't nubcaked
+        let posX = playerPositions[yourLocation][yourID - 1][0]
+        let posY = playerPositions[yourLocation][yourID - 1][1]
+        let nubcaked = false
+        let x = x1
+        let y = y1
+        for (let i = 0; i < distance && nubcaked === false; i++) {
+            x += cos(angle)
+            y += sin(angle)
+            if (sqrt((x - posX)**2 + (y - posY)**2) < this.thickness/2) {
+                nubcaked = true
+                print("You nubcake!")
+            }
+        }
     }
 
     draw() {
