@@ -896,7 +896,7 @@ class LineAOE {
     draw() {
         if (millis() < this.disappearsAt) {
             if (this.type === "ice") {
-                // light blue, appears/disappears from left to right
+                // light blue, appears/disappears from x1, y1 to x2, y2
                 if (millis() - this.initiatedAt < 100) {
                     let millisSinceAppeared = millis() - this.initiatedAt
                     stroke(180, 30, 100, 50)
@@ -1025,9 +1025,10 @@ class DonutAOE {
         this.disappearsAt = millis() + lingersForMillis
         this.initiatedAt = millis()
 
-        if (sqrt((playerPositions[yourLocation][yourID - 1][0])**2 + (playerPositions[yourLocation][yourID - 1][1])**2) > this.r) {
-            print("You nubcake!")
-        }
+        let posX = playerPositions[yourLocation][yourID - 1][0]
+        let posY = playerPositions[yourLocation][yourID - 1][1]
+
+        if (sqrt(posX**2 + posY**2) > this.r) print("You nubcake!")
     }
 
     draw() {
@@ -1073,6 +1074,11 @@ class RectAOE {
         this.h = h
         this.disappearsAt = millis() + lingersForMillis
         this.initiatedAt = millis()
+
+        let posX = playerPositions[yourLocation][yourID - 1][0]
+        let posY = playerPositions[yourLocation][yourID - 1][1]
+        if (this.x < posX && posX < this.x + this.w &&
+            this.y < posY && posY < this.x + this.h) print("You nubcake!")
     }
 
     draw() {
@@ -1122,6 +1128,12 @@ class ConeAOE {
         this.end = eAngle
         this.disappearsAt = millis() + lingersForMillis
         this.initiatedAt = millis()
+
+        let posX = playerPositions[yourLocation][yourID - 1][0]
+        let posY = playerPositions[yourLocation][yourID - 1][1]
+
+        if (sqrt(posX**2 + posY**2) < this.radius &&
+            this.start < atan2(posY, posX) && atan2(posY, posX) < this.end) print("You nubcake!")
 
         if (this.type === "electric") {
             // to add an electric effect, select random angles as points

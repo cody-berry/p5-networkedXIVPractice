@@ -270,8 +270,8 @@ io.on('connection', (socket) => {
                             // get ready to do it gradually!
                             let distance = Math.sqrt((playerPosX - 700)**2 + (playerPosY - 300)**2)
                             for (let i = 0; i < distance; i++) {
-                                bossPositions["Lobby"][0] += Math.cos(angle)
-                                bossPositions["Lobby"][1] += Math.sin(angle)
+                                bossPositions["Lobby"][0] += Math.cos(angle * (PI/180))
+                                bossPositions["Lobby"][1] += Math.sin(angle * (PI/180))
 
                                 // keep doing nothing for a while
                                 io.emit('update boss positions', bossPositions)
@@ -393,8 +393,8 @@ io.on('connection', (socket) => {
 
                             bossPositions["Lobby"] = [700, 300, "yellow", angle2]
                             for (let i = 0; i < distance; i++) {
-                                bossPositions["Lobby"][0] += Math.cos(angle2)
-                                bossPositions["Lobby"][1] += Math.sin(angle2)
+                                bossPositions["Lobby"][0] += Math.cos(angle2 * (PI/180))
+                                bossPositions["Lobby"][1] += Math.sin(angle2 * (PI/180))
 
                                 // keep doing nothing for a while
                                 io.emit('update boss positions', bossPositions)
@@ -518,8 +518,8 @@ io.on('connection', (socket) => {
                             let distance = Math.sqrt((playerPosX3 - 700)**2 + (playerPosY3 - 300)**2)
                             bossPositions["Lobby"] = [700, 300, "green", angle3]
                             for (let i = 0; i < distance; i++) {
-                                bossPositions["Lobby"][0] += Math.cos(angle3)
-                                bossPositions["Lobby"][1] += Math.sin(angle3)
+                                bossPositions["Lobby"][0] += Math.cos(angle3 * (PI/180))
+                                bossPositions["Lobby"][1] += Math.sin(angle3 * (PI/180))
 
                                 // keep doing nothing for a while
                                 io.emit('update boss positions', bossPositions)
