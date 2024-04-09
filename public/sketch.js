@@ -1024,6 +1024,10 @@ class DonutAOE {
         this.r = r
         this.disappearsAt = millis() + lingersForMillis
         this.initiatedAt = millis()
+
+        if (sqrt((playerPositions[yourLocation][yourID - 1][0])**2 + (playerPositions[yourLocation][yourID - 1][1])**2) > this.r) {
+            print("You nubcake!")
+        }
     }
 
     draw() {
