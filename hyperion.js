@@ -227,8 +227,10 @@ io.on('connection', (socket) => {
     })
 
     socket.on('change mechanic', async (msg) => {
+        io.emit('log window message', [`Player ${player} (${playerPositions[playerLocation][playerID - 1][3]} ${playerPositions[playerLocation][playerID - 1][4]}) orders ${msg} to be started`, [0, 0, 100]])
         if (currentlyConnectedPlayers === 4 && currentlyConnectedDPS === 2 &&
             currentlyConnectedHealers === 1 && currentlyConnectedTanks === 1) {
+            io.emit('log window message', [`Light party detected. Mechanic request went through.`, [144, 90, 60]])
             io.emit('change mechanic', msg)
             mechanicStartedAt = new Date()
             mechanicStartedAt = mechanicStartedAt.getTime()
@@ -571,10 +573,11 @@ io.on('connection', (socket) => {
                         break
                     }
             }
+        } else {
+            io.emit('log window message', [`Light party not detected. Mechanic request did not go through.`, [0, 90, 80]])
         }
     })
 });
-
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {

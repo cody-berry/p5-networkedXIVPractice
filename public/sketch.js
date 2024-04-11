@@ -1329,12 +1329,34 @@ function preload() {
         )
     })
     socket.on('log window message', function (msg) {
+        msg[2] = formatDate(new Date())
         logWindowMessages.push(msg)
     })
 }
 
+
+// this functio is actually ChatGPT's code
+function formatDate(date) {
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    let day = date.getDate().toString().padStart(2, '0')
+    let month = (date.getMonth() + 1).toString().padStart(2, '0') // Months are 0-based
+    let year = date.getFullYear()
+    let dayOfWeek = days[date.getDay()]
+    let monthName = months[date.getMonth()]
+    let unpaddedDay = date.getDate()
+    let hours = date.getHours()
+    let minutes = date.getMinutes().toString().padStart(2, '0')
+    let seconds = date.getSeconds().toString().padStart(2, '0')
+    let ampm = hours >= 12 ? 'PM' : 'AM'
+    hours = hours % 12
+    hours = hours ? hours.toString().padStart(2, '0') : '12' // Adjust 0 to 12 for AM/PM
+    return `${dayOfWeek} ${year} ${monthName} ${unpaddedDay} ${hours}:${minutes}:${seconds} ${ampm}`
+}
+
+
 function setup() {
-    let cnv = createCanvas(1000, 1040)
+    let cnv = createCanvas(1100, 1040)
     colorMode(HSB, 360, 100, 100, 100)
     background(234, 34, 24)
     cnv.parent('#canvas')
@@ -1774,7 +1796,9 @@ function draw() {
         } else {
             yPos -= 20
             fill(logWindowMessage[1][0], logWindowMessage[1][1], logWindowMessage[1][2])
-            text(logWindowMessage[0], 20, yPos - textDescent())
+            text(logWindowMessage[0], textWidth("[" + logWindowMessage[2] + "]") + 26, yPos - textDescent())
+            fill(0, 0, 90)
+            text("[" + logWindowMessage[2] + "]", 20, yPos - textDescent())
         }
     }
     textSize(20)
