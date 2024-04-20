@@ -35,6 +35,9 @@ let smnIcon
 let warIcon
 let whmIcon
 
+let firstNameAbbreviated
+let lastNameAbbreviated
+
 let icons
 
 let frameWhenLastMoved // makes sure that you don't move until your position change is fully accounted for
@@ -337,6 +340,16 @@ function draw() {
         image(icons[playerPosition[2]], playerPosition[0] - 725, playerPosition[1] - 325, 50, 50)
     }
 
+    // now iterate again and display names on top of players
+    for (let playerPosition of playerPositions[yourLocation]) {
+        fill(0, 0, 100)
+        text(((firstNameAbbreviated) ? (playerPosition[3][0] + ".") : (playerPosition[3])) + " " +
+            ((lastNameAbbreviated) ? (playerPosition[4][0] + ".") : (playerPosition[4])),
+            playerPosition[0] - 700 - textWidth(
+                ((firstNameAbbreviated) ? (playerPosition[3][0] + ".") : (playerPosition[3])) + " " +
+                ((lastNameAbbreviated) ? (playerPosition[4][0] + ".") : (playerPosition[4]))) / 2, playerPosition[1] - 330)
+    }
+
     // if you're in the lobby and you went to one of the holes while the
     // state allows you to access it, you can move to light party queue or
     // full party queue
@@ -440,7 +453,7 @@ function draw() {
     }
 
     // now you can change your name
-    if (state === "Changing name") {
+    else if (state === "Changing name") {
         // add textboxes
         fill(0, 0, 20)
         stroke(0, 0, 50)
@@ -477,7 +490,23 @@ function draw() {
 
         fill(0, 0, 100)
         text("Finished changing name", 155, 20)
-    }
+    } else {
+    // then display some buttons for abbreviations
+    // first name and last name for now
+    fill(0, 0, 25)
+    if (mouseX > 0 && mouseX < textWidth("Abbreviate First Name ") &&
+        mouseY > 600 - textAscent() * 2 - textDescent() * 3 && mouseY < 600 - textAscent() - textDescent())
+        fill(0, 0, 20)
+    rect(0, 600 - textAscent() * 2 - textDescent() * 3, textWidth("Abbreviate First Name "), textAscent() + textDescent())
+    fill(0, 0, 25)
+    if (mouseX > 0 && mouseX < textWidth("Abbreviate Last Name ") &&
+        mouseY > 600 - textAscent() - textDescent() && mouseY < 600)
+        fill(0, 0, 20)
+    rect(0, 600 - textAscent() - textDescent(), textWidth("Abbreviate Last Name "), textAscent() + textDescent())
+    fill(0, 0, 100)
+    text("Abbreviate First Name", textWidth(" ") / 2, 600 - textAscent() - textDescent() * 2.5)
+    text("Abbreviate Last Name", textWidth(" ") / 2, 600 - textDescent() / 2)
+}
 
     /* debugCorner needs to be last so its z-index is highest */
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
@@ -638,7 +667,7 @@ function mousePressed() {
                 cursor[1] = max(0, min(yourLastName.length, cursor[1]))
             }
         }
-    } if (state === "Changing job") {
+    } else if (state === "Changing job") {
         // change classes (lined up on the left)
         if (mouseX > 1 && mouseX < 49 &&
             mouseY > 101 && mouseY < 149)
@@ -706,6 +735,13 @@ function mousePressed() {
         // tell everyone that you changed class!
         socket.emit("change class", yourClass)
         print(yourClass)
+    } else {
+        if (mouseX > 0 && mouseX < textWidth("Abbreviate First Name ") &&
+            mouseY > 600 - textAscent()*2 - textDescent()*3 && mouseY < 600 - textAscent() - textDescent())
+            firstNameAbbreviated = !firstNameAbbreviated
+        if (mouseX > 0 && mouseX < textWidth("Abbreviate Last Name ") &&
+            mouseY > 600 - textAscent() - textDescent() && mouseY < 600)
+            lastNameAbbreviated = !lastNameAbbreviated
     }
 }
 
@@ -1341,7 +1377,7 @@ class CanvasDebugCorner {
 // }
 //
 //
-// // this functio is actually ChatGPT's code
+// // this function is actually ChatGPT's code
 // function formatDate(date) {
 //     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 //     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
