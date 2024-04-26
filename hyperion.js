@@ -30,16 +30,21 @@ io.on('connection', (socket) => {
     let playerLocation = "Lobby"
     let playerID = connectedPlayerPositions["Lobby"].length + 1
 
-    console.log(`Player ${player} connected`);
+    console.log(`Player ${playerID} connected`);
     // extend the list with [700, 300] as a position
     connectedPlayerPositions["Lobby"] = [...connectedPlayerPositions["Lobby"], [700, 300, "ast", "", ""]]
     socket.emit('connection entry', [connectedPlayerPositions, playerID])
     io.emit('other player connection entry', [connectedPlayerPositions, playerID])
+    io.emit('log window message', 'Lobby', [`Player ${playerID} connected`, [180, 30, 80]])
+
+
 
     socket.on('disconnect', () => {
-        console.log(`Player ${player} disconnected`);
-        connectedPlayerPositions[playerLocation][playerID - 1] = [-20, -20, "ast", "", ""]
+        console.log(`Player ${playerID} disconnected`);
+        io.emit('log window message', 'Lobby', [`Player ${playerID} (${connectedPlayerPositions[playerLocation][playerID - 1][3]} ${connectedPlayerPositions[playerLocation][playerID - 1][4]}) disconnected`, [180, 30, 80]])
+        connectedPlayerPositions[playerLocation][playerID - 1] = [-20, -20, "ast", "Disconnect", "edPlayer"]
         io.emit('update', [connectedPlayerPositions])
+        connectedPlayers -= 1
     });
 
     socket.on('move up', (msg) => {

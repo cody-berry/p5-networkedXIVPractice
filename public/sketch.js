@@ -42,6 +42,24 @@ let icons
 
 let frameWhenLastMoved // makes sure that you don't move until your position change is fully accounted for
 
+let logWindowMessages
+
+// this function is actually mostly ChatGPT's code
+function formatDate(date) {
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    let year = date.getFullYear()
+    let dayOfWeek = days[date.getDay()]
+    let monthName = months[date.getMonth()]
+    let unpaddedDay = date.getDate()
+    let hours = date.getHours()
+    let minutes = date.getMinutes().toString().padStart(2, '0')
+    let seconds = date.getSeconds().toString().padStart(2, '0')
+    let ampm = hours >= 12 ? 'PM' : 'AM'
+    hours = hours % 12
+    hours = hours ? hours.toString().padStart(2, '0') : '12' // Adjust 0 to 12 for AM/PM
+    return `${dayOfWeek} ${year} ${monthName} ${unpaddedDay} ${hours}:${minutes}:${seconds} ${ampm}`
+}
 
 function preload() {
     font = loadFont('data/consola.ttf')
@@ -90,6 +108,8 @@ function preload() {
         "whm": whmIcon
     }
 
+    logWindowMessages = []
+
     // Connect to the WebSocket server
     socket = io.connect(window.location.origin)
 
@@ -105,10 +125,16 @@ function preload() {
     socket.on('update', function (msg) {
         playerPositions = msg[0]
     })
+    socket.on('log window message', function (location, msg) {
+        if (location === yourLocation) {
+            msg[2] = formatDate(new Date())
+            logWindowMessages.push(msg)
+        }
+    })
 }
 
 function setup() {
-    let cnv = createCanvas(1000, 600)
+    let cnv = createCanvas(1020, 1000)
     colorMode(HSB, 360, 100, 100, 100)
     background(234, 34, 24)
     cnv.parent('#canvas')
@@ -139,9 +165,9 @@ function draw() {
     // substitute for the board: chessboard-like bricks on corners
     stroke(0, 0, 0)
     strokeWeight(1)
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 8; i++) {
         fill(0, 55, 60)
-        rect(-300, i * 80 - 300, 40, 20)
+        rect(-300, i * 80 - 300, 40, 20) // light-colored bricks, row 1
         rect(-220, i * 80 - 300, 40, 20)
         rect(-140, i * 80 - 300, 40, 20)
         rect(-60, i * 80 - 300, 40, 20)
@@ -149,7 +175,8 @@ function draw() {
         rect(100, i * 80 - 300, 40, 20)
         rect(180, i * 80 - 300, 40, 20)
         rect(260, i * 80 - 300, 40, 20)
-        rect(-280, i * 80 - 280, 40, 20)
+
+        rect(-280, i * 80 - 280, 40, 20) // light-colored bricks, row 2
         rect(-200, i * 80 - 280, 40, 20)
         rect(-120, i * 80 - 280, 40, 20)
         rect(-40, i * 80 - 280, 40, 20)
@@ -157,30 +184,36 @@ function draw() {
         rect(120, i * 80 - 280, 40, 20)
         rect(200, i * 80 - 280, 40, 20)
         rect(280, i * 80 - 280, 20, 20)
-        rect(-260, i * 80 - 260, 40, 20)
-        rect(-180, i * 80 - 260, 40, 20)
-        rect(-100, i * 80 - 260, 40, 20)
-        rect(-20, i * 80 - 260, 40, 20)
-        rect(60, i * 80 - 260, 40, 20)
-        rect(140, i * 80 - 260, 40, 20)
-        rect(220, i * 80 - 260, 40, 20)
-        rect(-300, i * 80 - 240, 20, 20)
-        rect(-240, i * 80 - 240, 40, 20)
-        rect(-160, i * 80 - 240, 40, 20)
-        rect(-80, i * 80 - 240, 40, 20)
-        rect(0, i * 80 - 240, 40, 20)
-        rect(80, i * 80 - 240, 40, 20)
-        rect(160, i * 80 - 240, 40, 20)
-        rect(240, i * 80 - 240, 40, 20)
+
+        // only display rows 3 and 4 on i's 0-6
+        if (i !== 7) {
+            rect(-260, i * 80 - 260, 40, 20) // light-colored bricks, row 3
+            rect(-180, i * 80 - 260, 40, 20)
+            rect(-100, i * 80 - 260, 40, 20)
+            rect(-20, i * 80 - 260, 40, 20)
+            rect(60, i * 80 - 260, 40, 20)
+            rect(140, i * 80 - 260, 40, 20)
+            rect(220, i * 80 - 260, 40, 20)
+
+            rect(-300, i * 80 - 240, 20, 20) // light-colored bricks, row 4
+            rect(-240, i * 80 - 240, 40, 20)
+            rect(-160, i * 80 - 240, 40, 20)
+            rect(-80, i * 80 - 240, 40, 20)
+            rect(0, i * 80 - 240, 40, 20)
+            rect(80, i * 80 - 240, 40, 20)
+            rect(160, i * 80 - 240, 40, 20)
+            rect(240, i * 80 - 240, 40, 20)
+        }
         fill(0, 60, 60)
-        rect(-260, i * 80 - 300, 40, 20)
+        rect(-260, i * 80 - 300, 40, 20) // dark-colored bricks, row 1
         rect(-180, i * 80 - 300, 40, 20)
         rect(-100, i * 80 - 300, 40, 20)
         rect(-20, i * 80 - 300, 40, 20)
         rect(60, i * 80 - 300, 40, 20)
         rect(140, i * 80 - 300, 40, 20)
         rect(220, i * 80 - 300, 40, 20)
-        rect(-300, i * 80 - 280, 20, 20)
+
+        rect(-300, i * 80 - 280, 20, 20) // dark-colored bricks, row 2
         rect(-240, i * 80 - 280, 40, 20)
         rect(-160, i * 80 - 280, 40, 20)
         rect(-80, i * 80 - 280, 40, 20)
@@ -188,22 +221,26 @@ function draw() {
         rect(80, i * 80 - 280, 40, 20)
         rect(160, i * 80 - 280, 40, 20)
         rect(240, i * 80 - 280, 40, 20)
-        rect(-300, i * 80 - 260, 40, 20)
-        rect(-220, i * 80 - 260, 40, 20)
-        rect(-140, i * 80 - 260, 40, 20)
-        rect(-60, i * 80 - 260, 40, 20)
-        rect(20, i * 80 - 260, 40, 20)
-        rect(100, i * 80 - 260, 40, 20)
-        rect(180, i * 80 - 260, 40, 20)
-        rect(260, i * 80 - 260, 40, 20)
-        rect(-280, i * 80 - 240, 40, 20)
-        rect(-200, i * 80 - 240, 40, 20)
-        rect(-120, i * 80 - 240, 40, 20)
-        rect(-40, i * 80 - 240, 40, 20)
-        rect(40, i * 80 - 240, 40, 20)
-        rect(120, i * 80 - 240, 40, 20)
-        rect(200, i * 80 - 240, 40, 20)
-        rect(280, i * 80 - 240, 20, 20)
+
+        if (i !== 7) {
+            rect(-300, i * 80 - 260, 40, 20) // dark-colored bricks, row 3
+            rect(-220, i * 80 - 260, 40, 20)
+            rect(-140, i * 80 - 260, 40, 20)
+            rect(-60, i * 80 - 260, 40, 20)
+            rect(20, i * 80 - 260, 40, 20)
+            rect(100, i * 80 - 260, 40, 20)
+            rect(180, i * 80 - 260, 40, 20)
+            rect(260, i * 80 - 260, 40, 20)
+
+            rect(-280, i * 80 - 240, 40, 20) // dark-colored bricks, row 4
+            rect(-200, i * 80 - 240, 40, 20)
+            rect(-120, i * 80 - 240, 40, 20)
+            rect(-40, i * 80 - 240, 40, 20)
+            rect(40, i * 80 - 240, 40, 20)
+            rect(120, i * 80 - 240, 40, 20)
+            rect(200, i * 80 - 240, 40, 20)
+            rect(280, i * 80 - 240, 20, 20)
+        }
     }
 
     if (yourLocation === "Lobby") {
@@ -491,22 +528,66 @@ function draw() {
         fill(0, 0, 100)
         text("Finished changing name", 155, 20)
     } else {
-    // then display some buttons for abbreviations
-    // first name and last name for now
-    fill(0, 0, 25)
-    if (mouseX > 0 && mouseX < textWidth("Abbreviate First Name ") &&
-        mouseY > 600 - textAscent() * 2 - textDescent() * 3 && mouseY < 600 - textAscent() - textDescent())
-        fill(0, 0, 20)
-    rect(0, 600 - textAscent() * 2 - textDescent() * 3, textWidth("Abbreviate First Name "), textAscent() + textDescent())
-    fill(0, 0, 25)
-    if (mouseX > 0 && mouseX < textWidth("Abbreviate Last Name ") &&
-        mouseY > 600 - textAscent() - textDescent() && mouseY < 600)
-        fill(0, 0, 20)
-    rect(0, 600 - textAscent() - textDescent(), textWidth("Abbreviate Last Name "), textAscent() + textDescent())
-    fill(0, 0, 100)
-    text("Abbreviate First Name", textWidth(" ") / 2, 600 - textAscent() - textDescent() * 2.5)
-    text("Abbreviate Last Name", textWidth(" ") / 2, 600 - textDescent() / 2)
-}
+        // then display some buttons for abbreviations
+        // first name and last name for now
+        fill(0, 0, 25)
+        if (mouseX > 0 && mouseX < textWidth("Abbreviate First Name ") &&
+            mouseY > 600 - textAscent() * 2 - textDescent() * 3 && mouseY < 600 - textAscent() - textDescent())
+            fill(0, 0, 20)
+        rect(0, 600 - textAscent() * 2 - textDescent() * 3, textWidth("Abbreviate First Name "), textAscent() + textDescent())
+        fill(0, 0, 25)
+        if (mouseX > 0 && mouseX < textWidth("Abbreviate Last Name ") &&
+            mouseY > 600 - textAscent() - textDescent() && mouseY < 600)
+            fill(0, 0, 20)
+        rect(0, 600 - textAscent() - textDescent(), textWidth("Abbreviate Last Name "), textAscent() + textDescent())
+        fill(0, 0, 100)
+        text("Abbreviate First Name", textWidth(" ") / 2, 600 - textAscent() - textDescent() * 2.5)
+        text("Abbreviate Last Name", textWidth(" ") / 2, 600 - textDescent() / 2)
+    }
+
+    // after we're done with all this, we add a log window
+    // to make it look good, we add multiple layers
+    fill(0, 0, 0, 10)
+    rect(0, 600, width, 440)
+
+    // normally we'd add 10 for every layer, but we want to be more precise
+    // here.
+    fill(0, 0, 0, 10 * 100 / 90)
+    rect(2, 602, width - 4, 436)
+    fill(0, 0, 0, 10 * 100 / 80)
+    rect(4, 604, width - 8, 432)
+    fill(0, 0, 0, 10 * 100 / 70)
+    rect(6, 606, width - 12, 428)
+    fill(0, 0, 0, 10 * 100 / 60)
+    rect(8, 608, width - 16, 424)
+    fill(0, 0, 0, 10 * 100 / 50)
+    rect(10, 610, width - 20, 420)
+    fill(0, 0, 0, 10 * 100 / 40)
+    rect(12, 612, width - 24, 416)
+    fill(0, 0, 0, 10 * 100 / 30)
+    rect(14, 614, width - 28, 412)
+    fill(0, 0, 0, 10 * 100 / 20)
+    rect(16, 616, width - 32, 408)
+    fill(0, 0, 0, 10 * 100 / 10)
+    rect(18, 618, width - 36, 404)
+
+    textSize(19)
+    // display each message inside
+    // since textAscent() + textDescent() is always exactly the text size, in
+    // this case 19
+    let yPos = 640 + logWindowMessages.length*20
+    for (let logWindowMessage of logWindowMessages) {
+        if (yPos <= 420) { // make sure the messages don't overflow
+
+        } else {
+            yPos -= 20
+            fill(logWindowMessage[1][0], logWindowMessage[1][1], logWindowMessage[1][2])
+            text(logWindowMessage[0], textWidth("[" + logWindowMessage[2] + "]") + 26, yPos - textDescent())
+            fill(0, 0, 90)
+            text("[" + logWindowMessage[2] + "]", 20, yPos - textDescent())
+        }
+    }
+    textSize(20)
 
     /* debugCorner needs to be last so its z-index is highest */
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
@@ -1377,7 +1458,7 @@ class CanvasDebugCorner {
 // }
 //
 //
-// // this function is actually ChatGPT's code
+// // this function is actually mostly ChatGPT's code
 // function formatDate(date) {
 //     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 //     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
