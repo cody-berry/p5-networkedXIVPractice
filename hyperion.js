@@ -26,7 +26,6 @@ let connectedPlayerPositions = {
 
 io.on('connection', (socket) => {
     connectedPlayers += 1
-    let player = connectedPlayers
     let playerLocation = "Lobby"
     let playerID = connectedPlayerPositions["Lobby"].length + 1
 
@@ -78,7 +77,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('change name', (msg) => {
-        console.log(`Player ${player} changed their name to ${msg[0]} ${msg[1]}`)
+        console.log(`Player ${playerID} changed their name to ${msg[0]} ${msg[1]}`)
         connectedPlayerPositions[playerLocation][playerID - 1][3] = msg[0]
         connectedPlayerPositions[playerLocation][playerID - 1][4] = msg[1]
     })

@@ -519,14 +519,25 @@ function draw() {
         }
 
         // also add button for "finished changing name"
-        fill(0, 0, 25)
-        if (mouseX > 150 && mouseX < 400 &&
-            mouseY > 0 && mouseY < 25) fill(0, 0, 22)
-        noStroke()
-        rect(150, 0, 250, 25)
+        // but only if both your first name and your last name consist of
+        // more than 1 character
+        if (yourFirstName.length > 1 && yourLastName.length > 1) {
+            fill(0, 0, 25)
+            if (mouseX > 150 && mouseX < 400 &&
+                mouseY > 0 && mouseY < 25) fill(0, 0, 22)
+            noStroke()
+            rect(150, 0, 250, 25)
 
-        fill(0, 0, 100)
-        text("Finished changing name", 155, 20)
+            fill(0, 0, 100)
+            text("Finished changing name", 155, 20)
+        } else {
+            // otherwise no button will appear
+            fill(0, 100, 100)
+            noStroke()
+            text("Both your first and\n" +
+                 "last name must include\n" +
+                 "at least 2 characters", 155, 20)
+        }
     } else {
         // then display some buttons for abbreviations
         // first name and last name for now
@@ -724,8 +735,10 @@ function keyPressed() {
 function mousePressed() {
     if (state === "Changing name") {
         // the new state will be "Going Nowhere"
+        // but only if you actually have a name
         if (mouseX > 150 && mouseX < 400 &&
-            mouseY > 0 && mouseY < 25) state = "Going Nowhere"
+            mouseY > 0 && mouseY < 25 &&
+            yourFirstName.length > 1 && yourLastName.length > 1) state = "Going Nowhere"
 
         // if the mouse is pressed, go to the nearest cursor location
         // textWidth("First name:") + textWidth(" ")/2 + 5, 80,
