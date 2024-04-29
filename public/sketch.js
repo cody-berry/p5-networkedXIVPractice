@@ -363,7 +363,6 @@ function draw() {
             text("Lobby", 110, 230)
         }
     }
-    print(yourLocation)
 
     fill(0, 100, 100)
     noStroke()
@@ -556,6 +555,39 @@ function draw() {
         text("Abbreviate Last Name", textWidth(" ") / 2, 600 - textDescent() / 2)
     }
 
+    // display a list of people on the left
+    if (yourLocation === "Light Party Queue") {
+        // get all the other people
+        let otherPeople = removeIndex(playerPositions["Light Party Queue"], yourID - 1)
+
+        // now iterate through all the other people and filter out all the
+        // disconnected players that disconnected in the queue
+        let index = 0
+        for (let person of otherPeople) {
+            if (person[0] === -20) { // always means they're disconnected
+                otherPeople = removeIndex(otherPeople, index)
+                index -= 1
+            }
+            index += 1
+        }
+
+        // display each other person
+        // scroll-colored background, but will switch to white to display names
+        noStroke()
+        fill(60, 20, 70)
+        let yPos = 20
+        for (let otherPerson of otherPeople) {
+            rect(10, yPos, textWidth("symb 10  chars 10  chars"), 30)
+            image(icons[otherPerson[2]], 15, yPos + 5, 20, 20)
+
+            fill(0, 0, 100)
+            text(otherPerson[3] + " " + otherPerson[4], 40, yPos + 20)
+            yPos += 30
+
+            fill(60, 20, 70)
+        }
+    }
+
     // after we're done with all this, we add a log window
     // to make it look good, we add multiple layers
     fill(0, 0, 0, 10)
@@ -732,6 +764,12 @@ function keyPressed() {
     }
 }
 
+// Removes array[index] from array using concat() and subset().
+function removeIndex(array, index) {
+    return concat(subset(array, 0, index),
+                  subset(array, index+1))
+}
+
 function mousePressed() {
     if (state === "Changing name") {
         // the new state will be "Going Nowhere"
@@ -828,7 +866,6 @@ function mousePressed() {
 
         // tell everyone that you changed class!
         socket.emit("change class", yourClass)
-        print(yourClass)
     } else {
         if (mouseX > 0 && mouseX < textWidth("Abbreviate First Name ") &&
             mouseY > 600 - textAscent()*2 - textDescent()*3 && mouseY < 600 - textAscent() - textDescent())
