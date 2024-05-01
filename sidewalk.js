@@ -80,6 +80,7 @@ io.on('connection', (socket) => {
         console.log(`Player ${playerID} changed their name to ${msg[0]} ${msg[1]}`)
         connectedPlayerPositions[playerLocation][playerID - 1][3] = msg[0]
         connectedPlayerPositions[playerLocation][playerID - 1][4] = msg[1]
+        io.emit('update', [connectedPlayerPositions])
     })
 });
 

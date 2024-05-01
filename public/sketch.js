@@ -46,6 +46,8 @@ let logWindowMessages
 
 let otherPeople = []
 
+let names
+
 // this function is actually mostly ChatGPT's code
 function formatDate(date) {
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -126,6 +128,17 @@ function preload() {
     })
     socket.on('update', function (msg) {
         playerPositions = msg[0]
+
+        // now iterate through every name and update "names"
+        names = []
+        for (let people of Object.values(playerPositions)) {
+            for (let person of people) {
+                if (person[0] !== -20) {
+                    // if the person's X is at -20, they're disconnected
+                    names.push([person[3], person[4]])
+                }
+            }
+        }
     })
     socket.on('log window message', function (location, msg) {
         if (location === yourLocation) {
@@ -523,14 +536,33 @@ function draw() {
         // but only if both your first name and your last name consist of
         // more than 1 character
         if (yourFirstName.length > 1 && yourLastName.length > 1) {
-            fill(0, 0, 25)
-            if (mouseX > 150 && mouseX < 400 &&
-                mouseY > 0 && mouseY < 25) fill(0, 0, 22)
-            noStroke()
-            rect(150, 0, 250, 25)
+            // and also if your name is unique
+            // your name is unique if your first and last name are spotted 1
+            // or less times in the names list
+            let numTimesYourNameSpotted = 0
+            for (let name of names) {
+                if (yourFirstName === name[0] && yourLastName === name[1]) {
+                    numTimesYourNameSpotted += 1
+                }
+            }
+            print(numTimesYourNameSpotted)
 
-            fill(0, 0, 100)
-            text("Finished changing name", 155, 20)
+            if (numTimesYourNameSpotted <= 1) {
+                fill(0, 0, 25)
+                if (mouseX > 150 && mouseX < 400 &&
+                    mouseY > 0 && mouseY < 25) fill(0, 0, 22)
+                noStroke()
+                rect(150, 0, 250, 25)
+
+                fill(0, 0, 100)
+                text("Finished changing name", 155, 20)
+            } else {
+                // otherwise no button will appear
+                fill(0, 100, 100)
+                noStroke()
+                text("Your name isn't unique", 155, 20)
+            }
+
         } else {
             // otherwise no button will appear
             fill(0, 100, 100)
@@ -627,8 +659,8 @@ function draw() {
     // this case 19
     let yPos = 640 + logWindowMessages.length*20
     for (let logWindowMessage of logWindowMessages) {
-        if (yPos >= 1000) { // make sure the messages don't overflow
-
+        if (yPos >= 1020) { // make sure the messages don't overflow
+            yPos -= 20
         } else {
             yPos -= 20
             fill(logWindowMessage[1][0], logWindowMessage[1][1], logWindowMessage[1][2])
