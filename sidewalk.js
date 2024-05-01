@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log(`Player ${playerID} disconnected`);
         io.emit('log window message', 'Lobby', [`Player ${playerID} (${connectedPlayerPositions[playerLocation][playerID - 1][3]} ${connectedPlayerPositions[playerLocation][playerID - 1][4]}) disconnected`, [180, 30, 80]])
-        connectedPlayerPositions[playerLocation][playerID - 1] = [-20, -20, "ast", "Disconnect", "edPlayer"]
+        connectedPlayerPositions[playerLocation][playerID - 1] = [-20, -20, "ast", "Disconnect", "edPlayers"]
         io.emit('update', [connectedPlayerPositions])
         connectedPlayers -= 1
     });
@@ -68,7 +68,7 @@ io.on('connection', (socket) => {
     })
     socket.on('move', (msg) => {
         let previousLocation = connectedPlayerPositions[playerLocation][playerID - 1]
-        connectedPlayerPositions[playerLocation][playerID - 1] = [-20, -20, "ast", "", ""]
+        connectedPlayerPositions[playerLocation][playerID - 1] = [-20, -20, "ast", "Moved", "Players"]
         playerID = connectedPlayerPositions[msg[0]].length + 1
         playerLocation = msg[0]
         connectedPlayerPositions[playerLocation][playerID - 1] = [msg[1], msg[2], previousLocation[2], previousLocation[3], previousLocation[4]]

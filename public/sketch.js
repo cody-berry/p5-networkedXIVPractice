@@ -44,6 +44,8 @@ let frameWhenLastMoved // makes sure that you don't move until your position cha
 
 let logWindowMessages
 
+let otherPeople = []
+
 // this function is actually mostly ChatGPT's code
 function formatDate(date) {
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -557,8 +559,9 @@ function draw() {
 
     // display a list of people on the left
     if (yourLocation === "Light Party Queue") {
+        textSize(20)
         // get all the other people
-        let otherPeople = removeIndex(playerPositions["Light Party Queue"], yourID - 1)
+        otherPeople = removeIndex(playerPositions["Light Party Queue"], yourID - 1)
 
         // now iterate through all the other people and filter out all the
         // disconnected players that disconnected in the queue
@@ -577,6 +580,10 @@ function draw() {
         fill(60, 20, 70)
         let yPos = 20
         for (let otherPerson of otherPeople) {
+            // if you're mousing over it gets a little darker
+            if (mouseX > 10 && mouseX < 10 + textWidth("symb 10  chars 10  chars") &&
+                mouseY > yPos && mouseY < yPos + 30) fill(60, 20, 66)
+
             rect(10, yPos, textWidth("symb 10  chars 10  chars"), 30)
             image(icons[otherPerson[2]], 15, yPos + 5, 20, 20)
 
@@ -620,7 +627,7 @@ function draw() {
     // this case 19
     let yPos = 640 + logWindowMessages.length*20
     for (let logWindowMessage of logWindowMessages) {
-        if (yPos <= 420) { // make sure the messages don't overflow
+        if (yPos >= 1000) { // make sure the messages don't overflow
 
         } else {
             yPos -= 20
@@ -873,6 +880,8 @@ function mousePressed() {
         if (mouseX > 0 && mouseX < textWidth("Abbreviate Last Name ") &&
             mouseY > 600 - textAscent() - textDescent() && mouseY < 600)
             lastNameAbbreviated = !lastNameAbbreviated
+
+        //
     }
 }
 
