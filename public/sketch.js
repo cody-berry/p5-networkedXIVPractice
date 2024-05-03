@@ -45,6 +45,7 @@ let frameWhenLastMoved // makes sure that you don't move until your position cha
 let logWindowMessages
 
 let otherPeople = []
+let selectedPeople = []
 
 let names
 
@@ -594,6 +595,8 @@ function draw() {
         textSize(20)
         // get all the other people
         otherPeople = removeIndex(playerPositions["Light Party Queue"], yourID - 1)
+        let oldSelectedPeople = selectedPeople
+        selectedPeople = []
 
         // now iterate through all the other people and filter out all the
         // disconnected players that disconnected in the queue
@@ -602,6 +605,21 @@ function draw() {
             if (person[0] === -20) { // always means they're disconnected
                 otherPeople = removeIndex(otherPeople, index)
                 index -= 1
+            } else {
+                // check if it's in the oldSelectedPeople list. if it is,
+                // then append it to the new selectedPeople and set
+                // otherPeople[5] accordingly. Otherwise, just set
+                // otherPeople[5] accordingly.
+                if (includesArray(oldSelectedPeople, [person[3], person[4]])) {
+                    print(!otherPeople[index])
+                    if (otherPeople[index].length < 6) { // first create the "selected" part of the array
+                        otherPeople[index][5] = false
+                    }
+                    otherPeople[index][5] = !otherPeople[index][5]
+                    if (otherPeople[index][5]) {
+                        selectedPeople.push([person[3], person[4]])
+                    } else print(person[3], person[4], "was deselected!")
+                } else otherPeople[index][5] = false
             }
             index += 1
         }
@@ -615,6 +633,14 @@ function draw() {
             // if you're mousing over it gets a little darker
             if (mouseX > 10 && mouseX < 10 + textWidth("symb 10  chars 10  chars") &&
                 mouseY > yPos && mouseY < yPos + 30) fill(60, 20, 66)
+
+            // if it's selected, it gets much brighter
+            if (otherPerson[5]) {
+                fill(60, 20, 90)
+                // if you're mousing over it it still gets a little darker
+                if (mouseX > 10 && mouseX < 10 + textWidth("symb 10  chars 10  chars") &&
+                    mouseY > yPos && mouseY < yPos + 30) fill(60, 20, 86)
+            }
 
             rect(10, yPos, textWidth("symb 10  chars 10  chars"), 30)
             image(icons[otherPerson[2]], 15, yPos + 5, 20, 20)
@@ -913,8 +939,31 @@ function mousePressed() {
             mouseY > 600 - textAscent() - textDescent() && mouseY < 600)
             lastNameAbbreviated = !lastNameAbbreviated
 
-        //
+        // in light party queue we want to add selection
+        if (yourLocation === "Light Party Queue") {
+            // iterate through everything in otherParty with the yPos
+            let yPos = 20
+            textSize(20)
+            for (let otherPerson of otherPeople) {
+                if (mouseX > 10 && mouseX < 10 + textWidth("symb 10  chars 10  chars") &&
+                    mouseY > yPos && mouseY < yPos + 30) {
+                    selectedPeople.push([otherPerson[3], otherPerson[4]])
+                    print(otherPerson[3], otherPerson[4], "was selected!")
+                }
+                yPos += 30
+            }
+        }
     }
+}
+
+// Array.includes(element) doesn't work when element is an array. This aims
+// to handle this exception.
+function includesArray(arr, value) {
+    return arr.some(element =>
+        Array.isArray(element) &&
+        element.length === value.length &&
+        element.every((val, index) => val === value[index])
+    )
 }
 
 /** 🧹 shows debugging info using text() 🧹 */
