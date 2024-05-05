@@ -546,7 +546,6 @@ function draw() {
                     numTimesYourNameSpotted += 1
                 }
             }
-            print(numTimesYourNameSpotted)
 
             if (numTimesYourNameSpotted <= 1) {
                 fill(0, 0, 25)
@@ -605,24 +604,24 @@ function draw() {
             if (person[0] === -20) { // always means they're disconnected
                 otherPeople = removeIndex(otherPeople, index)
                 index -= 1
-            } else {
-                // check if it's in the oldSelectedPeople list. if it is,
-                // then append it to the new selectedPeople and set
-                // otherPeople[5] accordingly. Otherwise, just set
-                // otherPeople[5] accordingly.
-                if (includesArray(oldSelectedPeople, [person[3], person[4]])) {
-                    print(!otherPeople[index])
-                    if (otherPeople[index].length < 6) { // first create the "selected" part of the array
-                        otherPeople[index][5] = false
-                    }
-                    otherPeople[index][5] = !otherPeople[index][5]
-                    if (otherPeople[index][5]) {
-                        selectedPeople.push([person[3], person[4]])
-                    } else print(person[3], person[4], "was deselected!")
-                } else otherPeople[index][5] = false
-            }
+            } else otherPeople[index][5] = false
             index += 1
         }
+
+        // for each person in the selectedPeople list, toggle
+        // the respective otherPerson's 6ᵗʰ index.
+        for (let person of oldSelectedPeople) {
+            let index = indexOfArray(otherPeople, person)
+            otherPeople[index][5] = !otherPeople[index][5]
+        }
+
+        // push to selectedPeople appropriately.
+        for (let person of otherPeople) {
+            if (person[5]) {
+                selectedPeople.push([person[3], person[4]])
+            }
+        }
+
 
         // display each other person
         // scroll-colored background, but will switch to white to display names
@@ -956,14 +955,22 @@ function mousePressed() {
     }
 }
 
-// Array.includes(element) doesn't work when element is an array. This aims
+// Array.indexOf(element) doesn't work when element is an array. This aims
 // to handle this exception.
-function includesArray(arr, value) {
-    return arr.some(element =>
-        Array.isArray(element) &&
-        element.length === value.length &&
-        element.every((val, index) => val === value[index])
-    )
+// It also aims to be tweaked to handle [arr[index][3], arr[index][4]]
+// instead of [arr[index]].
+function indexOfArray(arr, value) {
+    for (let i = 0; i < arr.length; i++) {
+        const element = arr[i];
+        // Check if the element is an array and has at least five elements
+        if (Array.isArray(element) && element.length >= 5) {
+            // Check if the 4th and 5th elements match
+            if (element[3] === value[0] && element[4] === value[1]) {
+                return i; // Return the index of the matching array
+            }
+        }
+    }
+    return -1; // Return -1 if no match is found
 }
 
 /** 🧹 shows debugging info using text() 🧹 */
