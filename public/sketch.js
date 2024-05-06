@@ -612,12 +612,15 @@ function draw() {
         // the respective otherPerson's 6ᵗʰ index.
         for (let person of oldSelectedPeople) {
             let index = indexOfArray(otherPeople, person)
-            otherPeople[index][5] = !otherPeople[index][5]
+            if (index !== -1) {
+                otherPeople[index][5] = !otherPeople[index][5]
+            }
         }
 
         // push to selectedPeople appropriately.
+        // don't push the 3ʳᵈ+ person though.
         for (let person of otherPeople) {
-            if (person[5]) {
+            if (person[5] && selectedPeople.length < 3) {
                 selectedPeople.push([person[3], person[4]])
             }
         }
@@ -946,8 +949,13 @@ function mousePressed() {
             for (let otherPerson of otherPeople) {
                 if (mouseX > 10 && mouseX < 10 + textWidth("symb 10  chars 10  chars") &&
                     mouseY > yPos && mouseY < yPos + 30) {
-                    selectedPeople.push([otherPerson[3], otherPerson[4]])
-                    print(otherPerson[3], otherPerson[4], "was selected!")
+                    // make sure there's not too many people selected
+                    if (indexOfArray( // it's fine to deselect
+                        otherPeople, [otherPerson[3], otherPerson[4]]) === -1 ||
+                        selectedPeople.length < 3) {
+                        selectedPeople.push([otherPerson[3], otherPerson[4]])
+                        print(otherPerson[3], otherPerson[4], "was selected!")
+                    }
                 }
                 yPos += 30
             }
