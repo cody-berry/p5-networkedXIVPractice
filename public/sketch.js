@@ -49,6 +49,10 @@ let selectedPeople = []
 
 let names
 
+let DPSRemainingToSelect = 1
+let HealersRemainingToSelect = 1
+let TanksRemainingToSelect = 1
+
 // this function is actually mostly ChatGPT's code
 function formatDate(date) {
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -611,7 +615,7 @@ function draw() {
         // for each person in the selectedPeople list, toggle
         // the respective otherPerson's 6ᵗʰ index.
         for (let person of oldSelectedPeople) {
-            let index = indexOfArray(otherPeople, person)
+            let index = indexOfArrayIndex3and4(otherPeople, person)
             if (index !== -1) {
                 otherPeople[index][5] = !otherPeople[index][5]
             }
@@ -946,15 +950,47 @@ function mousePressed() {
             // iterate through everything in otherParty with the yPos
             let yPos = 20
             textSize(20)
+            print(selectedPeople)
             for (let otherPerson of otherPeople) {
                 if (mouseX > 10 && mouseX < 10 + textWidth("symb 10  chars 10  chars") &&
                     mouseY > yPos && mouseY < yPos + 30) {
                     // make sure there's not too many people selected
-                    if (indexOfArray( // it's fine to deselect
-                        otherPeople, [otherPerson[3], otherPerson[4]]) === -1 ||
+                    if (indexOfArrayIndex0and1( // it's fine to deselect
+                        selectedPeople, [otherPerson[3], otherPerson[4]]) !== -1 ||
                         selectedPeople.length < 3) {
-                        selectedPeople.push([otherPerson[3], otherPerson[4]])
-                        print(otherPerson[3], otherPerson[4], "was selected!")
+                        // now check the role
+                        // you can only select 1 of each role
+                        // it's also fine to deselect
+                        let role = "DPS"
+                        print(otherPerson[2])
+                        if (["ast", "sge", "sch", "whm"].includes(otherPerson[2])) role = "Healer"
+                        if (["drk", "gnb", "pld", "war"].includes(otherPerson[2])) role = "Tank"
+                        print(role)
+                        if (indexOfArrayIndex0and1(selectedPeople, [otherPerson[3], otherPerson[4]]) !== -1) {
+                            selectedPeople.push([otherPerson[3], otherPerson[4]])
+                            print(otherPerson[3], otherPerson[4], "was deselected!")
+                            if (role === "DPS") DPSRemainingToSelect += 1
+                            if (role === "Healer") HealersRemainingToSelect += 1
+                            if (role === "Tank") TanksRemainingToSelect += 1
+                        } else if (role === "DPS" && DPSRemainingToSelect >= 1) {
+                            selectedPeople.push([otherPerson[3], otherPerson[4]])
+                            print(otherPerson[3], otherPerson[4], "was selected!")
+                            DPSRemainingToSelect -= 1
+                        } else if (role === "Healer" && HealersRemainingToSelect >= 1) {
+                            selectedPeople.push([otherPerson[3], otherPerson[4]])
+                            print(otherPerson[3], otherPerson[4], "was selected!")
+                            HealersRemainingToSelect -= 1
+                        } else if (role === "Tank" && TanksRemainingToSelect >= 1) {
+                            selectedPeople.push([otherPerson[3], otherPerson[4]])
+                            TanksRemainingToSelect -= 1
+                            print(otherPerson[3], otherPerson[4], "was selected!")
+                        } else {
+                            print("Tried to select", otherPerson[3], otherPerson[4], "but couldn't.")
+                            print("DPS remaining:", DPSRemainingToSelect)
+                            print("Healers remaining:", HealersRemainingToSelect)
+                            print("Tanks remaining:", TanksRemainingToSelect)
+                            print("Player role:", role)
+                        }
                     }
                 }
                 yPos += 30
@@ -967,13 +1003,27 @@ function mousePressed() {
 // to handle this exception.
 // It also aims to be tweaked to handle [arr[index][3], arr[index][4]]
 // instead of [arr[index]].
-function indexOfArray(arr, value) {
+function indexOfArrayIndex3and4(arr, value) {
     for (let i = 0; i < arr.length; i++) {
         const element = arr[i];
         // Check if the element is an array and has at least five elements
         if (Array.isArray(element) && element.length >= 5) {
             // Check if the 4th and 5th elements match
             if (element[3] === value[0] && element[4] === value[1]) {
+                return i; // Return the index of the matching array
+            }
+        }
+    }
+    return -1; // Return -1 if no match is found
+}
+
+function indexOfArrayIndex0and1(arr, value) {
+    for (let i = 0; i < arr.length; i++) {
+        const element = arr[i];
+        // Check if the element is an array and has at least two elements
+        if (Array.isArray(element) && element.length >= 2) {
+            // Check if the 1st and 2nd elements match
+            if (element[0] === value[0] && element[1] === value[1]) {
                 return i; // Return the index of the matching array
             }
         }
